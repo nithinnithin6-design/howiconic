@@ -1,0 +1,6 @@
+howiconic
+*.db
+*.db-shm
+*.db-wal
+frontend/node_modules/
+frontend/.vite/

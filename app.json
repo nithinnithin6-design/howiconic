@@ -1,0 +1,12 @@
+{
+  "name": "howiconic",
+  "version": "1.0.0",
+  "title": "HowIconic",
+  "description": "AI-powered brand identity SaaS platform",
+  "author": "Essdee",
+  "license": "proprietary",
+  "standalone": true,
+  "server": {
+    "port": 3800
+  }
+}
