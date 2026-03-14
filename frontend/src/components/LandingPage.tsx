@@ -243,12 +243,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           </button>
         </div>
 
-        {/* Mobile log in */}
         <button
-          className="lp-btn-ghost"
+          className="lp-mobile-login lp-btn-ghost"
           onClick={onLogin}
           style={{ padding: '8px 20px', fontSize: 10, display: 'none' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
         >
           Log in
         </button>
@@ -258,13 +256,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             .lp-mobile-login { display: inline-flex !important; }
           }
         `}</style>
-        <button
-          className="lp-mobile-login lp-btn-ghost"
-          onClick={onLogin}
-          style={{ padding: '8px 20px', fontSize: 10, display: 'none' }}
-        >
-          Log in
-        </button>
       </nav>
 
       {/* ── HERO ── */}

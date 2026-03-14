@@ -4,9 +4,10 @@ import { User } from '../types';
 
 interface AuthScreenProps {
   onAuth: (user: User) => void;
+  onBack?: () => void;
 }
 
-const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth }) => {
+const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,13 +32,24 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#050505] flex items-center justify-center z-[300] overflow-hidden">
-      <div className="absolute inset-0 blueprint-grid opacity-[0.06]" />
+    <div className="fixed inset-0 bg-[#0a0a0a] flex items-center justify-center z-[300] overflow-hidden">
+      <div className="absolute inset-0 blueprint-grid opacity-[0.04]" />
 
-      {/* Bloom background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-brand-primary/10 blur-[150px] animate-pulse" />
+      {/* Bloom */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#f17022]/[0.07] blur-[150px] animate-pulse" />
 
-      <div className="relative z-10 w-full max-w-lg px-8">
+      {/* Back button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] font-black text-white/30 hover:text-white transition-all cursor-pointer group"
+        >
+          <span className="group-hover:-translate-x-1 transition-transform inline-block">←</span>
+          Back
+        </button>
+      )}
+
+      <div className="relative z-10 w-full max-w-lg px-6 md:px-8">
         {/* Header */}
         <div className="text-center mb-16 space-y-6">
           <div className="flex items-center justify-center gap-4 mb-8">
@@ -131,8 +143,8 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth }) => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-6 bg-white text-black rounded-full text-[13px] uppercase font-black tracking-[0.8em] transition-all shadow-[0_20px_60px_rgba(255,255,255,0.1)] ${
-              loading ? 'opacity-50 cursor-wait' : 'hover:scale-[1.02] active:scale-95'
+            className={`w-full py-5 md:py-6 bg-[#f17022] text-white rounded-full text-[12px] md:text-[13px] uppercase font-black tracking-[0.6em] md:tracking-[0.8em] transition-all shadow-[0_12px_40px_rgba(241,112,34,0.25)] ${
+              loading ? 'opacity-50 cursor-wait' : 'hover:bg-[#d95e15] hover:shadow-[0_16px_50px_rgba(241,112,34,0.35)] active:scale-[0.98] cursor-pointer'
             }`}
           >
             {loading ? 'Synchronizing...' : mode === 'login' ? 'Authenticate' : 'Initialize System'}

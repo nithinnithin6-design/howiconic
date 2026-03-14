@@ -20,7 +20,7 @@ function hexToRgb(hex: string): string {
 // ─── SHARED PRIMITIVES ────────────────────────────────────────────────────────
 
 const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <p className="text-[8px] uppercase tracking-[1em] font-black text-white/25 mb-6">{children}</p>
+  <p className="text-[9px] md:text-[10px] uppercase tracking-[0.8em] font-black text-white/30 mb-6">{children}</p>
 );
 
 // "ONLY ON HOWICONIC" badge

@@ -142,76 +142,88 @@ const V3_STEP_TO_INDEX: Record<string, number> = {
 // Legacy V2 step number mapping (backward compat)
 const SSE_STEP_TO_INDEX: Record<number, number> = { 1: 0, 2: 1, 3: 2, 5: 3 };
 
+const SpinnerIcon = () => (
+  <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+    <circle className="opacity-20" cx="12" cy="12" r="10" stroke="#f17022" strokeWidth="3" />
+    <path className="opacity-90" fill="none" stroke="#f17022" strokeWidth="3" strokeLinecap="round"
+      d="M12 2 a10 10 0 0 1 10 10" />
+  </svg>
+);
+
 const GenerationProgress: React.FC<{ steps: GenerationStep[] }> = ({ steps }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
-    className="fixed inset-0 z-[500] bg-black/96 backdrop-blur-xl flex flex-col items-center justify-center gap-12"
+    className="fixed inset-0 z-[500] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-14 px-6"
   >
-    {/* Animated bloom */}
-    <div className="relative w-32 h-32 md:w-44 md:h-44 flex items-center justify-center">
-      <div className="absolute inset-0 rounded-full bg-brand-primary/10 animate-ping" style={{ animationDuration: '2.4s' }} />
-      <div className="absolute inset-4 rounded-full bg-brand-primary/5 animate-pulse" />
-      <svg viewBox="0 0 100 100" className="w-full h-full relative z-10" style={{ animation: 'spin 8s linear infinite' }}>
+    {/* Ambient glow */}
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div className="w-[500px] h-[500px] rounded-full bg-[#f17022]/[0.04] blur-[120px]" />
+    </div>
+
+    {/* Animated seal */}
+    <div className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center flex-shrink-0">
+      <div className="absolute inset-0 rounded-full bg-[#f17022]/[0.08] animate-ping" style={{ animationDuration: '2.8s' }} />
+      <div className="absolute inset-3 rounded-full bg-[#f17022]/[0.04] animate-pulse" style={{ animationDuration: '1.8s' }} />
+      <svg viewBox="0 0 100 100" className="w-full h-full relative z-10" style={{ animation: 'spin 10s linear infinite' }}>
         {Array.from({ length: 24 }).map((_, i) => (
           <path
             key={i}
             d="M50 50 C50 50, 44 46, 41 28 C38 12, 50 5, 50 5 C50 5, 62 12, 59 28 C56 46, 50 50, 50 50 Z"
             fill="white"
-            opacity="0.08"
+            opacity="0.06"
             transform={`rotate(${(360 / 24) * i} 50 50)`}
           />
         ))}
-        <circle cx="50" cy="50" r="8" fill="#f17022" opacity="0.9" />
+        <circle cx="50" cy="50" r="8" fill="#f17022" opacity="0.95" />
       </svg>
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
 
-    {/* Step progress */}
-    <div className="flex flex-col gap-5 min-w-[280px] md:min-w-[360px]">
+    {/* Step list */}
+    <div className="relative z-10 flex flex-col gap-4 w-full max-w-[340px]">
       {steps.map((step, i) => (
         <motion.div
           key={i}
-          initial={{ opacity: 0, x: -10 }}
+          initial={{ opacity: 0, x: -12 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.08 }}
+          transition={{ delay: i * 0.07, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="flex items-center gap-4"
         >
+          {/* Icon column — fixed 20px wide */}
           <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
             {step.status === 'done' && (
               <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="text-brand-primary text-base leading-none"
+                initial={{ scale: 0, rotate: -10 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 24 }}
+                className="text-[#f17022] text-[15px] leading-none font-black"
               >
                 ✓
               </motion.span>
             )}
-            {step.status === 'running' && (
-              <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-            )}
+            {step.status === 'running' && <SpinnerIcon />}
             {step.status === 'pending' && (
-              <div className="w-2 h-2 rounded-full bg-white/15" />
+              <span className="text-white/20 text-[12px] font-black leading-none">→</span>
             )}
           </div>
+
+          {/* Label */}
           <span className={`text-[11px] md:text-[12px] uppercase font-black tracking-[0.3em] transition-colors duration-500 ${
             step.status === 'done'
-              ? 'text-white/70'
+              ? 'text-white/45 line-through decoration-white/20'
               : step.status === 'running'
               ? 'text-white'
-              : 'text-white/20'
+              : 'text-white/18'
           }`}>
             {step.label}
-            {step.status === 'running' && (
-              <span className="ml-2 opacity-60 animate-pulse">...</span>
-            )}
           </span>
         </motion.div>
       ))}
     </div>
 
-    <p className="text-[9px] uppercase tracking-[0.8em] font-black text-white/15 mt-4">
+    <p className="relative z-10 text-[9px] uppercase tracking-[0.8em] font-black text-white/12 mt-2">
       HowIconic · 5-Step AI Pipeline
     </p>
   </motion.div>
@@ -708,6 +720,7 @@ const App: React.FC = () => {
             if (u?.generations_count !== undefined) setGenerationsCount(u.generations_count);
             setShowAuth(false);
           }}
+          onBack={() => setShowAuth(false)}
         />
       );
     }
@@ -763,7 +776,7 @@ const App: React.FC = () => {
             title={sound.muted ? 'Unmute' : 'Mute'}>
             {sound.muted ? '🔇' : '🔊'}
           </button>
-          <button onClick={() => { api.logout(); setUser(null); }} className="nav-item text-[10px] uppercase font-black tracking-widest text-white/30 hover:text-red-400 transition-all ml-1 cursor-pointer">
+          <button onClick={() => { api.logout(); setUser(null); setShowAuth(false); }} className="nav-item text-[10px] uppercase font-black tracking-widest text-white/30 hover:text-red-400 transition-all ml-1 cursor-pointer">
             Exit
           </button>
         </div>
@@ -829,7 +842,7 @@ const App: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ delay: navItems.length * 0.07 + 0.1, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                onClick={() => { api.logout(); setUser(null); }}
+                onClick={() => { api.logout(); setUser(null); setShowAuth(false); }}
                 className="text-xl uppercase font-black tracking-[0.4em] text-white/25 hover:text-red-400 transition-all mt-4 bg-transparent border-none cursor-pointer"
               >
                 Exit
@@ -891,37 +904,46 @@ const App: React.FC = () => {
               })()}
 
               {!showCompare && (
-                <main className="max-w-[1400px] mx-auto px-6 py-24 space-y-16">
+                <main className="max-w-[1400px] mx-auto px-6 py-16 md:py-24 space-y-12 md:space-y-16">
                   <div className="flex items-end justify-between flex-wrap gap-6">
                     <h3 className="text-6xl md:text-8xl font-serif-display italic uppercase font-black text-white">
                       <SplitChars text="Vault" />
                     </h3>
-                    {history.length >= 2 && (
-                      <div className="flex items-center gap-4">
-                        {compareMode && compareIds.length === 2 && (
+                    <div className="flex items-center gap-3 flex-wrap">
+                      {/* New Brand button — always visible */}
+                      <button
+                        onClick={() => switchView('engine')}
+                        className="px-6 py-3 bg-[#f17022] text-white text-[10px] uppercase font-black tracking-[0.3em] rounded-full hover:bg-[#d95e15] transition-all cursor-pointer shadow-[0_8px_24px_rgba(241,112,34,0.25)]"
+                      >
+                        + New Brand
+                      </button>
+                      {history.length >= 2 && (
+                        <>
+                          {compareMode && compareIds.length === 2 && (
+                            <button
+                              onClick={() => setShowCompare(true)}
+                              className="px-6 py-3 bg-white text-black text-[10px] uppercase font-black tracking-[0.3em] rounded-full hover:bg-white/90 transition-all cursor-pointer"
+                            >
+                              Compare →
+                            </button>
+                          )}
                           <button
-                            onClick={() => setShowCompare(true)}
-                            className="px-6 py-3 bg-brand-primary text-black text-[10px] uppercase font-black tracking-[0.3em] rounded-full hover:bg-brand-primary/80 transition-all cursor-pointer"
+                            onClick={() => {
+                              setCompareMode(!compareMode);
+                              setCompareIds([]);
+                              setShowCompare(false);
+                            }}
+                            className={`px-5 py-3 text-[10px] uppercase font-black tracking-[0.3em] rounded-full border transition-all cursor-pointer ${
+                              compareMode
+                                ? 'border-brand-primary text-brand-primary bg-brand-primary/5'
+                                : 'border-white/15 text-white/40 hover:border-white/30 hover:text-white/70'
+                            }`}
                           >
-                            Compare →
+                            {compareMode ? `Select ${2 - compareIds.length} more` : '⇆ Compare'}
                           </button>
-                        )}
-                        <button
-                          onClick={() => {
-                            setCompareMode(!compareMode);
-                            setCompareIds([]);
-                            setShowCompare(false);
-                          }}
-                          className={`px-5 py-2.5 text-[10px] uppercase font-black tracking-[0.3em] rounded-full border transition-all cursor-pointer ${
-                            compareMode
-                              ? 'border-brand-primary text-brand-primary bg-brand-primary/5'
-                              : 'border-white/15 text-white/40 hover:border-white/30 hover:text-white/70'
-                          }`}
-                        >
-                          {compareMode ? `Select ${2 - compareIds.length} more` : '⇆ Compare'}
-                        </button>
-                      </div>
-                    )}
+                        </>
+                      )}
+                    </div>
                   </div>
 
                   {compareMode && (
@@ -943,7 +965,7 @@ const App: React.FC = () => {
                           Every iconic brand begins with a single act of creation. Your first identity system is one manifestation away.
                         </p>
                       </div>
-                      <MagneticButton onClick={() => switchView('engine')} className="mt-10 px-14 py-5 bg-gradient-to-r from-white to-[#fff5ee] text-black rounded-full text-[12px] uppercase font-black tracking-[0.5em] hover:shadow-[0_10px_40px_rgba(241,112,34,0.2)] transition-all cursor-pointer border-none">
+                      <MagneticButton onClick={() => switchView('engine')} className="mt-10 px-14 py-5 bg-[#f17022] text-white rounded-full text-[12px] uppercase font-black tracking-[0.5em] hover:bg-[#d95e15] hover:shadow-[0_12px_40px_rgba(241,112,34,0.3)] transition-all cursor-pointer border-none">
                         Begin Creation
                       </MagneticButton>
                     </div>
@@ -991,29 +1013,52 @@ const App: React.FC = () => {
                             )}
                             {/* Accent line from left */}
                             <div className="absolute left-0 top-0 bottom-0 w-[3px] scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top" style={{ backgroundColor: h.colors?.primary?.hex || '#f17022' }} />
-                            <div className="aspect-video bg-white/5 rounded-[1.5rem] p-8 flex items-center justify-center mb-6" style={{ backgroundColor: h.colors?.canvasColor || '#0a0a0a' }}>
+
+                            {/* Logo / identity preview */}
+                            <div className="aspect-video rounded-[1.5rem] p-8 flex items-center justify-center mb-6 relative overflow-hidden" style={{ backgroundColor: h.colors?.canvasColor || '#0a0a0a' }}>
                               {h.logoSystem?.primaryLogoSvg ? (
                                 <LogoRenderer svg={h.logoSystem.primaryLogoSvg} className="w-20 h-20" primaryColor={h.colors?.primary?.hex} />
                               ) : (
-                                <p className="text-3xl font-serif-display italic font-black" style={{ color: h.colors?.primary?.hex || '#f17022' }}>
+                                <p className="text-4xl font-serif-display italic font-black" style={{ color: h.colors?.primary?.hex || '#f17022' }}>
                                   {h.name?.substring(0, 2)}
                                 </p>
                               )}
                             </div>
-                            <h4 className="text-2xl font-serif-display uppercase italic font-bold text-white mb-2">{h.name}</h4>
-                            <p className="text-[11px] uppercase tracking-[0.5em] font-black text-brand-primary mb-4">{h.sense}</p>
-                            <p className="text-sm font-serif-elegant italic text-white/60 line-clamp-2 mb-6">{h.foundation?.purpose}</p>
+
+                            {/* Brand name + tagline */}
+                            <h4 className="text-xl md:text-2xl font-serif-display uppercase italic font-bold text-white mb-1 truncate">{h.name}</h4>
+                            {h.voice?.tagline ? (
+                              <p className="text-[12px] font-serif-elegant italic text-white/40 mb-4 line-clamp-1">"{h.voice.tagline}"</p>
+                            ) : (
+                              <p className="text-[11px] uppercase tracking-[0.4em] font-black text-[#f17022]/70 mb-4">{h.sense}</p>
+                            )}
+
+                            {/* Color swatches */}
+                            <div className="flex gap-2 mb-6">
+                              {[h.colors?.primary?.hex, h.colors?.secondary?.hex, h.colors?.accent?.hex]
+                                .filter(Boolean)
+                                .map((hex, ci) => (
+                                  <div
+                                    key={ci}
+                                    className="h-4 rounded-full flex-1 border border-white/[0.08]"
+                                    style={{ backgroundColor: hex }}
+                                    title={hex}
+                                  />
+                                ))
+                              }
+                            </div>
+
                             {!compareMode && (
                               <div className="flex gap-3">
                                 <MagneticButton onClick={() => { setBrand(h); switchView('manual' as any); }}
-                                  className="flex-1 py-3 bg-white text-black text-[10px] uppercase font-black tracking-widest rounded-full hover:bg-brand-primary transition-colors cursor-pointer border-none">
-                                  Open
+                                  className="flex-1 py-3 bg-white/[0.06] border border-white/[0.12] text-white text-[10px] uppercase font-black tracking-widest rounded-full hover:bg-white hover:text-black transition-all cursor-pointer">
+                                  Open →
                                 </MagneticButton>
                                 <button onClick={async (e) => {
                                   e.stopPropagation();
                                   if (h.id) { try { await api.deleteBrand(String(h.id)); } catch {} }
                                   setHistory(prev => prev.filter((_, j) => j !== i));
-                                }} className="w-10 h-10 flex items-center justify-center border border-white/10 rounded-full text-white/40 hover:text-red-500 transition-all text-sm cursor-pointer">✕</button>
+                                }} className="w-11 h-11 flex items-center justify-center border border-white/10 rounded-full text-white/30 hover:text-red-500 hover:border-red-500/30 transition-all text-sm cursor-pointer">✕</button>
                               </div>
                             )}
                           </div>

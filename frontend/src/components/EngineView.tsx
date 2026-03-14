@@ -181,11 +181,14 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
             <motion.button
               type="submit"
               disabled={isManifesting}
-              whileHover={isManifesting ? {} : { scale: 1.02, boxShadow: '0 16px 50px rgba(241,112,34,0.12)' }}
-              whileTap={isManifesting ? {} : { scale: 0.97 }}
+              whileHover={isManifesting ? {} : { scale: 1.01 }}
+              whileTap={isManifesting ? {} : { scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-              className={`w-full md:w-auto px-16 md:px-24 py-6 md:py-8 bg-gradient-to-r from-white to-[#fff8f2] text-black rounded-full text-[12px] md:text-[14px] uppercase tracking-[0.7em] font-black transition-all ${
-                isManifesting ? 'opacity-40 cursor-wait' : 'cursor-pointer'
+              style={isManifesting ? {} : undefined}
+              className={`manifest-btn w-full md:w-auto px-16 md:px-24 py-6 md:py-8 bg-[#0a0a0a] border border-[#f17022]/60 text-[#f17022] rounded-full text-[12px] md:text-[14px] uppercase tracking-[0.7em] font-black transition-all duration-300 ${
+                isManifesting
+                  ? 'opacity-50 cursor-wait'
+                  : 'cursor-pointer hover:bg-[#f17022] hover:text-white hover:border-[#f17022] hover:shadow-[0_12px_40px_rgba(241,112,34,0.25)]'
               }`}
             >
               {isManifesting ? 'Building...' : 'Manifest'}
