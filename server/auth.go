@@ -169,15 +169,20 @@ func (s *Server) handleMe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var name string
-	err = s.db.QueryRow("SELECT name FROM users WHERE id = ?", claims.UserID).Scan(&name)
+	var generationsCount int
+	var plan string
+	err = s.db.QueryRow("SELECT name, COALESCE(generations_count, 0), COALESCE(plan, 'explorer') FROM users WHERE id = ?", claims.UserID).
+		Scan(&name, &generationsCount, &plan)
 	if err != nil {
 		writeError(w, 404, "User not found")
 		return
 	}
 
 	writeJSON(w, 200, map[string]interface{}{
-		"id":    claims.UserID,
-		"email": claims.Email,
-		"name":  name,
+		"id":                claims.UserID,
+		"email":             claims.Email,
+		"name":              name,
+		"generations_count": generationsCount,
+		"plan":              plan,
 	})
 }

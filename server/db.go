@@ -38,5 +38,15 @@ func migrate(db *sql.DB) error {
 		CREATE INDEX IF NOT EXISTS idx_brands_uid ON brands(uid);
 		CREATE INDEX IF NOT EXISTS idx_audits_user_id ON audits(user_id);
 	`)
-	return err
+	if err != nil {
+		return err
+	}
+
+	// Additive migrations — safe to run repeatedly (SQLite ignores if column exists only via error suppression)
+	// generations_count: tracks how many brands a user has generated (for usage gating)
+	db.Exec("ALTER TABLE users ADD COLUMN generations_count INTEGER NOT NULL DEFAULT 0")
+	// plan: user's subscription tier
+	db.Exec("ALTER TABLE users ADD COLUMN plan TEXT NOT NULL DEFAULT 'explorer'")
+
+	return nil
 }

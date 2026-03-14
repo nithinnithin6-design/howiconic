@@ -22,6 +22,7 @@ type Server struct {
 	db        *sql.DB
 	config    Config
 	mux       *http.ServeMux
+	openaiKey string
 }
 
 func New(cfg Config) (*Server, error) {
@@ -36,9 +37,10 @@ func New(cfg Config) (*Server, error) {
 	}
 
 	s := &Server{
-		db:     db,
-		config: cfg,
-		mux:    http.NewServeMux(),
+		db:        db,
+		config:    cfg,
+		mux:       http.NewServeMux(),
+		openaiKey: os.Getenv("OPENAI_API_KEY"),
 	}
 
 	s.registerRoutes()
@@ -63,11 +65,16 @@ func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("/api/brands", s.handleBrands)
 	s.mux.HandleFunc("/api/brands/", s.handleBrandByID)
 
-	// Generate (Gemini proxy)
+	// Generate (Gemini proxy) — /stream must be registered before /brand
+	s.mux.HandleFunc("/api/generate/brand/stream", s.handleGenerateBrandStream)
 	s.mux.HandleFunc("/api/generate/brand", s.handleGenerateBrand)
+	s.mux.HandleFunc("/api/generate/refine", s.handleRefine)
 	s.mux.HandleFunc("/api/generate/audit", s.handleGenerateAudit)
 	s.mux.HandleFunc("/api/generate/mockup", s.handleGenerateMockup)
 	s.mux.HandleFunc("/api/generate/logo", s.handleGenerateLogo)
+
+	// User usage
+	s.mux.HandleFunc("/api/user/usage", s.handleGetUserUsage)
 
 	// Health
 	s.mux.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
