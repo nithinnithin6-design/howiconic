@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-type AppView = 'engine' | 'vault' | 'audit' | 'about';
+type AppView = 'engine' | 'vault' | 'audit' | 'about' | 'architecture' | 'studio';
 
 interface AppSidebarProps {
   currentView: AppView;
@@ -23,7 +23,8 @@ const MasterSealSmall = () => (
 const NAV_ITEMS = [
   { key: 'engine' as AppView, icon: '⚡', label: 'Engine', desc: 'Create brand' },
   { key: 'vault' as AppView, icon: '◈', label: 'Vault', desc: 'Brand dashboard' },
-  { key: 'audit' as AppView, icon: '◉', label: 'Studio', desc: 'Coming soon', disabled: true },
+  { key: 'architecture' as AppView, icon: '⊹', label: 'Architecture', desc: 'Brand tree' },
+  { key: 'studio' as AppView, icon: '◉', label: 'Studio', desc: 'Design production' },
   { key: 'about' as AppView, icon: '◇', label: 'Manifesto', desc: 'Our philosophy' },
 ];
 

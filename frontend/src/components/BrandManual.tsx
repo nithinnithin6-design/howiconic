@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrandSystem, V3Strategy, V3Names, V3Visual, V3Integration, DalleLogo, Mockup } from '../types';
 import LogoRenderer from './LogoRenderer';
@@ -12,6 +12,225 @@ function hexToRgb(hex: string): string {
   const b = parseInt(h.substring(4, 6), 16);
   return isNaN(r) ? '' : `${r}, ${g}, ${b}`;
 }
+
+// ─── EDITABLE FIELD ───────────────────────────────────────────────────────────
+
+type EditableFieldType = 'text' | 'textarea' | 'color';
+
+interface EditableFieldProps {
+  value: string;
+  onSave: (newValue: string) => Promise<void>;
+  type?: EditableFieldType;
+  className?: string;
+  style?: React.CSSProperties;
+  renderValue?: (v: string) => React.ReactNode;
+  placeholder?: string;
+}
+
+const EditableField: React.FC<EditableFieldProps> = ({
+  value,
+  onSave,
+  type = 'text',
+  className,
+  style,
+  renderValue,
+  placeholder = 'Click to edit...',
+}) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+
+  // Sync value if parent updates it
+  useEffect(() => { if (!editing) setDraft(value); }, [value, editing]);
+
+  useEffect(() => {
+    if (editing && inputRef.current) {
+      inputRef.current.focus();
+      if (inputRef.current instanceof HTMLInputElement) {
+        inputRef.current.select();
+      }
+    }
+  }, [editing]);
+
+  const commitSave = useCallback(async () => {
+    if (draft === value) { setEditing(false); return; }
+    setSaving(true);
+    try {
+      await onSave(draft);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch { setDraft(value); }
+    finally { setSaving(false); setEditing(false); }
+  }, [draft, value, onSave]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && type !== 'textarea') { e.preventDefault(); commitSave(); }
+    if (e.key === 'Escape') { setDraft(value); setEditing(false); }
+  };
+
+  if (editing) {
+    if (type === 'color') {
+      return (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <input
+            type="color"
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            style={{ width: 36, height: 36, border: 'none', background: 'none', cursor: 'pointer', padding: 0 }}
+          />
+          <input
+            ref={inputRef as React.RefObject<HTMLInputElement>}
+            type="text"
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onBlur={commitSave}
+            maxLength={7}
+            style={{
+              width: 90,
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(241,112,34,0.5)',
+              borderRadius: 6,
+              padding: '4px 8px',
+              color: '#fff',
+              fontSize: 13,
+              fontFamily: 'monospace',
+              outline: 'none',
+            }}
+          />
+          {saving && <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>…</span>}
+        </span>
+      );
+    }
+
+    if (type === 'textarea') {
+      return (
+        <span style={{ display: 'block', position: 'relative' }}>
+          <textarea
+            ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onBlur={commitSave}
+            rows={4}
+            style={{
+              width: '100%',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(241,112,34,0.4)',
+              borderRadius: 10,
+              padding: '12px 14px',
+              color: '#fff',
+              fontSize: 14,
+              lineHeight: 1.7,
+              fontFamily: 'Georgia, serif',
+              fontStyle: 'italic',
+              outline: 'none',
+              resize: 'vertical',
+              boxSizing: 'border-box',
+            }}
+          />
+          {saving && (
+            <span style={{
+              position: 'absolute', right: 10, bottom: 10,
+              fontSize: 9, fontWeight: 900, letterSpacing: '0.3em',
+              textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)',
+            }}>
+              Saving…
+            </span>
+          )}
+        </span>
+      );
+    }
+
+    return (
+      <span style={{ display: 'inline-block', position: 'relative' }}>
+        <input
+          ref={inputRef as React.RefObject<HTMLInputElement>}
+          type="text"
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={commitSave}
+          placeholder={placeholder}
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(241,112,34,0.5)',
+            borderRadius: 6,
+            padding: '4px 10px',
+            color: '#fff',
+            fontSize: 'inherit',
+            fontFamily: 'inherit',
+            fontWeight: 'inherit',
+            letterSpacing: 'inherit',
+            textTransform: 'inherit' as any,
+            outline: 'none',
+            minWidth: 80,
+            width: Math.max(draft.length * 12, 80) + 'px',
+          }}
+        />
+        {saving && <span style={{ marginLeft: 8, fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>…</span>}
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={className}
+      style={{
+        ...style,
+        position: 'relative',
+        cursor: 'pointer',
+        display: 'inline-block',
+        borderRadius: 4,
+        transition: 'background 0.15s ease',
+        background: hovered ? 'rgba(241,112,34,0.06)' : 'transparent',
+        padding: '2px 4px',
+        margin: '-2px -4px',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={() => { setDraft(value); setEditing(true); }}
+      title="Click to edit"
+    >
+      {renderValue ? renderValue(value) : value || <span style={{ color: 'rgba(255,255,255,0.2)' }}>{placeholder}</span>}
+      {hovered && !saving && !saved && (
+        <span style={{
+          position: 'absolute',
+          right: -20,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          fontSize: 11,
+          opacity: 0.5,
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}>
+          ✏️
+        </span>
+      )}
+      {saved && (
+        <span style={{
+          position: 'absolute',
+          right: -48,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          fontSize: 9,
+          fontWeight: 900,
+          letterSpacing: '0.2em',
+          color: '#86efac',
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          animation: 'fadeInOut 2s ease',
+        }}>
+          Saved ✓
+        </span>
+      )}
+      <style>{`@keyframes fadeInOut { 0% { opacity:0; } 15% { opacity:1; } 80% { opacity:1; } 100% { opacity:0; } }`}</style>
+    </span>
+  );
+};
 
 // ─── EDUCATION CALLOUT ────────────────────────────────────────────────────────
 
@@ -328,9 +547,10 @@ interface FullSystemProps {
   onBack: () => void;
   onCard: () => void;
   onOpenRefine: () => void;
+  onFieldSave?: (updated: BrandSystem) => Promise<void>;
 }
 
-const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRefine }) => {
+const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRefine, onFieldSave }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const primaryHex = brand.colors?.primary?.hex || '#f17022';
   const [selectedDalleIdx, setSelectedDalleIdx] = useState<number>(0);
@@ -448,13 +668,32 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
               className="font-serif-display uppercase font-black text-white leading-[0.88] tracking-tighter mb-8 break-words"
               style={{ fontSize: 'clamp(4rem, 12vw, 8rem)' }}
             >
-              {brand.name}
+              {onFieldSave ? (
+                <EditableField
+                  value={brand.name || ''}
+                  onSave={async (v) => {
+                    await onFieldSave({ ...brand, name: v });
+                  }}
+                  type="text"
+                />
+              ) : brand.name}
             </h1>
-            {brand.voice?.tagline && (
-              <p className="text-xl md:text-2xl font-serif-elegant italic text-white/40 max-w-xl leading-relaxed">
-                "{brand.voice.tagline}"
-              </p>
-            )}
+            <p className="text-xl md:text-2xl font-serif-elegant italic text-white/40 max-w-xl leading-relaxed">
+              {onFieldSave ? (
+                <>
+                  "
+                  <EditableField
+                    value={brand.voice?.tagline || ''}
+                    onSave={async (v) => {
+                      await onFieldSave({ ...brand, voice: { ...(brand.voice || {}), tagline: v } as any });
+                    }}
+                    type="text"
+                    placeholder="Add tagline..."
+                  />
+                  "
+                </>
+              ) : brand.voice?.tagline ? `"${brand.voice.tagline}"` : null}
+            </p>
             <div className="flex flex-wrap items-center gap-5 mt-10">
               <div className="h-[1px] w-8 opacity-25" style={{ backgroundColor: primaryHex }} />
               {[brand.sense, (v3s?.archetype || v2s?.archetype || brand.foundation?.archetype)].filter(Boolean).map((item, i) => (
@@ -723,7 +962,22 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
                       className="h-24 md:h-36 rounded-xl md:rounded-2xl mb-3"
                       style={{ backgroundColor: color.hex }}
                     />
-                    <p className="text-[8px] font-mono text-white/35 font-black uppercase mb-1">{color.hex}</p>
+                    {onFieldSave ? (
+                      <EditableField
+                        value={color.hex || ''}
+                        onSave={async (v) => {
+                          const newColors = [...(v3vis.colors || [])];
+                          newColors[i] = { ...newColors[i], hex: v };
+                          await onFieldSave({
+                            ...brand,
+                            v3Visual: { ...v3vis, colors: newColors } as any,
+                          });
+                        }}
+                        type="color"
+                      />
+                    ) : (
+                      <p className="text-[8px] font-mono text-white/35 font-black uppercase mb-1">{color.hex}</p>
+                    )}
                     <p className="text-[7px] uppercase tracking-[0.5em] text-white/20 font-black truncate">
                       {color.creative_name}
                     </p>
@@ -750,23 +1004,44 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
           ) : (
             // V2 colors fallback
             <div className="space-y-10">
-              {colorEntries.map((color, i) => (
-                <div key={i} className="manual-reveal grid grid-cols-[120px_1fr] gap-8 items-start">
-                  <div>
-                    <div
-                      className="aspect-square rounded-2xl"
-                      style={{ backgroundColor: color.hex }}
-                    />
-                    <p className="text-[8px] font-mono text-white/30 mt-2">{color.hex}</p>
+              {colorEntries.map((color, i) => {
+                const colorKeys = ['primary', 'secondary', 'accent'] as const;
+                const colorKey = colorKeys[i];
+                return (
+                  <div key={i} className="manual-reveal grid grid-cols-[120px_1fr] gap-8 items-start">
+                    <div>
+                      <div
+                        className="aspect-square rounded-2xl cursor-pointer hover:opacity-80 transition-opacity"
+                        style={{ backgroundColor: color.hex }}
+                        title="Click to edit color"
+                      />
+                      {onFieldSave && colorKey ? (
+                        <EditableField
+                          value={color.hex || ''}
+                          onSave={async (v) => {
+                            await onFieldSave({
+                              ...brand,
+                              colors: {
+                                ...brand.colors,
+                                [colorKey]: { ...brand.colors?.[colorKey], hex: v },
+                              } as any,
+                            });
+                          }}
+                          type="color"
+                        />
+                      ) : (
+                        <p className="text-[8px] font-mono text-white/30 mt-2">{color.hex}</p>
+                      )}
+                    </div>
+                    <div className="space-y-2 pt-2">
+                      <p className="text-sm uppercase font-black tracking-[0.2em] text-white/70">{color.name || color.role}</p>
+                      {(color as any).theory && (
+                        <p className="text-xs font-serif-elegant italic text-white/45 leading-relaxed">{(color as any).theory}</p>
+                      )}
+                    </div>
                   </div>
-                  <div className="space-y-2 pt-2">
-                    <p className="text-sm uppercase font-black tracking-[0.2em] text-white/70">{color.name || color.role}</p>
-                    {(color as any).theory && (
-                      <p className="text-xs font-serif-elegant italic text-white/45 leading-relaxed">{(color as any).theory}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -994,7 +1269,22 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
                     style={{ borderColor: primaryHex + '40' }}
                   >
                     <p className="font-serif-elegant italic text-white/65 text-base md:text-lg leading-relaxed">
-                      "{example}"
+                      "
+                      {onFieldSave ? (
+                        <EditableField
+                          value={example}
+                          onSave={async (v) => {
+                            const newExamples = [...v3i.voice_examples!];
+                            newExamples[i] = v;
+                            await onFieldSave({
+                              ...brand,
+                              v3Integration: { ...v3i, voice_examples: newExamples } as any,
+                            });
+                          }}
+                          type="textarea"
+                        />
+                      ) : example}
+                      "
                     </p>
                   </div>
                 ))}
@@ -1003,7 +1293,20 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
           ) : (
             <div className="space-y-6">
               {(v2v?.brand_voice?.example_copy || brand.voice?.verbalSignature) && (
-                <NarrativeText>{v2v?.brand_voice?.example_copy || brand.voice.verbalSignature}</NarrativeText>
+                <NarrativeText>
+                  {onFieldSave ? (
+                    <EditableField
+                      value={v2v?.brand_voice?.example_copy || brand.voice?.verbalSignature || ''}
+                      onSave={async (v) => {
+                        await onFieldSave({
+                          ...brand,
+                          voice: { ...(brand.voice || {}), verbalSignature: v } as any,
+                        });
+                      }}
+                      type="textarea"
+                    />
+                  ) : (v2v?.brand_voice?.example_copy || brand.voice?.verbalSignature)}
+                </NarrativeText>
               )}
               {brand.voice?.tone && (
                 <div>
@@ -1339,6 +1642,22 @@ const BrandManual: React.FC<BrandManualProps> = ({ brand: initialBrand, onBack, 
   // Keep local brand in sync if parent updates it
   useEffect(() => { setCurrentBrand(initialBrand); }, [initialBrand]);
 
+  // Generic field save — deep-merges the update into brand_data and patches API
+  const handleFieldSave = useCallback(async (updatedBrand: BrandSystem) => {
+    const id = updatedBrand.id || updatedBrand.uid;
+    if (!id) return;
+    try {
+      await api.patchBrand(id as any, {
+        name: updatedBrand.name,
+        brand_data: updatedBrand,
+      });
+    } catch (e) {
+      console.warn('[handleFieldSave] patch failed:', e);
+    }
+    setCurrentBrand(updatedBrand);
+    onBrandUpdate?.(updatedBrand);
+  }, [onBrandUpdate]);
+
   // Inject print styles
   useEffect(() => {
     const styleEl = document.createElement('style');
@@ -1396,6 +1715,7 @@ const BrandManual: React.FC<BrandManualProps> = ({ brand: initialBrand, onBack, 
           onBack={onBack}
           onCard={currentBrand.isV3 ? () => { setView('card'); window.scrollTo(0, 0); } : onBack}
           onOpenRefine={() => setRefineOpen(true)}
+          onFieldSave={handleFieldSave}
         />
       )}
 

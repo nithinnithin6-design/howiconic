@@ -102,6 +102,13 @@ export async function updateBrand(id: string, data: { name?: string; brand_data?
   });
 }
 
+export async function patchBrand(id: string | number, data: { name?: string; brand_data?: any }) {
+  return request(`/brands/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
 export async function deleteBrand(id: string) {
   return request(`/brands/${id}`, { method: 'DELETE' });
 }
@@ -363,13 +370,13 @@ export async function getLoadingTip(): Promise<{ content: string; source: string
 // ─── V4 ARCHITECTURE API ──────────────────────────────────────────────────────
 
 export async function createSubBrand(parentId: number, input: any): Promise<any> {
-  return request('/brands/sub-brand', {
+  return request(`/brands/${parentId}/sub-brand`, {
     method: 'POST',
-    body: JSON.stringify({ parent_id: parentId, ...input }),
+    body: JSON.stringify(input),
   });
 }
 
-export async function getBrandArchitecture(brandId: number): Promise<any> {
+export async function getBrandArchitecture(brandId: number | string): Promise<any> {
   return request(`/brands/${brandId}/architecture`);
 }
 
@@ -389,4 +396,25 @@ export async function shareBrand(brandId: number): Promise<{ token: string; url:
 
 export async function getSharedKit(token: string): Promise<any> {
   return request(`/brands/shared/${token}`);
+}
+
+// ─── DESIGN PRODUCTIONS API ───────────────────────────────────────────────────
+
+export async function listProductions(brandId: number | string): Promise<any[]> {
+  try {
+    return await request(`/brands/${brandId}/productions`);
+  } catch {
+    return [];
+  }
+}
+
+export async function createProduction(brandId: number | string, data: {
+  production_type: string;
+  template_id?: string;
+  content?: any;
+}): Promise<any> {
+  return request(`/brands/${brandId}/productions`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
 }

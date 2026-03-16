@@ -69,12 +69,22 @@ func (s *Server) handleBrandByID(w http.ResponseWriter, r *http.Request) {
 	case "share":
 		s.handleCreateShare(w, r, brandID, claims.UserID)
 		return
+	case "productions":
+		switch r.Method {
+		case "GET":
+			s.handleListProductions(w, r, brandID, claims.UserID)
+		case "POST":
+			s.handleCreateProduction(w, r, brandID, claims.UserID)
+		default:
+			writeError(w, 405, "Method not allowed")
+		}
+		return
 	}
 
 	switch r.Method {
 	case "GET":
 		s.getBrand(w, brandID, claims.UserID)
-	case "PUT":
+	case "PUT", "PATCH":
 		s.updateBrand(w, r, brandID, claims.UserID)
 	case "DELETE":
 		s.deleteBrand(w, brandID, claims.UserID)
@@ -181,7 +191,19 @@ func (s *Server) updateBrand(w http.ResponseWriter, r *http.Request, id string, 
 		s.db.Exec("UPDATE brands SET brand_data = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", string(*req.BrandData), existingID)
 	}
 
-	writeJSON(w, 200, map[string]string{"status": "updated"})
+	// Return the updated brand
+	var b Brand
+	var data string
+	err = s.db.QueryRow(
+		"SELECT id, name, uid, brand_data, created_at, updated_at FROM brands WHERE id = ?",
+		existingID).Scan(&b.ID, &b.Name, &b.UID, &data, &b.CreatedAt, &b.UpdatedAt)
+	if err != nil {
+		writeJSON(w, 200, map[string]string{"status": "updated"})
+		return
+	}
+	b.BrandData = json.RawMessage(data)
+	b.UserID = userID
+	writeJSON(w, 200, b)
 }
 
 func (s *Server) deleteBrand(w http.ResponseWriter, id string, userID int64) {
@@ -196,4 +218,114 @@ func (s *Server) deleteBrand(w http.ResponseWriter, id string, userID int64) {
 		return
 	}
 	writeJSON(w, 200, map[string]string{"status": "deleted"})
+}
+
+// ─── DESIGN PRODUCTIONS ────────────────────────────────────────────────────────
+
+type DesignProduction struct {
+	ID             int64           `json:"id"`
+	BrandID        int64           `json:"brand_id"`
+	ProductionType string          `json:"production_type"`
+	TemplateID     string          `json:"template_id,omitempty"`
+	Content        json.RawMessage `json:"content,omitempty"`
+	CreatedAt      string          `json:"created_at"`
+}
+
+// POST /api/brands/:id/productions
+func (s *Server) handleCreateProduction(w http.ResponseWriter, r *http.Request, brandID string, userID int64) {
+	if r.Method != "POST" {
+		writeError(w, 405, "Method not allowed")
+		return
+	}
+
+	var numericID int64
+	err := s.db.QueryRow(
+		"SELECT id FROM brands WHERE (id = ? OR uid = ?) AND user_id = ?",
+		brandID, brandID, userID,
+	).Scan(&numericID)
+	if err != nil {
+		writeError(w, 404, "Brand not found")
+		return
+	}
+
+	var req struct {
+		ProductionType string          `json:"production_type"`
+		TemplateID     string          `json:"template_id"`
+		Content        json.RawMessage `json:"content"`
+	}
+	if err := decodeJSON(r, &req); err != nil {
+		writeError(w, 400, "Invalid request body")
+		return
+	}
+	if req.ProductionType == "" {
+		writeError(w, 400, "production_type is required")
+		return
+	}
+
+	content := string(req.Content)
+	if content == "" || content == "null" {
+		content = "{}"
+	}
+
+	result, err := s.db.Exec(
+		`INSERT INTO design_productions (brand_id, user_id, production_type, template_id, content)
+		 VALUES (?, ?, ?, ?, ?)`,
+		numericID, userID, req.ProductionType, req.TemplateID, content,
+	)
+	if err != nil {
+		writeError(w, 500, "Failed to save production")
+		return
+	}
+
+	id, _ := result.LastInsertId()
+	prod := DesignProduction{
+		ID:             id,
+		BrandID:        numericID,
+		ProductionType: req.ProductionType,
+		TemplateID:     req.TemplateID,
+		Content:        json.RawMessage(content),
+	}
+	writeJSON(w, 201, prod)
+}
+
+// GET /api/brands/:id/productions
+func (s *Server) handleListProductions(w http.ResponseWriter, r *http.Request, brandID string, userID int64) {
+	if r.Method != "GET" {
+		writeError(w, 405, "Method not allowed")
+		return
+	}
+
+	var numericID int64
+	err := s.db.QueryRow(
+		"SELECT id FROM brands WHERE (id = ? OR uid = ?) AND user_id = ?",
+		brandID, brandID, userID,
+	).Scan(&numericID)
+	if err != nil {
+		writeError(w, 404, "Brand not found")
+		return
+	}
+
+	rows, err := s.db.Query(`
+		SELECT id, brand_id, production_type, COALESCE(template_id,''), COALESCE(content,'{}'), created_at
+		FROM design_productions
+		WHERE brand_id = ? AND user_id = ?
+		ORDER BY created_at DESC
+	`, numericID, userID)
+	if err != nil {
+		writeError(w, 500, "Failed to fetch productions")
+		return
+	}
+	defer rows.Close()
+
+	prods := []DesignProduction{}
+	for rows.Next() {
+		var p DesignProduction
+		var content string
+		if err := rows.Scan(&p.ID, &p.BrandID, &p.ProductionType, &p.TemplateID, &content, &p.CreatedAt); err != nil {
+			continue
+		}
+		p.Content = json.RawMessage(content)
+		prods = append(prods, p)
+	}
+	writeJSON(w, 200, prods)
 }

@@ -5,7 +5,7 @@ interface LandingPageProps {
   onLogin: () => void;
 }
 
-// ─── MASTER SEAL (animated) ───────────────────────────────────────────────────
+// ─── MASTER SEAL (8-petal flower with orange center) ─────────────────────────
 const MasterSeal = ({ className = 'w-10 h-10', animate = false }: { className?: string; animate?: boolean }) => (
   <svg
     viewBox="0 0 100 100"
@@ -26,77 +26,267 @@ const MasterSeal = ({ className = 'w-10 h-10', animate = false }: { className?: 
   </svg>
 );
 
-// ─── BRAND CONSTRUCTION ANIMATION SVG ────────────────────────────────────────
-const BrandConstructionAnim = () => (
-  <svg
-    viewBox="0 0 200 200"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ width: 200, height: 200, opacity: 0.18 }}
-  >
+// ─── BRAND CONSTRUCTION SVG (Hero — letters forming, colors crystallizing) ───
+const BrandConstruction = () => (
+  <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg"
+    style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
     <style>{`
-      @keyframes construct1 { 0%,100% { opacity:0.1; transform: scale(0.8) rotate(0deg); } 50% { opacity:1; transform: scale(1.05) rotate(45deg); } }
-      @keyframes construct2 { 0%,100% { opacity:0.3; transform: scale(1) rotate(0deg); } 50% { opacity:0.7; transform: scale(0.9) rotate(-30deg); } }
-      @keyframes construct3 { 0%,100% { stroke-dashoffset: 300; opacity: 0.2; } 60% { stroke-dashoffset: 0; opacity: 0.8; } }
-      @keyframes construct4 { 0% { opacity:0; } 40% { opacity:1; } 80% { opacity:0; } 100% { opacity:0; } }
-      .c1 { animation: construct1 6s ease-in-out infinite; transform-origin: 100px 100px; }
-      .c2 { animation: construct2 6s ease-in-out infinite 1.5s; transform-origin: 100px 100px; }
-      .c3 { animation: construct3 6s ease-in-out infinite 0.5s; stroke-dasharray: 300; }
-      .c4 { animation: construct4 6s ease-in-out infinite 2s; }
+      @keyframes drawLetterH {
+        0%   { stroke-dashoffset: 220; opacity: 0; }
+        8%   { opacity: 1; }
+        100% { stroke-dashoffset: 0; opacity: 1; }
+      }
+      @keyframes drawLetterI {
+        0%   { stroke-dashoffset: 160; opacity: 0; }
+        10%  { opacity: 1; }
+        100% { stroke-dashoffset: 0; opacity: 1; }
+      }
+      @keyframes swatchPop {
+        0%   { opacity: 0; transform: scale(0) rotate(-15deg); }
+        70%  { transform: scale(1.1) rotate(3deg); }
+        100% { opacity: 1; transform: scale(1) rotate(0deg); }
+      }
+      @keyframes markCrystallize {
+        0%   { opacity: 0; transform: scale(0.2) rotate(-45deg); }
+        60%  { transform: scale(1.15) rotate(5deg); }
+        100% { opacity: 1; transform: scale(1) rotate(0deg); }
+      }
+      @keyframes constructRing {
+        from { stroke-dashoffset: 820; opacity: 0; }
+        10%  { opacity: 0.1; }
+        100% { stroke-dashoffset: 0; opacity: 0.1; }
+      }
+      @keyframes constructRing2 {
+        from { stroke-dashoffset: 1040; opacity: 0; }
+        10%  { opacity: 0.06; }
+        100% { stroke-dashoffset: 0; opacity: 0.06; }
+      }
+      @keyframes glowBreath {
+        0%, 100% { opacity: 0.06; transform: scale(1); }
+        50%       { opacity: 0.14; transform: scale(1.08); }
+      }
+      .bc-ring1 { stroke-dasharray: 820; animation: constructRing 3s ease 0.1s forwards; opacity: 0; }
+      .bc-ring2 { stroke-dasharray: 1040; animation: constructRing2 4s ease 0.4s forwards; opacity: 0; }
+      .bc-h     { stroke-dasharray: 220; animation: drawLetterH 2.2s cubic-bezier(0.4,0,0.2,1) 0.6s forwards; opacity: 0; }
+      .bc-i     { stroke-dasharray: 160; animation: drawLetterI 1.6s cubic-bezier(0.4,0,0.2,1) 1.8s forwards; opacity: 0; }
+      .bc-s1    { transform-origin: 118px 298px; animation: swatchPop 0.7s cubic-bezier(0.16,1,0.3,1) 2.8s forwards; opacity: 0; }
+      .bc-s2    { transform-origin: 158px 298px; animation: swatchPop 0.7s cubic-bezier(0.16,1,0.3,1) 3.0s forwards; opacity: 0; }
+      .bc-s3    { transform-origin: 198px 298px; animation: swatchPop 0.7s cubic-bezier(0.16,1,0.3,1) 3.2s forwards; opacity: 0; }
+      .bc-s4    { transform-origin: 238px 298px; animation: swatchPop 0.7s cubic-bezier(0.16,1,0.3,1) 3.4s forwards; opacity: 0; }
+      .bc-mark  { transform-origin: 200px 200px; animation: markCrystallize 1.4s cubic-bezier(0.16,1,0.3,1) 3.6s forwards; opacity: 0; }
+      .bc-glow  { transform-origin: 200px 200px; animation: glowBreath 8s ease-in-out 4s infinite; opacity: 0; }
     `}</style>
-    <rect className="c1" x="70" y="70" width="60" height="60" stroke="white" strokeWidth="0.8" />
-    <circle className="c2" cx="100" cy="100" r="40" stroke="#f17022" strokeWidth="0.6" />
-    <path className="c3" d="M100 60 L140 100 L100 140 L60 100 Z" stroke="white" strokeWidth="0.8" />
-    <g className="c4">
-      {[0, 60, 120, 180, 240, 300].map(a => (
-        <line
-          key={a}
-          x1="100" y1="100"
-          x2={100 + 38 * Math.cos((a * Math.PI) / 180)}
-          y2={100 + 38 * Math.sin((a * Math.PI) / 180)}
-          stroke="#f17022" strokeWidth="0.5" opacity="0.6"
-        />
-      ))}
+
+    {/* Outer glow */}
+    <circle className="bc-glow" cx="200" cy="200" r="100"
+      stroke="rgba(241,112,34,0.12)" strokeWidth="50" fill="none" />
+
+    {/* Construction rings */}
+    <circle className="bc-ring1" cx="200" cy="200" r="130"
+      stroke="rgba(255,255,255,0.08)" strokeWidth="0.8" strokeDasharray="3 8" fill="none" />
+    <circle className="bc-ring2" cx="200" cy="200" r="165"
+      stroke="rgba(241,112,34,0.07)" strokeWidth="0.5" strokeDasharray="2 14" fill="none" />
+
+    {/* Letter H — drawn by path */}
+    <path className="bc-h"
+      d="M128 148 L128 228 M128 188 L172 188 M172 148 L172 228"
+      stroke="rgba(255,255,255,0.32)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
+      fill="none" />
+
+    {/* Letter I — drawn by path */}
+    <path className="bc-i"
+      d="M200 148 L200 228 M188 148 L212 148 M188 228 L212 228"
+      stroke="rgba(255,255,255,0.32)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
+      fill="none" />
+
+    {/* Color swatches */}
+    <g className="bc-s1">
+      <rect x="106" y="284" width="24" height="28" rx="3" fill="#f17022" opacity="0.85" />
     </g>
-    <circle cx="100" cy="100" r="4" fill="#f17022" opacity="0.8" />
-  </svg>
-);
+    <g className="bc-s2">
+      <rect x="146" y="284" width="24" height="28" rx="3" fill="rgba(255,255,255,0.22)" />
+    </g>
+    <g className="bc-s3">
+      <rect x="186" y="284" width="24" height="28" rx="3" fill="#6366f1" opacity="0.7" />
+    </g>
+    <g className="bc-s4">
+      <rect x="226" y="284" width="24" height="28" rx="3" fill="#10b981" opacity="0.6" />
+    </g>
 
-// ─── STEP ILLUSTRATION ────────────────────────────────────────────────────────
-const StepIllustration1 = () => (
-  <svg viewBox="0 0 64 64" fill="none" style={{ width: 48, height: 48 }}>
-    <rect x="8" y="16" width="48" height="8" rx="1" stroke="white" strokeWidth="1" opacity="0.4" />
-    <rect x="8" y="28" width="32" height="8" rx="1" stroke="white" strokeWidth="1" opacity="0.3" />
-    <rect x="8" y="40" width="40" height="8" rx="1" stroke="white" strokeWidth="1" opacity="0.2" />
-    <circle cx="52" cy="12" r="5" fill="#f17022" opacity="0.7" />
-    <path d="M49 12 L51 14 L55 10" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-  </svg>
-);
-
-const StepIllustration2 = () => (
-  <svg viewBox="0 0 64 64" fill="none" style={{ width: 48, height: 48 }}>
-    <circle cx="32" cy="32" r="20" stroke="white" strokeWidth="0.8" opacity="0.3" strokeDasharray="3 3" />
-    <circle cx="32" cy="32" r="12" stroke="#f17022" strokeWidth="0.8" opacity="0.6" />
-    {[0, 72, 144, 216, 288].map(a => (
-      <line
-        key={a}
-        x1="32" y1="32"
-        x2={32 + 20 * Math.cos((a * Math.PI) / 180)}
-        y2={32 + 20 * Math.sin((a * Math.PI) / 180)}
-        stroke="white" strokeWidth="0.5" opacity="0.25"
-      />
+    {/* Swatch label lines */}
+    {[118, 158, 198, 238].map(x => (
+      <line key={x} x1={x} y1="315" x2={x} y2="324"
+        stroke="rgba(255,255,255,0.08)" strokeWidth="0.6" />
     ))}
-    <circle cx="32" cy="32" r="3" fill="#f17022" />
+
+    {/* Brand mark crystallizing at center */}
+    <g className="bc-mark" transform="translate(200, 200)">
+      {[0, 45, 90, 135, 180, 225, 270, 315].map(a => (
+        <path key={a} d="M0 0 C-3 -4, -5 -13, 0 -19 C5 -13, 3 -4, 0 0 Z"
+          fill="rgba(255,255,255,0.18)" transform={`rotate(${a})`} />
+      ))}
+      <circle cx="0" cy="0" r="5" fill="#f17022"
+        style={{ filter: 'drop-shadow(0 0 10px rgba(241,112,34,0.95))' }} />
+    </g>
   </svg>
 );
 
-const StepIllustration3 = () => (
-  <svg viewBox="0 0 64 64" fill="none" style={{ width: 48, height: 48 }}>
-    <rect x="12" y="12" width="40" height="40" rx="2" stroke="white" strokeWidth="0.8" opacity="0.3" />
-    <rect x="16" y="16" width="14" height="14" rx="1" fill="#f17022" opacity="0.5" />
-    <rect x="34" y="16" width="14" height="14" rx="1" stroke="white" strokeWidth="0.6" opacity="0.3" />
-    <rect x="16" y="34" width="14" height="14" rx="1" stroke="white" strokeWidth="0.6" opacity="0.3" />
-    <rect x="34" y="34" width="14" height="14" rx="1" stroke="#f17022" strokeWidth="0.6" opacity="0.4" />
+// ─── HERO PARTICLES (pure CSS, drifting upward) ───────────────────────────────
+// Hardcoded to avoid re-render jitter
+const PARTICLES = [
+  { left: 7,  bottom: 5,  dur: 18, delay: 0,   size: 1, op: 0.10 },
+  { left: 13, bottom: 20, dur: 14, delay: 3,   size: 2, op: 0.07 },
+  { left: 22, bottom: 10, dur: 20, delay: 1.5, size: 1, op: 0.09 },
+  { left: 31, bottom: 35, dur: 16, delay: 5,   size: 1, op: 0.06 },
+  { left: 38, bottom: 8,  dur: 22, delay: 2,   size: 2, op: 0.08 },
+  { left: 45, bottom: 50, dur: 13, delay: 7,   size: 1, op: 0.07 },
+  { left: 52, bottom: 15, dur: 19, delay: 0.5, size: 1, op: 0.10 },
+  { left: 58, bottom: 42, dur: 17, delay: 4,   size: 2, op: 0.06 },
+  { left: 65, bottom: 25, dur: 21, delay: 2.5, size: 1, op: 0.08 },
+  { left: 71, bottom: 60, dur: 15, delay: 6,   size: 1, op: 0.07 },
+  { left: 77, bottom: 18, dur: 18, delay: 1,   size: 2, op: 0.09 },
+  { left: 83, bottom: 45, dur: 12, delay: 3.5, size: 1, op: 0.06 },
+  { left: 89, bottom: 30, dur: 23, delay: 8,   size: 1, op: 0.08 },
+  { left: 94, bottom: 55, dur: 16, delay: 0.8, size: 2, op: 0.07 },
+  { left: 4,  bottom: 70, dur: 20, delay: 4.5, size: 1, op: 0.06 },
+  { left: 19, bottom: 65, dur: 14, delay: 2,   size: 1, op: 0.08 },
+  { left: 42, bottom: 80, dur: 17, delay: 5.5, size: 2, op: 0.05 },
+  { left: 73, bottom: 75, dur: 21, delay: 1.5, size: 1, op: 0.07 },
+];
+
+const HeroParticles = () => (
+  <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+    <style>{`
+      @keyframes particleDrift {
+        0%   { transform: translateY(0) translateX(0); opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 1; }
+        100% { transform: translateY(-80vh) translateX(12px); opacity: 0; }
+      }
+    `}</style>
+    {PARTICLES.map((p, i) => (
+      <div key={i} style={{
+        position: 'absolute',
+        left: `${p.left}%`,
+        bottom: `${p.bottom}%`,
+        width: p.size,
+        height: p.size,
+        borderRadius: '50%',
+        background: '#f17022',
+        opacity: 0,
+        animation: `particleDrift ${p.dur}s ease-in-out ${p.delay}s infinite`,
+        willChange: 'transform, opacity',
+      }} />
+    ))}
+  </div>
+);
+
+// ─── SECTION DIVIDER (thin line + center dot, like a book) ───────────────────
+const SectionDivider = () => (
+  <div style={{
+    display: 'flex', alignItems: 'center',
+    padding: '0 48px', margin: '0 auto', maxWidth: 1100,
+  }}>
+    <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
+    <div style={{
+      width: 7, height: 7, borderRadius: '50%', flexShrink: 0, margin: '0 20px',
+      border: '1px solid rgba(255,255,255,0.14)',
+      background: 'transparent',
+    }} />
+    <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
+  </div>
+);
+
+// ─── STEP SVG ICONS ───────────────────────────────────────────────────────────
+const IconDescribe = () => (
+  <svg viewBox="0 0 48 48" fill="none" style={{ width: 44, height: 44 }}>
+    <rect x="6" y="10" width="36" height="6" rx="1" stroke="white" strokeWidth="0.8" opacity="0.3" />
+    <rect x="6" y="20" width="24" height="6" rx="1" stroke="white" strokeWidth="0.8" opacity="0.2" />
+    <rect x="6" y="30" width="30" height="6" rx="1" stroke="white" strokeWidth="0.8" opacity="0.15" />
+    <circle cx="40" cy="9" r="4" fill="#f17022" opacity="0.8" />
+    <path d="M38 9 L39.5 10.5 L42 8" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const IconArchitect = () => (
+  <svg viewBox="0 0 48 48" fill="none" style={{ width: 44, height: 44 }}>
+    <circle cx="24" cy="24" r="15" stroke="white" strokeWidth="0.6" opacity="0.2" strokeDasharray="2 4" />
+    <circle cx="24" cy="24" r="9" stroke="#f17022" strokeWidth="0.7" opacity="0.5" />
+    {[0, 72, 144, 216, 288].map(a => (
+      <line key={a} x1="24" y1="24"
+        x2={24 + 15 * Math.cos((a * Math.PI) / 180)}
+        y2={24 + 15 * Math.sin((a * Math.PI) / 180)}
+        stroke="white" strokeWidth="0.4" opacity="0.2" />
+    ))}
+    <circle cx="24" cy="24" r="2.5" fill="#f17022" />
+    {[0, 72, 144, 216, 288].map(a => (
+      <circle key={a}
+        cx={24 + 15 * Math.cos((a * Math.PI) / 180)}
+        cy={24 + 15 * Math.sin((a * Math.PI) / 180)}
+        r="1.5" fill="white" opacity="0.3" />
+    ))}
+  </svg>
+);
+
+const IconOwn = () => (
+  <svg viewBox="0 0 48 48" fill="none" style={{ width: 44, height: 44 }}>
+    <rect x="8" y="8" width="32" height="32" rx="2" stroke="white" strokeWidth="0.7" opacity="0.2" />
+    <rect x="12" y="12" width="10" height="10" rx="1" fill="#f17022" opacity="0.55" />
+    <rect x="26" y="12" width="10" height="10" rx="1" stroke="white" strokeWidth="0.6" opacity="0.25" />
+    <rect x="12" y="26" width="10" height="10" rx="1" stroke="white" strokeWidth="0.6" opacity="0.25" />
+    <rect x="26" y="26" width="10" height="10" rx="1" stroke="#f17022" strokeWidth="0.6" opacity="0.4" />
+    <path d="M19 17 L21 19 L25 15" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.9" />
+  </svg>
+);
+
+// ─── OUTPUT CARD ICONS ────────────────────────────────────────────────────────
+const OutputIconStrategy = () => (
+  <svg viewBox="0 0 32 32" fill="none" style={{ width: 28, height: 28 }}>
+    <circle cx="16" cy="16" r="11" stroke="#f17022" strokeWidth="0.8" opacity="0.5" />
+    <circle cx="16" cy="16" r="6" stroke="#f17022" strokeWidth="0.6" opacity="0.3" />
+    <circle cx="16" cy="16" r="2" fill="#f17022" opacity="0.9" />
+  </svg>
+);
+const OutputIconNames = () => (
+  <svg viewBox="0 0 32 32" fill="none" style={{ width: 28, height: 28 }}>
+    <text x="4" y="22" fontFamily="Georgia,serif" fontSize="18" fill="#6366f1" opacity="0.8" fontStyle="italic">Aa</text>
+  </svg>
+);
+const OutputIconColors = () => (
+  <svg viewBox="0 0 32 32" fill="none" style={{ width: 28, height: 28 }}>
+    <rect x="2" y="10" width="8" height="12" rx="1" fill="#f17022" opacity="0.8" />
+    <rect x="12" y="6" width="8" height="16" rx="1" fill="white" opacity="0.25" />
+    <rect x="22" y="10" width="8" height="12" rx="1" fill="white" opacity="0.1" />
+  </svg>
+);
+const OutputIconTypography = () => (
+  <svg viewBox="0 0 32 32" fill="none" style={{ width: 28, height: 28 }}>
+    <path d="M4 8 H28 M16 8 V24" stroke="#f59e0b" strokeWidth="1.2" opacity="0.7" strokeLinecap="round" />
+    <path d="M8 24 H24" stroke="white" strokeWidth="0.6" opacity="0.2" strokeLinecap="round" />
+  </svg>
+);
+const OutputIconLogos = () => (
+  <svg viewBox="0 0 32 32" fill="none" style={{ width: 28, height: 28 }}>
+    <g transform="translate(16,16)">
+      {[0, 45, 90, 135, 180, 225, 270, 315].map(a => (
+        <path key={a} d="M0 0 C-1.5 -2, -2.5 -6, 0 -9 C2.5 -6, 1.5 -2, 0 0 Z" fill="white" opacity="0.3" transform={`rotate(${a})`} />
+      ))}
+      <circle cx="0" cy="0" r="2" fill="#ec4899" opacity="0.9" />
+    </g>
+  </svg>
+);
+const OutputIconVoice = () => (
+  <svg viewBox="0 0 32 32" fill="none" style={{ width: 28, height: 28 }}>
+    <path d="M4 20 Q8 10, 12 16 Q16 22, 20 12 Q24 4, 28 16" stroke="#3b82f6" strokeWidth="1" fill="none" opacity="0.7" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+const OutputIconManual = () => (
+  <svg viewBox="0 0 32 32" fill="none" style={{ width: 28, height: 28 }}>
+    <rect x="5" y="4" width="18" height="24" rx="1" stroke="white" strokeWidth="0.7" opacity="0.25" />
+    <rect x="5" y="4" width="4" height="24" rx="1" fill="#8b5cf6" opacity="0.5" />
+    <path d="M12 10 H20" stroke="white" strokeWidth="0.6" opacity="0.3" strokeLinecap="round" />
+    <path d="M12 14 H20" stroke="white" strokeWidth="0.6" opacity="0.2" strokeLinecap="round" />
+    <path d="M12 18 H17" stroke="white" strokeWidth="0.6" opacity="0.15" strokeLinecap="round" />
   </svg>
 );
 
@@ -104,389 +294,656 @@ const StepIllustration3 = () => (
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
-      { threshold: 0.12 }
+      { threshold: 0.1 }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-
   return { ref, visible };
 }
 
 // ─── REVEAL WRAPPER ────────────────────────────────────────────────────────────
-const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({
-  children, delay = 0, className = '',
+const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string; style?: React.CSSProperties }> = ({
+  children, delay = 0, className = '', style = {},
 }) => {
   const { ref, visible } = useScrollReveal();
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(32px)',
-        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms`,
-      }}
-    >
+    <div ref={ref} className={className} style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? 'translateY(0)' : 'translateY(36px)',
+      transition: `opacity 0.75s ease ${delay}ms, transform 0.75s ease ${delay}ms`,
+      ...style,
+    }}>
       {children}
     </div>
   );
 };
 
-// ─── FACT STRIP ────────────────────────────────────────────────────────────────
-const FactStrip: React.FC<{ fact: string }> = ({ fact }) => {
+// ─── EDUCATION STRIP ──────────────────────────────────────────────────────────
+const EducationStrip: React.FC<{ fact: string }> = ({ fact }) => {
   const { ref, visible } = useScrollReveal();
   return (
-    <div
-      ref={ref}
-      style={{
-        borderTop: '1px solid rgba(255,255,255,0.04)',
-        borderBottom: '1px solid rgba(255,255,255,0.04)',
-        padding: '16px 48px',
-        textAlign: 'center',
-        opacity: visible ? 0.45 : 0,
-        transition: 'opacity 0.8s ease',
-        overflow: 'hidden',
-      }}
-    >
+    <div ref={ref} style={{
+      borderTop: '1px solid rgba(255,255,255,0.04)',
+      borderBottom: '1px solid rgba(255,255,255,0.04)',
+      padding: '20px 32px', textAlign: 'center',
+      background: 'rgba(241,112,34,0.015)',
+      opacity: visible ? 1 : 0,
+      transition: 'opacity 0.9s ease',
+    }}>
       <p style={{
-        fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase',
-        color: 'rgba(255,255,255,0.7)', fontWeight: 700,
-        fontFamily: 'Inter, sans-serif',
-      }}>
-        {fact}
-      </p>
+        fontSize: 10, letterSpacing: '0.45em', textTransform: 'uppercase',
+        color: 'rgba(255,255,255,0.5)', fontWeight: 700,
+        fontFamily: 'Inter, sans-serif', margin: 0,
+      }}>{fact}</p>
     </div>
   );
 };
 
-// ─── BADGE ────────────────────────────────────────────────────────────────────
+// ─── ONLY ON HOWICONIC BADGE ──────────────────────────────────────────────────
 const OnlyBadge = () => (
   <span style={{
-    display: 'inline-block', fontSize: '9px', fontWeight: 700,
-    letterSpacing: '0.15em', textTransform: 'uppercase', color: '#f17022',
-    border: '1px solid rgba(241,112,34,0.5)', padding: '2px 8px',
+    display: 'inline-block', fontSize: '8px', fontWeight: 800,
+    letterSpacing: '0.18em', textTransform: 'uppercase', color: '#f17022',
+    border: '1px solid rgba(241,112,34,0.45)', padding: '3px 9px',
     borderRadius: 2, marginLeft: 10, verticalAlign: 'middle',
-  }}>
-    Only on HowIconic
-  </span>
+    fontFamily: 'Inter, sans-serif',
+  }}>Only on HowIconic</span>
+);
+
+// ─── SECTION HEADING PATTERN ──────────────────────────────────────────────────
+const SectionLabel: React.FC<{ label: string }> = ({ label }) => (
+  <p style={{
+    fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase',
+    color: 'rgba(255,255,255,0.25)', fontWeight: 700, marginBottom: 16,
+    fontFamily: 'Inter, sans-serif',
+  }}>{label}</p>
 );
 
 // ─── LANDING PAGE ─────────────────────────────────────────────────────────────
 const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) => {
-  const [heroVisible, setHeroVisible] = useState(false);
+  const [heroReady, setHeroReady] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroVisible(true), 100);
+    const t = setTimeout(() => setHeroReady(true), 80);
     return () => clearTimeout(t);
   }, []);
 
+  const S = { maxWidth: 1100, margin: '0 auto' };
+
   return (
     <div style={{
-      background: '#0a0a0a', color: '#f5f5f5', minHeight: '100vh',
-      fontFamily: 'Inter, sans-serif', overflowX: 'hidden',
+      background: '#0a0a0a', color: '#f5f5f5',
+      minHeight: '100vh', fontFamily: 'Inter, sans-serif', overflowX: 'hidden',
     }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         @keyframes sealEntrance {
-          from { opacity: 0; transform: rotate(-15deg) scale(0.7); }
-          to { opacity: 1; transform: rotate(0deg) scale(1); }
+          from { opacity: 0; transform: rotate(-20deg) scale(0.6); }
+          to   { opacity: 1; transform: rotate(0deg) scale(1); }
+        }
+        @keyframes wordUp {
+          from { opacity: 0; transform: translateY(32px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(28px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.07; transform: scale(1); }
+          50%       { opacity: 0.16; transform: scale(1.1); }
         }
 
-        @keyframes heroFadeUp {
-          from { opacity: 0; transform: translateY(24px); }
-          to { opacity: 1; transform: translateY(0); }
+        .word-up {
+          display: inline-block;
+          opacity: 0;
+          animation: wordUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+        .hi-animate { animation: fadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 
-        .lp-hero-animate { animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-
-        .lp-btn-primary {
-          display: inline-flex; align-items: center; gap: 8px;
+        .hi-btn-primary {
+          display: inline-flex; align-items: center; justify-content: center; gap: 8px;
           background: #f17022; color: #fff; border: none;
-          padding: 16px 36px; font-family: Inter, sans-serif;
-          font-size: 13px; font-weight: 900; letter-spacing: 0.1em;
-          text-transform: uppercase; cursor: pointer; border-radius: 4px;
-          transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+          padding: 15px 36px;
+          font-family: Inter, sans-serif; font-size: 11px; font-weight: 900;
+          letter-spacing: 0.14em; text-transform: uppercase;
+          cursor: pointer; border-radius: 3px; text-decoration: none;
+          transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
         }
-        .lp-btn-primary:hover {
+        .hi-btn-primary:hover {
           background: #d9611a; transform: translateY(-2px);
-          box-shadow: 0 12px 40px rgba(241,112,34,0.35);
+          box-shadow: 0 16px 48px rgba(241,112,34,0.38);
         }
-        .lp-btn-ghost {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: transparent; color: rgba(255,255,255,0.65);
-          border: 1px solid rgba(255,255,255,0.2);
-          padding: 14px 32px; font-family: Inter, sans-serif;
-          font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
-          text-transform: uppercase; cursor: pointer; border-radius: 4px;
-          transition: color 0.2s ease, border-color 0.2s ease;
+        .hi-btn-ghost {
+          display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+          background: transparent; color: rgba(255,255,255,0.55);
+          border: 1px solid rgba(255,255,255,0.18);
+          padding: 14px 32px;
+          font-family: Inter, sans-serif; font-size: 11px; font-weight: 700;
+          letter-spacing: 0.14em; text-transform: uppercase;
+          cursor: pointer; border-radius: 3px; text-decoration: none;
+          transition: color 0.2s, border-color 0.2s;
         }
-        .lp-btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+        .hi-btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.45); }
 
-        .lp-diff-card {
+        /* Step cards */
+        .hi-step-card {
+          position: relative; overflow: hidden;
           padding: 36px 28px;
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 4px; flex: 1; min-width: 260px;
-          background: rgba(255,255,255,0.02);
-          transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+          border: 1px solid rgba(255,255,255,0.06); border-radius: 3px;
+          background: rgba(255,255,255,0.015);
+          transition: border-color 0.3s, transform 0.3s;
+          height: 100%;
         }
-        .lp-diff-card:hover {
-          border-color: rgba(241,112,34,0.25);
-          transform: translateY(-4px);
-          box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        .hi-step-card:hover { border-color: rgba(241,112,34,0.25); transform: translateY(-4px); }
+
+        /* Output cards */
+        .hi-output-card {
+          padding: 28px 24px;
+          border: 1px solid rgba(255,255,255,0.06); border-radius: 3px;
+          background: rgba(255,255,255,0.015);
+          transition: border-color 0.3s, transform 0.3s;
+        }
+        .hi-output-card:hover { border-color: rgba(241,112,34,0.22); transform: translateY(-3px); }
+
+        /* Pricing cards */
+        .hi-pricing-card {
+          flex: 1; min-width: 240px; padding: 40px 32px;
+          border: 1px solid rgba(255,255,255,0.09); border-radius: 3px;
+          display: flex; flex-direction: column; gap: 24px;
+          transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+        .hi-pricing-card:hover { transform: translateY(-4px); }
+        .hi-pricing-card.featured {
+          border-color: rgba(241,112,34,0.5);
+          box-shadow: 0 0 0 1px rgba(241,112,34,0.2), 0 0 60px rgba(241,112,34,0.1), inset 0 0 40px rgba(241,112,34,0.03);
+          background: rgba(241,112,34,0.025);
+          position: relative;
+        }
+        .hi-pricing-card.featured:hover {
+          box-shadow: 0 0 0 1px rgba(241,112,34,0.5), 0 0 80px rgba(241,112,34,0.18), inset 0 0 40px rgba(241,112,34,0.03);
         }
 
-        .case-card {
-          flex: 1; min-width: 200px; max-width: 280px;
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 4px; overflow: hidden;
-          transition: transform 0.3s ease, border-color 0.3s ease;
+        /* Step connector line — desktop only */
+        .step-connector {
+          position: absolute;
+          top: 68px; left: 22%; right: 22%;
+          height: 0;
+          border-top: 1px dashed rgba(255,255,255,0.08);
+          z-index: 0;
+          pointer-events: none;
         }
-        .case-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
 
-        .how-step {
-          display: flex; flex-direction: column; gap: 16; flex: 1; min-width: 200px;
-          padding: 32px 24px;
+        /* Diff comparison */
+        .diff-split {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0;
           border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 4px;
-          transition: border-color 0.3s ease;
+          border-radius: 3px;
+          overflow: hidden;
         }
-        .how-step:hover { border-color: rgba(241,112,34,0.2); }
+        .diff-col {
+          padding: 40px 36px;
+        }
+        .diff-col-left {
+          border-right: 1px solid rgba(255,255,255,0.05);
+          background: rgba(255,255,255,0.01);
+        }
+        .diff-col-right {
+          background: rgba(241,112,34,0.02);
+        }
+        .diff-row {
+          padding: 20px 0;
+          border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .diff-row:last-child { border-bottom: none; }
 
-        .lp-pricing-card {
-          flex: 1; min-width: 240px;
-          padding: 36px 28px;
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 4px;
-          display: flex; flex-direction: column; gap: 20;
-          transition: border-color 0.3s ease, transform 0.3s ease;
+        /* Output grid */
+        .output-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 14px;
         }
-        .lp-pricing-card:hover { transform: translateY(-4px); }
-        .lp-pricing-card.featured { border-color: rgba(241,112,34,0.4); background: rgba(241,112,34,0.02); }
+        .output-card-hero {
+          grid-column: span 2;
+        }
+
+        @media (max-width: 1024px) {
+          .output-grid { grid-template-columns: repeat(3, 1fr) !important; }
+          .output-card-hero { grid-column: span 3 !important; }
+        }
 
         @media (max-width: 768px) {
-          .lp-nav-links { display: none !important; }
-          .lp-mobile-login { display: inline-flex !important; }
-          .lp-diff-cards, .lp-how-steps, .lp-case-cards, .lp-pricing-cards { flex-direction: column !important; }
-          .lp-hero-title { font-size: clamp(2.8rem, 11vw, 4rem) !important; }
-          section { padding-left: 24px !important; padding-right: 24px !important; }
+          .hi-nav-links { display: none !important; }
+          .hi-mobile-btn { display: inline-flex !important; }
+          .hi-flex-wrap { flex-direction: column !important; }
+          .step-connector { display: none !important; }
+          .diff-split { grid-template-columns: 1fr !important; }
+          .diff-col-left { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+          .output-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .output-card-hero { grid-column: span 2 !important; }
+          section { padding-left: 20px !important; padding-right: 20px !important; }
+          .hero-shapes-left { display: none !important; }
+        }
+
+        @media (min-width: 769px) {
+          .hi-mobile-btn { display: none !important; }
         }
       `}</style>
 
-      {/* ── NAV ── */}
+      {/* ─── 1. NAV ─────────────────────────────────────────────────────────── */}
       <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
-        padding: '18px 48px',
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 300,
+        padding: '16px 48px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        background: 'rgba(10,10,10,0.92)', backdropFilter: 'blur(20px)',
+        background: 'rgba(10,10,10,0.93)', backdropFilter: 'blur(24px)',
         borderBottom: '1px solid rgba(255,255,255,0.05)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <MasterSeal className="w-8 h-8" animate={true} />
           <span style={{
             fontFamily: 'Playfair Display, serif', fontWeight: 900,
-            fontSize: 17, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#fff',
+            fontSize: 16, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#fff',
           }}>HOWICONIC</span>
         </div>
-
-        <div className="lp-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+        <div className="hi-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
           {[['How It Works', '#how'], ['Pricing', '#pricing']].map(([label, href]) => (
             <a key={label} href={href} style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: 'rgba(255,255,255,0.45)', fontSize: 10,
-              fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.38)', fontSize: 10, fontWeight: 700,
+              letterSpacing: '0.28em', textTransform: 'uppercase',
               textDecoration: 'none', transition: 'color 0.2s',
             }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.45)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.38)'; }}
             >{label}</a>
           ))}
           <button onClick={onLogin} style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            color: 'rgba(255,255,255,0.45)', fontSize: 10,
-            fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase',
-            transition: 'color 0.2s',
+            color: 'rgba(255,255,255,0.38)', fontSize: 10, fontWeight: 700,
+            letterSpacing: '0.28em', textTransform: 'uppercase', transition: 'color 0.2s',
           }}
             onMouseEnter={e => { e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.38)'; }}
           >Log in</button>
-          <button className="lp-btn-primary" onClick={onStartBuilding} style={{ padding: '9px 22px', fontSize: 10 }}>
+          <button className="hi-btn-primary" onClick={onStartBuilding} style={{ padding: '9px 22px', fontSize: 10 }}>
             Start building →
           </button>
         </div>
-
-        <button className="lp-mobile-login lp-btn-ghost" onClick={onLogin} style={{ padding: '8px 18px', fontSize: 10, display: 'none' }}>
+        <button className="hi-mobile-btn hi-btn-ghost" onClick={onLogin}
+          style={{ padding: '8px 18px', fontSize: 10 }}>
           Log in
         </button>
       </nav>
 
-      {/* ── HERO ── */}
+      {/* ─── 2. HERO ─────────────────────────────────────────────────────────── */}
       <section style={{
         position: 'relative', minHeight: '100vh',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
-        padding: '160px 48px 120px', overflow: 'hidden',
-        textAlign: 'center',
+        padding: '160px 48px 120px',
+        overflow: 'hidden', textAlign: 'center',
       }}>
-        {/* Grid overlay */}
+        {/* Subtle grid pattern */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'linear-gradient(rgba(241,112,34,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(241,112,34,0.05) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
         }} />
 
-        {/* Bloom */}
+        {/* Orange glow bloom — breathing, 8s cycle */}
         <div style={{
-          position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)',
-          width: 700, height: 700, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(241,112,34,0.09) 0%, transparent 70%)',
+          position: 'absolute', top: '38%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 900, height: 900, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(241,112,34,0.09) 0%, transparent 62%)',
           pointerEvents: 'none',
+          animation: 'glowPulse 8s ease-in-out infinite',
         }} />
 
-        {/* Brand construction animation — floating top right */}
+        {/* Brand Construction SVG — top right */}
         <div style={{
-          position: 'absolute', top: 120, right: '8%',
-          opacity: 0.6,
+          position: 'absolute', top: 80, right: '4%',
+          width: 280, height: 280, pointerEvents: 'none', opacity: 0.7,
         }}>
-          <BrandConstructionAnim />
+          <BrandConstruction />
         </div>
 
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 860 }}>
+        {/* Brand Construction SVG — bottom left (smaller, mirrored feel) */}
+        <div className="hero-shapes-left" style={{
+          position: 'absolute', bottom: 60, left: '3%',
+          width: 180, height: 180, pointerEvents: 'none', opacity: 0.25,
+          transform: 'scaleX(-1)',
+        }}>
+          <BrandConstruction />
+        </div>
+
+        {/* Particle system */}
+        <HeroParticles />
+
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 920 }}>
           {/* Overline */}
-          <p
-            className="lp-hero-animate"
-            style={{
-              fontSize: 10, fontWeight: 700, letterSpacing: '0.6em', textTransform: 'uppercase',
-              color: '#f17022', marginBottom: 28, animationDelay: '0.1s',
-            }}
-          >
+          <p className="hi-animate" style={{
+            fontSize: 10, fontWeight: 800, letterSpacing: '0.65em',
+            textTransform: 'uppercase', color: '#f17022',
+            marginBottom: 36, animationDelay: '0.08s',
+          }}>
             AI Brand Identity Engine
           </p>
 
-          {/* Main heading */}
-          <h1
-            className="lp-hero-title lp-hero-animate"
-            style={{
-              fontFamily: 'Playfair Display, serif', fontWeight: 900,
-              fontSize: 'clamp(3.5rem, 9vw, 6.5rem)',
-              lineHeight: 1.02, letterSpacing: '-0.02em', color: '#fff',
-              marginBottom: 28, animationDelay: '0.25s',
-            }}
-          >
-            Your brand,<br />
-            <span style={{ color: '#f17022', fontStyle: 'italic' }}>engineered.</span>
+          {/* Main title — word-by-word stagger */}
+          <h1 style={{
+            fontFamily: 'Playfair Display, serif', fontWeight: 900,
+            fontSize: 'clamp(2.8rem, 8vw, 5.5rem)',
+            lineHeight: 1.05, letterSpacing: '-0.02em', color: '#fff',
+            marginBottom: 36,
+          }}>
+            <span className="word-up" style={{ animationDelay: '0.22s' }}>Your</span>{' '}
+            <span className="word-up" style={{ animationDelay: '0.42s' }}>brand,</span>
+            <br />
+            <span className="word-up" style={{
+              animationDelay: '0.62s',
+              color: '#f17022',
+              fontStyle: 'italic',
+              textShadow: '0 0 60px rgba(241,112,34,0.35), 0 0 120px rgba(241,112,34,0.15)',
+            }}>engineered.</span>
           </h1>
 
-          <p
-            className="lp-hero-animate"
-            style={{
-              fontSize: 18, color: 'rgba(255,255,255,0.4)',
-              marginBottom: 52, letterSpacing: '0.02em',
-              fontFamily: 'Inter, sans-serif',
-              animationDelay: '0.4s',
-            }}
-          >
-            Strategy. Name. Identity. One click.
+          {/* Tagline */}
+          <p className="hi-animate" style={{
+            fontSize: 17, color: 'rgba(255,255,255,0.38)',
+            marginBottom: 56, letterSpacing: '0.12em',
+            fontFamily: 'Inter, sans-serif', fontWeight: 500,
+            animationDelay: '0.82s',
+          }}>
+            Strategy. Name. Identity. One engine.
           </p>
 
-          <div
-            className="lp-hero-animate"
-            style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', animationDelay: '0.55s' }}
-          >
-            <button className="lp-btn-primary" onClick={onStartBuilding}>
+          {/* CTAs */}
+          <div className="hi-animate" style={{
+            display: 'flex', gap: 14, justifyContent: 'center',
+            flexWrap: 'wrap', animationDelay: '0.98s',
+          }}>
+            <button className="hi-btn-primary" onClick={onStartBuilding}
+              style={{ fontSize: 12, padding: '16px 40px' }}>
               Start building →
             </button>
-            <button className="lp-btn-ghost" onClick={onLogin}>
+            <button className="hi-btn-ghost" onClick={onLogin}
+              style={{ fontSize: 12, padding: '15px 32px' }}>
               Log in
             </button>
           </div>
 
-          <p
-            className="lp-hero-animate"
-            style={{
-              marginTop: 52, fontSize: 9, letterSpacing: '0.5em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.15)', fontWeight: 700,
-              animationDelay: '0.7s',
-            }}
-          >
+          {/* Subtext */}
+          <p className="hi-animate" style={{
+            marginTop: 56, fontSize: 9, letterSpacing: '0.55em',
+            textTransform: 'uppercase', color: 'rgba(255,255,255,0.1)',
+            fontWeight: 700, animationDelay: '1.14s',
+          }}>
             Strategy · Naming · Visual System · Brand Manual
           </p>
         </div>
       </section>
 
-      {/* ── FACT STRIP 1 ── */}
-      <FactStrip fact='Brand value of the top 100 global brands: $3.5 trillion — built on identity, not just product.' />
+      {/* ─── DIVIDER ─────────────────────────────────────────────────────────── */}
+      <SectionDivider />
 
-      {/* ── HOW IT WORKS ── */}
-      <section id="how" style={{ padding: '100px 48px', background: 'rgba(255,255,255,0.012)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <Reveal>
-            <p style={{
-              fontSize: 10, letterSpacing: '0.6em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.25)', fontWeight: 700, marginBottom: 14,
-            }}>
-              How it works
-            </p>
+      {/* ─── 3. EDUCATION STRIP 1 ────────────────────────────────────────────── */}
+      <EducationStrip fact="Brand value of the top 100 global brands: $3.5 trillion — built on identity, not just product." />
+
+      <SectionDivider />
+
+      {/* ─── 4. HOW IT WORKS ─────────────────────────────────────────────────── */}
+      <section id="how" style={{ padding: '120px 48px', background: 'rgba(255,255,255,0.01)' }}>
+        <div style={S}>
+          <Reveal style={{ marginBottom: 80, textAlign: 'center' }}>
+            <SectionLabel label="How it works" />
             <h2 style={{
-              fontFamily: 'Playfair Display, serif', fontWeight: 900,
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: '#fff', marginBottom: 64, lineHeight: 1.1,
+              fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
             }}>
               Three steps to<br />
               <span style={{ color: '#f17022' }}>brand sovereignty.</span>
             </h2>
           </Reveal>
 
-          <div className="lp-how-steps" style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+          {/* Steps container with connecting line */}
+          <div style={{ position: 'relative' }}>
+            {/* Horizontal connecting line — desktop only */}
+            <div className="step-connector" />
+
+            <div className="hi-flex-wrap" style={{ display: 'flex', gap: 20 }}>
+              {[
+                {
+                  num: '01', label: 'DESCRIBE',
+                  title: 'Describe your vision',
+                  desc: 'Tell us what your brand believes, who it serves, and how it should feel. Four fields. Two minutes.',
+                  Icon: IconDescribe, delay: 0,
+                },
+                {
+                  num: '02', label: 'ARCHITECT',
+                  title: 'AI architects your brand',
+                  desc: 'Our 5-stage pipeline fires — strategy, naming, domain check, visual system, brand assembly. No templates used.',
+                  Icon: IconArchitect, delay: 130,
+                },
+                {
+                  num: '03', label: 'OWN',
+                  title: 'Own a complete brand',
+                  desc: 'Strategy, coined name, color palette, typography, logo, voice guidelines, brand manual — yours to keep.',
+                  Icon: IconOwn, delay: 260,
+                },
+              ].map(({ num, label, title, desc, Icon, delay }) => (
+                <Reveal key={num} delay={delay} style={{ flex: 1, minWidth: 220 }}>
+                  <div className="hi-step-card">
+                    {/* Large faded background number */}
+                    <span style={{
+                      position: 'absolute', top: -10, left: 16,
+                      fontSize: 180, fontWeight: 900,
+                      fontFamily: 'Playfair Display, serif',
+                      color: 'rgba(255,255,255,0.03)',
+                      lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
+                      zIndex: 0,
+                    }}>{num}</span>
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
+                        <span style={{
+                          fontSize: 9, fontWeight: 800, letterSpacing: '0.5em',
+                          textTransform: 'uppercase', color: '#f17022',
+                        }}>{num} {label}</span>
+                      </div>
+                      <div style={{ marginBottom: 24 }}>
+                        <Icon />
+                      </div>
+                      <h3 style={{
+                        fontFamily: 'Playfair Display, serif', fontWeight: 900,
+                        fontSize: 19, color: '#fff', textTransform: 'uppercase',
+                        marginBottom: 14, lineHeight: 1.2,
+                      }}>{title}</h3>
+                      <p style={{ fontSize: 13, lineHeight: 1.8, color: 'rgba(255,255,255,0.37)' }}>{desc}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ─── 5. EDUCATION STRIP 2 ────────────────────────────────────────────── */}
+      <EducationStrip fact="Color increases brand recognition by up to 80% — every shade in your system is chosen with purpose." />
+
+      <SectionDivider />
+
+      {/* ─── 6. THE DIFFERENCE ───────────────────────────────────────────────── */}
+      <section style={{ padding: '120px 48px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <Reveal style={{ marginBottom: 80, textAlign: 'center' }}>
+            <SectionLabel label="The difference" />
+            <h2 style={{
+              fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
+            }}>
+              What makes HowIconic<br />
+              <span style={{ color: '#f17022' }}>different.</span>
+            </h2>
+          </Reveal>
+
+          <Reveal>
+            <div className="diff-split">
+              {/* Left: Others */}
+              <div className="diff-col diff-col-left">
+                <p style={{
+                  fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase',
+                  fontWeight: 800, color: 'rgba(255,255,255,0.2)', marginBottom: 32,
+                  paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.05)',
+                }}>Others</p>
+                {[
+                  { title: 'Strategy Engine', text: 'Generate a logo.' },
+                  { title: 'Coined Names', text: 'Suggest existing words.' },
+                  { title: 'Domain Check', text: 'Give you a name.' },
+                ].map(({ title, text }) => (
+                  <div key={title} className="diff-row">
+                    <p style={{
+                      fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
+                      textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)',
+                      marginBottom: 6,
+                    }}>{title}</p>
+                    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.22)', lineHeight: 1.6 }}>
+                      <span style={{ marginRight: 8, opacity: 0.4 }}>✗</span>{text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Right: HowIconic */}
+              <div className="diff-col diff-col-right">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <p style={{
+                    fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase',
+                    fontWeight: 800, color: '#f17022',
+                  }}>HowIconic</p>
+                  <span style={{
+                    fontSize: 8, fontWeight: 800, letterSpacing: '0.18em',
+                    textTransform: 'uppercase', color: '#f17022',
+                    border: '1px solid rgba(241,112,34,0.35)', padding: '3px 10px', borderRadius: 2,
+                  }}>Strategy-first</span>
+                </div>
+                {[
+                  {
+                    title: 'Strategy Engine',
+                    text: 'Architect your brand.',
+                    desc: 'Archetype, positioning, brand tensions, competitive whitespace — built from what your brand actually believes.',
+                  },
+                  {
+                    title: 'Coined Names',
+                    text: 'Invent your word.',
+                    desc: 'Invented names like Spotify and Kodak. Names with nowhere else to live — legally clean, culturally ownable.',
+                  },
+                  {
+                    title: 'Domain Check',
+                    text: 'Verify it first.',
+                    desc: 'Every name is .com-checked before you see it. No heartbreak after falling in love with something taken.',
+                  },
+                ].map(({ title, text, desc }) => (
+                  <div key={title} className="diff-row">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                      <p style={{
+                        fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
+                        textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)',
+                      }}>{title}</p>
+                      <OnlyBadge />
+                    </div>
+                    <p style={{
+                      fontSize: 15, color: '#fff', fontWeight: 600,
+                      lineHeight: 1.5, marginBottom: 6,
+                    }}>
+                      <span style={{ color: '#f17022', marginRight: 8 }}>✓</span>{text}
+                    </p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.32)', lineHeight: 1.7 }}>{desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ─── 7. WHAT YOU GET ─────────────────────────────────────────────────── */}
+      <section style={{ padding: '120px 48px', background: 'rgba(255,255,255,0.01)' }}>
+        <div style={S}>
+          <Reveal style={{ marginBottom: 80, textAlign: 'center' }}>
+            <SectionLabel label="What you get" />
+            <h2 style={{
+              fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
+            }}>
+              A complete brand system.<br />
+              <span style={{ color: '#f17022' }}>Not a logo. A language.</span>
+            </h2>
+          </Reveal>
+
+          <div className="output-grid">
             {[
               {
-                step: '01',
-                title: 'Describe your vision',
-                desc: 'Tell us what this brand believes, what it sells, who it serves, and how it feels. 4 fields. 2 minutes.',
-                Icon: StepIllustration1,
-                delay: 0,
+                Icon: OutputIconStrategy, title: 'Brand Strategy',
+                desc: 'Archetype, positioning & brand tensions — the intellectual foundation everything else builds on.',
+                accent: '#f17022', hero: true,
               },
               {
-                step: '02',
-                title: 'AI architects your brand',
-                desc: 'Our 5-step pipeline runs — strategy, naming, domain check, visual system, brand assembly. No templates.',
-                Icon: StepIllustration2,
-                delay: 150,
+                Icon: OutputIconNames, title: 'Coined Names',
+                desc: 'Invented, legally-ownable brand names.',
+                accent: '#6366f1', hero: false,
               },
               {
-                step: '03',
-                title: 'Own a complete brand system',
-                desc: 'Strategy, coined name, color palette, typography, logo, voice guidelines — a brand manual you actually own.',
-                Icon: StepIllustration3,
-                delay: 300,
+                Icon: OutputIconColors, title: 'Color System',
+                desc: 'Primary, secondary & neutral palette.',
+                accent: '#10b981', hero: false,
               },
-            ].map(({ step, title, desc, Icon, delay }) => (
-              <Reveal key={step} delay={delay} className="how-step" style={{ flex: 1, minWidth: 200 }}>
-                <div className="how-step">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                    <span style={{
-                      fontSize: 9, fontWeight: 700, letterSpacing: '0.5em',
-                      textTransform: 'uppercase', color: '#f17022',
-                    }}>
-                      {step}
-                    </span>
+              {
+                Icon: OutputIconTypography, title: 'Typography',
+                desc: 'Type scale & font personality pairing.',
+                accent: '#f59e0b', hero: false,
+              },
+              {
+                Icon: OutputIconLogos, title: 'Logo System',
+                desc: 'Primary mark & simplified variants.',
+                accent: '#ec4899', hero: false,
+              },
+              {
+                Icon: OutputIconVoice, title: 'Brand Voice',
+                desc: 'Tone of voice & messaging frameworks.',
+                accent: '#3b82f6', hero: false,
+              },
+              {
+                Icon: OutputIconManual, title: 'Brand Manual',
+                desc: 'Exportable PDF — yours to own.',
+                accent: '#8b5cf6', hero: false,
+              },
+            ].map(({ Icon, title, desc, accent, hero }, i) => (
+              <Reveal key={title} delay={i * 60} className={hero ? 'output-card-hero' : ''}>
+                <div className="hi-output-card" style={{ borderTop: `2px solid ${accent}`, height: '100%' }}>
+                  <div style={{ marginBottom: 18 }}>
                     <Icon />
                   </div>
-                  <h3 style={{
+                  <h4 style={{
                     fontFamily: 'Playfair Display, serif', fontWeight: 900,
-                    fontSize: 20, color: '#fff', textTransform: 'uppercase', marginBottom: 12,
-                  }}>
-                    {title}
-                  </h3>
-                  <p style={{ fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)' }}>
-                    {desc}
-                  </p>
+                    fontSize: hero ? 18 : 14, color: '#fff', textTransform: 'uppercase',
+                    marginBottom: 8, lineHeight: 1.3,
+                  }}>{title}</h4>
+                  <p style={{ fontSize: hero ? 13 : 11, lineHeight: 1.75, color: 'rgba(255,255,255,0.35)' }}>{desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -494,337 +951,292 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
         </div>
       </section>
 
-      {/* ── FACT STRIP 2 ── */}
-      <FactStrip fact='85% of purchasing decisions are influenced by color. Every shade in your system is chosen with purpose.' />
+      <SectionDivider />
 
-      {/* ── DIFFERENTIATORS ── */}
-      <section style={{ padding: '100px 48px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Reveal>
-            <p style={{
-              textAlign: 'center', fontSize: 10, letterSpacing: '0.6em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.25)', fontWeight: 700, marginBottom: 64,
-            }}>
-              What makes HowIconic different
-            </p>
-          </Reveal>
+      {/* ─── 8. EDUCATION STRIP 3 ────────────────────────────────────────────── */}
+      <EducationStrip fact="The Nike Swoosh cost $35. It's now worth $50 billion. Identity compounds." />
 
-          <div className="lp-diff-cards" style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            {[
-              {
-                icon: '🧠',
-                title: 'Strategy Engine',
-                badge: true,
-                before: 'Others: generate a logo.',
-                after: 'HowIconic: architect your brand.',
-                desc: 'Archetype, positioning, brand tensions, competitive whitespace — built from what your brand actually believes.',
-                delay: 0,
-              },
-              {
-                icon: '📛',
-                title: 'Coined Names',
-                badge: true,
-                before: 'Others: suggest existing words.',
-                after: 'HowIconic: invent your word.',
-                desc: 'Invented names like Spotify and Kodak. Names with nowhere else to live — legally clean, culturally ownable.',
-                delay: 100,
-              },
-              {
-                icon: '🌐',
-                title: 'Domain Check',
-                badge: true,
-                before: 'Others: give you a name.',
-                after: 'HowIconic: verify it first.',
-                desc: 'Every name is .com-checked before you see it. No heartbreak after falling in love with something taken.',
-                delay: 200,
-              },
-            ].map(({ icon, title, badge, before, after, desc, delay }) => (
-              <Reveal key={title} delay={delay}>
-                <div className="lp-diff-card">
-                  <div style={{ fontSize: 32, marginBottom: 18 }}>{icon}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginBottom: 14 }}>
-                    <h3 style={{
-                      fontFamily: 'Playfair Display, serif', fontWeight: 900,
-                      fontSize: 19, color: '#fff', textTransform: 'uppercase', margin: 0,
-                    }}>{title}</h3>
-                    {badge && <OnlyBadge />}
-                  </div>
+      <SectionDivider />
 
-                  {/* Before/after comparison */}
-                  <div style={{
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    borderRadius: 2, padding: '12px 14px', marginBottom: 14,
-                  }}>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', margin: '0 0 6px 0', lineHeight: 1.5 }}>
-                      <span style={{ opacity: 0.5 }}>✕ </span>{before}
-                    </p>
-                    <p style={{ fontSize: 11, color: '#f17022', margin: 0, lineHeight: 1.5, fontWeight: 700 }}>
-                      <span>✓ </span>{after}
-                    </p>
-                  </div>
-
-                  <p style={{ fontSize: 13, lineHeight: 1.75, color: 'rgba(255,255,255,0.4)' }}>
-                    {desc}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FACT STRIP 3 ── */}
-      <FactStrip fact='Coined brand names are legally stronger — they own every category because they mean nothing else.' />
-
-      {/* ── SOCIAL PROOF ── */}
-      <section style={{ padding: '100px 48px', background: 'rgba(255,255,255,0.012)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <Reveal>
-            <p style={{
-              fontSize: 10, letterSpacing: '0.6em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.25)', fontWeight: 700, marginBottom: 12,
-            }}>
-              Built with craft
-            </p>
+      {/* ─── 9. PRICING ──────────────────────────────────────────────────────── */}
+      <section id="pricing" style={{ padding: '120px 48px' }}>
+        <div style={S}>
+          <Reveal style={{ marginBottom: 80, textAlign: 'center' }}>
+            <SectionLabel label="Pricing" />
             <h2 style={{
-              fontFamily: 'Playfair Display, serif', fontWeight: 900,
-              fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#fff', marginBottom: 16, lineHeight: 1.1,
+              fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
             }}>
-              Built by designers who've<br />built real brands.
-            </h2>
-            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.35)', marginBottom: 56 }}>
-              <span data-placeholder="true" style={{ color: '#f17022', fontWeight: 700 }}>10,000+</span> brands engineered.
-            </p>
-          </Reveal>
-
-          {/* Case study placeholders */}
-          <div className="lp-case-cards" style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            {[
-              { primary: '#2563eb', secondary: '#1e40af', canvas: '#060a14', label: 'Tech · SaaS' },
-              { primary: '#f17022', secondary: '#7c3aed', canvas: '#0a080e', label: 'D2C · Fashion' },
-              { primary: '#22c55e', secondary: '#15803d', canvas: '#060d06', label: 'Wellness · Food' },
-            ].map((card, i) => (
-              <Reveal key={i} delay={i * 120}>
-                <div className="case-card">
-                  {/* Color preview */}
-                  <div style={{
-                    height: 100, background: card.canvas,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    gap: 8, padding: '0 20px',
-                  }}>
-                    {[card.primary, card.secondary, card.canvas + 'aa'].map((c, ci) => (
-                      <div key={ci} style={{
-                        flex: ci === 0 ? 2 : 1,
-                        height: 40, borderRadius: 2,
-                        background: c,
-                        opacity: 0.85,
-                      }} />
-                    ))}
-                  </div>
-                  <div style={{ padding: '16px 18px' }}>
-                    <p style={{
-                      fontSize: 9, fontWeight: 700, letterSpacing: '0.4em',
-                      textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)',
-                      marginBottom: 6,
-                    }}>{card.label}</p>
-                    <p style={{
-                      fontFamily: 'Playfair Display, serif', fontWeight: 700,
-                      fontSize: 15, color: 'rgba(255,255,255,0.5)', fontStyle: 'italic',
-                    }}>Case study coming soon</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PRICING ── */}
-      <section id="pricing" style={{ padding: '100px 48px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <Reveal>
-            <p style={{
-              textAlign: 'center', fontSize: 10, letterSpacing: '0.6em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.25)', fontWeight: 700, marginBottom: 14,
-            }}>
-              Pricing
-            </p>
-            <h2 style={{
-              fontFamily: 'Playfair Display, serif', fontWeight: 900,
-              fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#fff', marginBottom: 64, textAlign: 'center',
-            }}>
-              Start free. Build iconic.
+              Start free.<br />
+              <span style={{ color: '#f17022' }}>Build iconic.</span>
             </h2>
           </Reveal>
 
-          <div className="lp-pricing-cards" style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+          <div className="hi-flex-wrap" style={{ display: 'flex', gap: 20, alignItems: 'stretch' }}>
+
             {/* Explorer */}
-            <Reveal delay={0}>
-              <div className="lp-pricing-card">
+            <Reveal delay={0} style={{ flex: 1, minWidth: 240 }}>
+              <div className="hi-pricing-card" style={{ height: '100%' }}>
                 <div>
-                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: 10 }}>Explorer</p>
-                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 38, fontWeight: 900, color: '#fff', lineHeight: 1, margin: 0 }}>Free</p>
+                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>Explorer</p>
+                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: '#fff', lineHeight: 1 }}>Free</p>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 8 }}>No card needed · Always free</p>
                 </div>
-                <div style={{ flex: 1 }}>
-                  {['3 brand previews', 'Strategy + Naming', 'Brand Card export'].map(f => (
-                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, paddingBottom: 10, marginBottom: 10, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <span style={{ color: '#f17022', fontSize: 11 }}>✓</span>
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>{f}</span>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  {['3 brand previews/month', 'Strategy + Naming output', 'Brand Card export', 'Basic color palette'].map(f => (
+                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      <span style={{ color: '#f17022', fontSize: 11, marginTop: 1 }}>✓</span>
+                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>{f}</span>
                     </div>
                   ))}
                 </div>
-                <button className="lp-btn-ghost" onClick={onStartBuilding} style={{ width: '100%', justifyContent: 'center', boxSizing: 'border-box' }}>
-                  Get started free
-                </button>
+                <div>
+                  <button className="hi-btn-ghost" onClick={onStartBuilding} style={{ width: '100%' }}>
+                    Get started free
+                  </button>
+                </div>
               </div>
             </Reveal>
 
-            {/* Creator */}
-            <Reveal delay={120}>
-              <div className="lp-pricing-card featured">
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: '#f17022', margin: 0 }}>Creator</p>
-                    <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', background: '#f17022', color: '#fff', padding: '2px 8px', borderRadius: 2 }}>Most Popular</span>
-                  </div>
-                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 38, fontWeight: 900, color: '#fff', lineHeight: 1, margin: 0 }}>₹2,999</p>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 6 }}>One-time · 1 full brand</p>
+            {/* Creator — Featured */}
+            <Reveal delay={130} style={{ flex: 1, minWidth: 240 }}>
+              <div className="hi-pricing-card featured" style={{ height: '100%' }}>
+                {/* MOST POPULAR badge */}
+                <div style={{
+                  position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)',
+                  background: '#f17022', color: '#fff',
+                  fontSize: 8, fontWeight: 900, letterSpacing: '0.2em',
+                  textTransform: 'uppercase', padding: '5px 18px', borderRadius: '0 0 4px 4px',
+                  whiteSpace: 'nowrap',
+                }}>Most Popular</div>
+
+                <div style={{ paddingTop: 12 }}>
+                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: '#f17022', marginBottom: 12 }}>Creator</p>
+                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: '#fff', lineHeight: 1 }}>₹2,999</p>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 8 }}>One-time · 1 complete brand</p>
+                  {/* Agency comparison */}
+                  <p style={{
+                    fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 6,
+                    fontStyle: 'italic',
+                  }}>vs. brand agency: ₹2–10 lakh</p>
                 </div>
-                <div style={{ flex: 1 }}>
-                  {['Everything in Explorer', 'Full logo system', 'Brand mockups', 'PDF brand manual', '.com domain report'].map(f => (
-                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, paddingBottom: 10, marginBottom: 10, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <span style={{ color: '#f17022', fontSize: 11 }}>✓</span>
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>{f}</span>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  {[
+                    'Everything in Explorer',
+                    'Full logo system',
+                    'Brand mockups',
+                    'PDF brand manual',
+                    '.com domain availability report',
+                    'Typography & voice guide',
+                  ].map(f => (
+                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      <span style={{ color: '#f17022', fontSize: 11, marginTop: 1 }}>✓</span>
+                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>{f}</span>
                     </div>
                   ))}
                 </div>
-                <a
-                  href="https://wa.me/919486183626?text=Hi%2C%20I%27d%20like%20to%20unlock%20HowIconic%20Creator%20(%E2%82%B92%2C999)%20for%20my%20brand%20project."
-                  target="_blank" rel="noopener noreferrer"
-                  className="lp-btn-primary"
-                  style={{ width: '100%', justifyContent: 'center', textDecoration: 'none', boxSizing: 'border-box' }}
-                >
-                  Get Started →
-                </a>
+                <div>
+                  <a
+                    href="https://wa.me/919486183626?text=Hi%2C%20I%27d%20like%20to%20unlock%20HowIconic%20Creator%20(%E2%82%B92%2C999)%20for%20my%20brand%20project."
+                    target="_blank" rel="noopener noreferrer"
+                    className="hi-btn-primary"
+                    style={{ width: '100%', fontSize: 12 }}
+                  >
+                    Get Creator →
+                  </a>
+                  <p style={{
+                    textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.22)',
+                    marginTop: 10, letterSpacing: '0.05em',
+                  }}>No subscription. No lock-in.</p>
+                </div>
               </div>
             </Reveal>
 
             {/* Studio */}
-            <Reveal delay={240}>
-              <div className="lp-pricing-card">
+            <Reveal delay={260} style={{ flex: 1, minWidth: 240 }}>
+              <div className="hi-pricing-card" style={{ height: '100%' }}>
                 <div>
-                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: 10 }}>Studio</p>
-                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 38, fontWeight: 900, color: '#fff', lineHeight: 1, margin: 0 }}>₹7,499</p>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 6 }}>per month · 10–15 brands</p>
+                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>Studio</p>
+                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: '#fff', lineHeight: 1 }}>₹7,499</p>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 8 }}>per month · 10–15 brands</p>
                 </div>
-                <div style={{ flex: 1 }}>
-                  {['Everything in Creator', '10–15 brands / month', 'Brand comparison tool', 'Priority support', 'Yearly: ₹59,999 (save 33%)'].map(f => (
-                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, paddingBottom: 10, marginBottom: 10, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <span style={{ color: '#f17022', fontSize: 11 }}>✓</span>
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>{f}</span>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  {[
+                    'Everything in Creator',
+                    '10–15 full brands / month',
+                    'Brand comparison tool',
+                    'Priority support',
+                    'Team collaboration',
+                    'Yearly: ₹59,999 (save 33%)',
+                  ].map(f => (
+                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      <span style={{ color: '#f17022', fontSize: 11, marginTop: 1 }}>✓</span>
+                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>{f}</span>
                     </div>
                   ))}
                 </div>
-                <a
-                  href="https://wa.me/919486183626?text=Hi%2C%20I%27d%20like%20the%20HowIconic%20Studio%20plan%20(%E2%82%B97%2C499%2Fmo)."
-                  target="_blank" rel="noopener noreferrer"
-                  className="lp-btn-ghost"
-                  style={{ width: '100%', justifyContent: 'center', textDecoration: 'none', boxSizing: 'border-box' }}
-                >
-                  Subscribe →
-                </a>
+                <div>
+                  <a
+                    href="https://wa.me/919486183626?text=Hi%2C%20I%27d%20like%20the%20HowIconic%20Studio%20plan%20(%E2%82%B97%2C499%2Fmo)."
+                    target="_blank" rel="noopener noreferrer"
+                    className="hi-btn-ghost"
+                    style={{ width: '100%' }}
+                  >
+                    Get Studio →
+                  </a>
+                </div>
               </div>
             </Reveal>
+
           </div>
         </div>
       </section>
 
-      {/* ── FINAL CTA ── */}
+      <SectionDivider />
+
+      {/* ─── 10. FINAL CTA ───────────────────────────────────────────────────── */}
       <section style={{
-        padding: '100px 48px', textAlign: 'center',
+        padding: '140px 48px', textAlign: 'center',
         position: 'relative', overflow: 'hidden',
         background: 'rgba(241,112,34,0.02)',
-        borderTop: '1px solid rgba(241,112,34,0.06)',
+        borderTop: '1px solid rgba(241,112,34,0.07)',
       }}>
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'linear-gradient(rgba(241,112,34,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(241,112,34,0.04) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }} />
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 700, height: 700, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(241,112,34,0.07) 0%, transparent 70%)',
+          pointerEvents: 'none',
         }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <Reveal>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 36 }}>
+              <MasterSeal className="w-12 h-12" />
+            </div>
             <h2 style={{
-              fontFamily: 'Playfair Display, serif', fontWeight: 900,
-              fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', color: '#fff', marginBottom: 20, lineHeight: 1.05,
+              fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
+              fontSize: 'clamp(2.4rem, 6.5vw, 5rem)', color: '#fff',
+              marginBottom: 24, lineHeight: 1.05,
             }}>
               Ready to build something<br />
-              <span style={{ color: '#f17022', fontStyle: 'italic' }}>iconic?</span>
+              <span style={{ color: '#f17022' }}>iconic?</span>
             </h2>
-            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', marginBottom: 48 }}>
-              4 lines in. A complete brand out.
+            <p style={{
+              fontSize: 16, color: 'rgba(255,255,255,0.35)',
+              marginBottom: 52, fontWeight: 400,
+              maxWidth: 420, margin: '0 auto 52px',
+            }}>
+              4 lines in. A complete brand system out.
             </p>
-            <button className="lp-btn-primary" onClick={onStartBuilding} style={{ fontSize: 14, padding: '18px 48px' }}>
+            <button className="hi-btn-primary" onClick={onStartBuilding}
+              style={{ fontSize: 13, padding: '18px 52px' }}>
               Start building →
             </button>
           </Reveal>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
+      {/* ─── 11. FOOTER ──────────────────────────────────────────────────────── */}
       <footer style={{
-        padding: '48px 48px 40px',
+        padding: '72px 48px 52px',
         borderTop: '1px solid rgba(255,255,255,0.05)',
-        background: '#080808',
+        background: '#070707',
       }}>
-        {/* Links row */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          gap: 32, flexWrap: 'wrap', marginBottom: 36,
-        }}>
-          {[
-            { label: 'About', href: '#' },
-            { label: 'How It Works', href: '#how' },
-            { label: 'Pricing', href: '#pricing' },
-            { label: 'Contact', href: 'https://wa.me/919486183626' },
-            { label: 'Privacy Policy', href: '#' },
-          ].map(({ label, href }) => (
-            <a key={label} href={href}
-              target={href.startsWith('http') ? '_blank' : undefined}
-              rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              style={{
-                fontSize: 10, color: 'rgba(255,255,255,0.3)',
-                fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase',
-                textDecoration: 'none', transition: 'color 0.2s',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.7)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.3)'; }}
-            >{label}</a>
-          ))}
-        </div>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
 
-        {/* Divider */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', margin: '0 0 28px' }} />
+          {/* Top: Logo + About */}
+          <div className="hi-flex-wrap" style={{ display: 'flex', gap: 60, marginBottom: 56, alignItems: 'flex-start' }}>
+            <div style={{ minWidth: 200 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
+                <MasterSeal className="w-8 h-8" />
+                <span style={{
+                  fontFamily: 'Playfair Display, serif', fontWeight: 900,
+                  fontSize: 14, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#fff',
+                }}>HOWICONIC</span>
+              </div>
+              <p style={{
+                fontSize: 13, color: 'rgba(255,255,255,0.3)', lineHeight: 1.85,
+                fontFamily: 'Georgia, serif', fontStyle: 'italic', maxWidth: 280,
+              }}>
+                HowIconic is a Brand Operating System built in India. Strategy-first. AI-powered. Human-guided.
+              </p>
+            </div>
 
-        {/* Bottom row */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: 16,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <MasterSeal className="w-6 h-6" />
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-              HowIconic
-            </span>
+            {/* Nav links */}
+            <div style={{ display: 'flex', gap: 48, flexWrap: 'wrap', flex: 1, justifyContent: 'flex-end' }}>
+              <div>
+                <p style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', fontWeight: 700, marginBottom: 16 }}>Platform</p>
+                {[['How It Works', '#how'], ['What You Get', '#'], ['Pricing', '#pricing']].map(([label, href]) => (
+                  <div key={label} style={{ marginBottom: 10 }}>
+                    <a href={href} style={{
+                      fontSize: 12, color: 'rgba(255,255,255,0.3)', textDecoration: 'none',
+                      transition: 'color 0.2s',
+                    }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.7)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.3)'; }}
+                    >{label}</a>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <p style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', fontWeight: 700, marginBottom: 16 }}>Company</p>
+                {[['About', '#'], ['Privacy Policy', '#'], ['Terms', '#']].map(([label, href]) => (
+                  <div key={label} style={{ marginBottom: 10 }}>
+                    <a href={href} style={{
+                      fontSize: 12, color: 'rgba(255,255,255,0.3)', textDecoration: 'none',
+                      transition: 'color 0.2s',
+                    }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.7)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.3)'; }}
+                    >{label}</a>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
-            Built with 🔥 in India
-          </p>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: 32 }}>
+            <div className="hi-flex-wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
 
-          <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.15)', letterSpacing: '0.1em' }}>
-            © 2026 HowIconic. All rights reserved.
-          </p>
+              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.14)', letterSpacing: '0.1em' }}>
+                © 2026 HowIconic. All rights reserved.
+              </p>
+
+              {/* Social / contact row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                <a
+                  href="https://wa.me/919486183626"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    fontSize: 10, color: 'rgba(255,255,255,0.22)',
+                    textDecoration: 'none', letterSpacing: '0.1em',
+                    transition: 'color 0.2s',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f17022'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.22)'; }}
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: 13, height: 13 }}>
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  WhatsApp
+                </a>
+                <span style={{ color: 'rgba(255,255,255,0.08)' }}>·</span>
+                <p style={{
+                  fontSize: 11, color: 'rgba(255,255,255,0.18)',
+                  fontStyle: 'italic', fontFamily: 'Georgia, serif',
+                }}>
+                  Built with 🔥 in India
+                </p>
+              </div>
+
+            </div>
+          </div>
         </div>
       </footer>
     </div>

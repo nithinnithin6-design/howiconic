@@ -13,6 +13,8 @@ import LogoRenderer from './components/LogoRenderer';
 import CompareView from './components/CompareView';
 import VaultView from './components/VaultView';
 import AppSidebar from './components/AppSidebar';
+import ArchitectureView from './components/ArchitectureView';
+import StudioView from './components/StudioView';
 import { useSound } from './hooks/useSound';
 
 const SplitChars: React.FC<{ text: string; className?: string }> = ({ text, className }) => (
@@ -438,7 +440,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
-  const [view, setView] = useState<'engine' | 'audit' | 'manual' | 'about' | 'vault'>('engine');
+  const [view, setView] = useState<'engine' | 'audit' | 'manual' | 'about' | 'vault' | 'architecture' | 'studio'>('engine');
   const [brand, setBrand] = useState<BrandSystem | null>(null);
   const [history, setHistory] = useState<BrandSystem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -738,10 +740,20 @@ const App: React.FC = () => {
     if (showAuth) {
       return (
         <AuthScreen
-          onAuth={(u) => {
+          onAuth={async (u) => {
             setUser(u);
             if (u?.generations_count !== undefined) setGenerationsCount(u.generations_count);
             setShowAuth(false);
+            // Fetch brands after login
+            try {
+              const brands = await api.listBrands();
+              if (Array.isArray(brands)) {
+                setHistory(brands.map((b: any) => ({
+                  ...JSON.parse(typeof b.brand_data === 'string' ? b.brand_data : JSON.stringify(b.brand_data)),
+                  id: b.id, uid: b.uid,
+                })));
+              }
+            } catch {}
           }}
           onBack={() => setShowAuth(false)}
         />
@@ -788,7 +800,7 @@ const App: React.FC = () => {
       >
         <div className="flex items-center gap-4">
           <span className="text-[9px] uppercase tracking-[0.6em] font-black text-white/20">
-            {view === 'engine' ? 'Identity Engine' : view === 'vault' ? 'Brand Vault' : view === 'audit' ? 'Audit Lab' : 'Manifesto'}
+            {view === 'engine' ? 'Identity Engine' : view === 'vault' ? 'Brand Vault' : view === 'audit' ? 'Audit Lab' : view === 'architecture' ? 'Brand Architecture' : view === 'studio' ? 'Design Studio' : 'Manifesto'}
           </span>
         </div>
 
@@ -935,6 +947,40 @@ const App: React.FC = () => {
                   setHistory(prev => prev.map(b => b.uid === updated.uid ? updated : b));
                 }}
               />
+            </motion.div>
+          )}
+
+          {view === 'architecture' && (
+            <motion.div key="architecture" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              {brand ? (
+                <ArchitectureView
+                  brand={brand}
+                  onSelectBrand={(id) => {
+                    // Find brand in history by id or uid and open it
+                    const found = history.find(h => String(h.id) === String(id) || h.uid === String(id));
+                    if (found) { setBrand(found); switchView('manual' as any); }
+                  }}
+                />
+              ) : (
+                <div className="max-w-[600px] mx-auto px-6 py-24 text-center">
+                  <p className="text-[9px] uppercase tracking-[0.8em] font-black text-white/20 mb-6">Brand Architecture</p>
+                  <p className="text-xl font-serif-elegant italic text-white/30 mb-8">
+                    Select a brand first to view its architecture tree.
+                  </p>
+                  <button
+                    onClick={() => switchView('vault')}
+                    className="text-[10px] uppercase font-black tracking-[0.4em] text-brand-primary/70 hover:text-brand-primary transition-all cursor-pointer bg-transparent border-none"
+                  >
+                    ← Go to Vault →
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {view === 'studio' && (
+            <motion.div key="studio" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <StudioView brand={brand} />
             </motion.div>
           )}
 
