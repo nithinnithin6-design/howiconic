@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
 import { BrandSystem, User, BrandVibe } from './types';
 import * as api from './api';
 import AuthScreen from './components/AuthScreen';
@@ -14,9 +11,9 @@ import CustomCursor from './components/CustomCursor';
 import MagneticButton from './components/MagneticButton';
 import LogoRenderer from './components/LogoRenderer';
 import CompareView from './components/CompareView';
+import VaultView from './components/VaultView';
+import AppSidebar from './components/AppSidebar';
 import { useSound } from './hooks/useSound';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const SplitChars: React.FC<{ text: string; className?: string }> = ({ text, className }) => (
   <span className={className}>
@@ -150,12 +147,82 @@ const SpinnerIcon = () => (
   </svg>
 );
 
+// Rotating education tips component
+const RotatingTips: React.FC = () => {
+  const [tips, setTips] = useState<Array<{ content: string; source: string }>>([]);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [fadeIn, setFadeIn] = useState(true);
+
+  useEffect(() => {
+    // Fetch multiple tips upfront
+    const fetchTips = async () => {
+      const fetched: Array<{ content: string; source: string }> = [];
+      for (let i = 0; i < 6; i++) {
+        try {
+          const tip = await api.getLoadingTip();
+          fetched.push(tip);
+        } catch {}
+      }
+      if (fetched.length > 0) setTips(fetched);
+    };
+    fetchTips();
+  }, []);
+
+  useEffect(() => {
+    if (tips.length < 2) return;
+    const interval = setInterval(() => {
+      setFadeIn(false);
+      setTimeout(() => {
+        setCurrentIdx(prev => (prev + 1) % tips.length);
+        setFadeIn(true);
+      }, 400);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [tips]);
+
+  if (tips.length === 0) return null;
+
+  const tip = tips[currentIdx];
+
+  return (
+    <div
+      style={{
+        opacity: fadeIn ? 1 : 0,
+        transition: 'opacity 0.4s ease',
+        textAlign: 'center',
+        maxWidth: 400,
+        padding: '0 16px',
+      }}
+    >
+      <p style={{
+        fontSize: 13,
+        fontStyle: 'italic',
+        color: 'rgba(255,255,255,0.45)',
+        lineHeight: 1.7,
+        fontFamily: 'Georgia, serif',
+        marginBottom: 8,
+      }}>
+        "{tip.content}"
+      </p>
+      <p style={{
+        fontSize: 9,
+        letterSpacing: '0.4em',
+        textTransform: 'uppercase',
+        color: 'rgba(241,112,34,0.5)',
+        fontWeight: 700,
+      }}>
+        — {tip.source}
+      </p>
+    </div>
+  );
+};
+
 const GenerationProgress: React.FC<{ steps: GenerationStep[] }> = ({ steps }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
-    className="fixed inset-0 z-[500] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-14 px-6"
+    className="fixed inset-0 z-[500] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-10 px-6"
   >
     {/* Ambient glow */}
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -223,7 +290,13 @@ const GenerationProgress: React.FC<{ steps: GenerationStep[] }> = ({ steps }) =>
       ))}
     </div>
 
-    <p className="relative z-10 text-[9px] uppercase tracking-[0.8em] font-black text-white/12 mt-2">
+    {/* Rotating education tips */}
+    <div className="relative z-10 border-t border-white/[0.06] pt-8 w-full max-w-[400px] flex flex-col items-center">
+      <p className="text-[8px] uppercase tracking-[0.6em] text-white/20 font-black mb-4">While you wait · Brand wisdom</p>
+      <RotatingTips />
+    </div>
+
+    <p className="relative z-10 text-[9px] uppercase tracking-[0.8em] font-black text-white/12">
       HowIconic · 5-Step AI Pipeline
     </p>
   </motion.div>
@@ -380,60 +453,10 @@ const App: React.FC = () => {
   const mainRef = useRef<HTMLDivElement>(null);
   const sound = useSound();
 
-  // Lenis smooth scroll
+  // Smooth scroll via native CSS scroll-behavior
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    });
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
-    return () => { lenis.destroy(); };
-  }, []);
-
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.split-char').forEach((char, i) => {
-        gsap.to(char, {
-          opacity: 1, y: 0, duration: 0.6,
-          delay: i * 0.03,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: char, start: 'top 90%', once: true },
-        });
-      });
-      gsap.utils.toArray<HTMLElement>('.gsap-reveal').forEach(el => {
-        gsap.fromTo(el,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 85%', once: true } }
-        );
-      });
-      gsap.utils.toArray<HTMLElement>('.vault-card').forEach((el, i) => {
-        gsap.fromTo(el,
-          { opacity: 0, y: 50, scale: 0.95 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.7, delay: i * 0.1, ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 90%', once: true } }
-        );
-      });
-      gsap.utils.toArray<HTMLElement>('.color-swatch').forEach((el, i) => {
-        gsap.fromTo(el,
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, duration: 0.6, delay: i * 0.15, ease: 'back.out(1.4)',
-            scrollTrigger: { trigger: el, start: 'top 90%', once: true } }
-        );
-      });
-    }, mainRef);
-    return () => ctx.revert();
-  }, [view, brand, history]);
-
-  useEffect(() => {
-    gsap.fromTo('.nav-item', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out', delay: 0.3 });
+    document.documentElement.style.scrollBehavior = 'smooth';
+    return () => { document.documentElement.style.scrollBehavior = ''; };
   }, []);
 
   // Auth check — use existing token only; no auto-login
@@ -745,58 +768,38 @@ const App: React.FC = () => {
       <div className="noise-overlay" />
       <div className="blueprint-grid-overlay" />
 
+      {/* Sidebar navigation */}
+      <AppSidebar
+        currentView={view as any}
+        onNavigate={(v) => switchView(v as typeof view)}
+        brandCount={history.length}
+      />
+
       <AnimatePresence>
         {loading && generationSteps.length > 0 && <GenerationProgress steps={generationSteps} />}
         {loading && generationSteps.length === 0 && <LoadingScreen />}
         {showPricingModal && <PricingModal onClose={() => setShowPricingModal(false)} />}
       </AnimatePresence>
 
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 h-20 md:h-28 border-b border-white/10 backdrop-blur-xl z-[150] flex items-center justify-between px-6 md:px-16 no-print bg-black/90">
-        <MagneticButton onClick={() => switchView('engine')} className="flex items-center gap-4 md:gap-8 group bg-transparent border-none cursor-pointer">
-          <MasterSeal className="w-10 h-10 md:w-14 md:h-14 group-hover:scale-110 transition-all" />
-          <div className="flex flex-col text-left">
-            <span className="howiconic-wordmark font-serif-display text-lg md:text-2xl tracking-[0.2em] uppercase font-black text-white">HOWICONIC</span>
-            <span className="text-[9px] md:text-[11px] tracking-[0.6em] uppercase opacity-70 font-black mt-1 text-white">SOVEREIGN_ENGINE_7.0</span>
-          </div>
-        </MagneticButton>
-
-        {/* Desktop nav */}
-        <div className="hidden lg:flex items-center gap-6">
-          {navItems.map((v) => (
-            <MagneticButton key={v.key} onClick={() => switchView(v.key)} strength={0.2}
-              className={`nav-item text-[11px] uppercase font-black tracking-[0.3em] transition-all bg-transparent border-none cursor-pointer ${
-                view === v.key ? 'text-brand-primary' : 'text-white/60 hover:text-white'
-              }`}>
-              {v.label}
-            </MagneticButton>
-          ))}
-          <button onClick={sound.toggleMute}
-            className="nav-item text-[10px] uppercase font-black tracking-widest text-white/30 hover:text-white/60 transition-all ml-1 cursor-pointer"
-            title={sound.muted ? 'Unmute' : 'Mute'}>
-            {sound.muted ? '🔇' : '🔊'}
-          </button>
-          <button onClick={() => { api.logout(); setUser(null); setShowAuth(false); }} className="nav-item text-[10px] uppercase font-black tracking-widest text-white/30 hover:text-red-400 transition-all ml-1 cursor-pointer">
-            Exit
-          </button>
+      {/* Top nav bar — positioned to the right of sidebar */}
+      <nav
+        className="fixed top-0 right-0 h-16 border-b border-white/[0.06] backdrop-blur-xl z-[150] flex items-center justify-between px-6 no-print bg-black/90"
+        style={{ left: 64, transition: 'left 0.25s' }}
+      >
+        <div className="flex items-center gap-4">
+          <span className="text-[9px] uppercase tracking-[0.6em] font-black text-white/20">
+            {view === 'engine' ? 'Identity Engine' : view === 'vault' ? 'Brand Vault' : view === 'audit' ? 'Audit Lab' : 'Manifesto'}
+          </span>
         </div>
 
-        {/* Mobile/Tablet: sound + hamburger */}
-        <div className="flex lg:hidden items-center gap-4">
+        <div className="flex items-center gap-4">
           <button onClick={sound.toggleMute}
             className="text-[10px] uppercase font-black tracking-widest text-white/30 hover:text-white/60 transition-all cursor-pointer"
             title={sound.muted ? 'Unmute' : 'Mute'}>
             {sound.muted ? '🔇' : '🔊'}
           </button>
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-10 h-10 flex flex-col items-center justify-center gap-1.5 cursor-pointer"
-            aria-label="Menu">
-            <motion.span animate={{ rotate: mobileMenuOpen ? 45 : 0, y: mobileMenuOpen ? 6 : 0 }}
-              className="block w-6 h-[2px] bg-white origin-center" />
-            <motion.span animate={{ opacity: mobileMenuOpen ? 0 : 1 }}
-              className="block w-6 h-[2px] bg-white" />
-            <motion.span animate={{ rotate: mobileMenuOpen ? -45 : 0, y: mobileMenuOpen ? -6 : 0 }}
-              className="block w-6 h-[2px] bg-white origin-center" />
+          <button onClick={() => { api.logout(); setUser(null); setShowAuth(false); }} className="text-[10px] uppercase font-black tracking-widest text-white/30 hover:text-red-400 transition-all cursor-pointer">
+            Exit
           </button>
         </div>
       </nav>
@@ -811,7 +814,6 @@ const App: React.FC = () => {
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center lg:hidden"
           >
-            {/* X close button */}
             <button
               onClick={() => setMobileMenuOpen(false)}
               className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-all cursor-pointer text-2xl"
@@ -819,8 +821,6 @@ const App: React.FC = () => {
             >
               ✕
             </button>
-
-            {/* Nav links — staggered in */}
             <nav className="flex flex-col items-center gap-10">
               {navItems.map((v, i) => (
                 <motion.button
@@ -848,8 +848,6 @@ const App: React.FC = () => {
                 Exit
               </motion.button>
             </nav>
-
-            {/* Bottom branding */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -872,8 +870,8 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Views */}
-      <div className="pt-20 md:pt-28 min-h-screen flex flex-col">
+      {/* Views — offset for sidebar (desktop: 64px left, top: 64px) */}
+      <div className="min-h-screen flex flex-col" style={{ paddingLeft: 64, paddingTop: 64 }}>
         <AnimatePresence mode="wait">
           {view === 'engine' && (
             <motion.div key="engine" variants={pageVariants} initial="initial" animate="animate" exit="exit">
@@ -889,7 +887,6 @@ const App: React.FC = () => {
 
           {view === 'vault' && (
             <motion.div key="vault" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              {/* Compare view overlay */}
               {showCompare && compareIds.length === 2 && (() => {
                 const bA = history.find(h => (h.uid || String(h.id)) === compareIds[0]);
                 const bB = history.find(h => (h.uid || String(h.id)) === compareIds[1]);
@@ -904,174 +901,31 @@ const App: React.FC = () => {
               })()}
 
               {!showCompare && (
-                <main className="max-w-[1400px] mx-auto px-6 py-16 md:py-24 space-y-12 md:space-y-16">
-                  <div className="flex items-end justify-between flex-wrap gap-6">
-                    <h3 className="text-6xl md:text-8xl font-serif-display italic uppercase font-black text-white">
-                      <SplitChars text="Vault" />
-                    </h3>
-                    <div className="flex items-center gap-3 flex-wrap">
-                      {/* New Brand button — always visible */}
-                      <button
-                        onClick={() => switchView('engine')}
-                        className="px-6 py-3 bg-[#f17022] text-white text-[10px] uppercase font-black tracking-[0.3em] rounded-full hover:bg-[#d95e15] transition-all cursor-pointer shadow-[0_8px_24px_rgba(241,112,34,0.25)]"
-                      >
-                        + New Brand
-                      </button>
-                      {history.length >= 2 && (
-                        <>
-                          {compareMode && compareIds.length === 2 && (
-                            <button
-                              onClick={() => setShowCompare(true)}
-                              className="px-6 py-3 bg-white text-black text-[10px] uppercase font-black tracking-[0.3em] rounded-full hover:bg-white/90 transition-all cursor-pointer"
-                            >
-                              Compare →
-                            </button>
-                          )}
-                          <button
-                            onClick={() => {
-                              setCompareMode(!compareMode);
-                              setCompareIds([]);
-                              setShowCompare(false);
-                            }}
-                            className={`px-5 py-3 text-[10px] uppercase font-black tracking-[0.3em] rounded-full border transition-all cursor-pointer ${
-                              compareMode
-                                ? 'border-brand-primary text-brand-primary bg-brand-primary/5'
-                                : 'border-white/15 text-white/40 hover:border-white/30 hover:text-white/70'
-                            }`}
-                          >
-                            {compareMode ? `Select ${2 - compareIds.length} more` : '⇆ Compare'}
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {compareMode && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-[9px] uppercase tracking-[0.5em] font-black text-white/25"
-                    >
-                      Select 2 brands to compare side by side
-                    </motion.p>
-                  )}
-
-                  {history.length === 0 ? (
-                    <div className="text-center py-24 md:py-32 gsap-reveal">
-                      <VaultEmptyIllustration />
-                      <div className="mt-10 space-y-4">
-                        <h4 className="text-2xl md:text-4xl font-serif-display italic font-black text-white/80">Your vault awaits</h4>
-                        <p className="text-white/40 font-serif-elegant italic text-lg md:text-xl max-w-md mx-auto leading-relaxed">
-                          Every iconic brand begins with a single act of creation. Your first identity system is one manifestation away.
-                        </p>
-                      </div>
-                      <MagneticButton onClick={() => switchView('engine')} className="mt-10 px-14 py-5 bg-[#f17022] text-white rounded-full text-[12px] uppercase font-black tracking-[0.5em] hover:bg-[#d95e15] hover:shadow-[0_12px_40px_rgba(241,112,34,0.3)] transition-all cursor-pointer border-none">
-                        Begin Creation
-                      </MagneticButton>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {history.map((h, i) => {
-                        const brandKey = h.uid || String(h.id) || String(i);
-                        const isSelected = compareIds.includes(brandKey);
-                        const isDisabled = compareMode && compareIds.length === 2 && !isSelected;
-                        return (
-                          <div
-                            key={brandKey}
-                            className={`vault-card relative p-8 border bg-black/40 rounded-[2rem] group transition-all duration-300 overflow-hidden ${
-                              compareMode
-                                ? isSelected
-                                  ? 'border-brand-primary shadow-[0_0_0_2px_rgba(241,112,34,0.3)] -translate-y-1'
-                                  : isDisabled
-                                  ? 'border-white/5 opacity-40 cursor-not-allowed'
-                                  : 'border-white/10 hover:border-white/30 cursor-pointer hover:-translate-y-1'
-                                : 'border-white/10 hover:border-white/30 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)]'
-                            }`}
-                            onClick={() => {
-                              if (!compareMode) return;
-                              if (isDisabled) return;
-                              setCompareIds(prev =>
-                                isSelected
-                                  ? prev.filter(id => id !== brandKey)
-                                  : prev.length < 2 ? [...prev, brandKey] : prev
-                              );
-                            }}
-                          >
-                            {/* Compare checkbox overlay */}
-                            {compareMode && (
-                              <div className="absolute top-4 right-4 z-10">
-                                <div
-                                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                                    isSelected
-                                      ? 'bg-brand-primary border-brand-primary'
-                                      : 'border-white/30 bg-transparent'
-                                  }`}
-                                >
-                                  {isSelected && <span className="text-black text-xs font-black">✓</span>}
-                                </div>
-                              </div>
-                            )}
-                            {/* Accent line from left */}
-                            <div className="absolute left-0 top-0 bottom-0 w-[3px] scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top" style={{ backgroundColor: h.colors?.primary?.hex || '#f17022' }} />
-
-                            {/* Logo / identity preview */}
-                            <div className="aspect-video rounded-[1.5rem] p-8 flex items-center justify-center mb-6 relative overflow-hidden" style={{ backgroundColor: h.colors?.canvasColor || '#0a0a0a' }}>
-                              {h.logoSystem?.primaryLogoSvg ? (
-                                <LogoRenderer svg={h.logoSystem.primaryLogoSvg} className="w-20 h-20" primaryColor={h.colors?.primary?.hex} />
-                              ) : (
-                                <p className="text-4xl font-serif-display italic font-black" style={{ color: h.colors?.primary?.hex || '#f17022' }}>
-                                  {h.name?.substring(0, 2)}
-                                </p>
-                              )}
-                            </div>
-
-                            {/* Brand name + tagline */}
-                            <h4 className="text-xl md:text-2xl font-serif-display uppercase italic font-bold text-white mb-1 truncate">{h.name}</h4>
-                            {h.voice?.tagline ? (
-                              <p className="text-[12px] font-serif-elegant italic text-white/40 mb-4 line-clamp-1">"{h.voice.tagline}"</p>
-                            ) : (
-                              <p className="text-[11px] uppercase tracking-[0.4em] font-black text-[#f17022]/70 mb-4">{h.sense}</p>
-                            )}
-
-                            {/* Color swatches */}
-                            <div className="flex gap-2 mb-6">
-                              {[h.colors?.primary?.hex, h.colors?.secondary?.hex, h.colors?.accent?.hex]
-                                .filter(Boolean)
-                                .map((hex, ci) => (
-                                  <div
-                                    key={ci}
-                                    className="h-4 rounded-full flex-1 border border-white/[0.08]"
-                                    style={{ backgroundColor: hex }}
-                                    title={hex}
-                                  />
-                                ))
-                              }
-                            </div>
-
-                            {!compareMode && (
-                              <div className="flex gap-3">
-                                <MagneticButton onClick={() => { setBrand(h); switchView('manual' as any); }}
-                                  className="flex-1 py-3 bg-white/[0.06] border border-white/[0.12] text-white text-[10px] uppercase font-black tracking-widest rounded-full hover:bg-white hover:text-black transition-all cursor-pointer">
-                                  Open →
-                                </MagneticButton>
-                                <button onClick={async (e) => {
-                                  e.stopPropagation();
-                                  if (h.id) { try { await api.deleteBrand(String(h.id)); } catch {} }
-                                  setHistory(prev => prev.filter((_, j) => j !== i));
-                                }} className="w-11 h-11 flex items-center justify-center border border-white/10 rounded-full text-white/30 hover:text-red-500 hover:border-red-500/30 transition-all text-sm cursor-pointer">✕</button>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </main>
+                <VaultView
+                  brands={history}
+                  onOpen={(b) => { setBrand(b); switchView('manual' as any); }}
+                  onNewBrand={() => switchView('engine')}
+                  onDelete={(_, idx) => setHistory(prev => prev.filter((__, j) => j !== idx))}
+                  compareMode={compareMode}
+                  compareIds={compareIds}
+                  onToggleCompare={() => {
+                    setCompareMode(!compareMode);
+                    setCompareIds([]);
+                    setShowCompare(false);
+                  }}
+                  onSelectCompare={(id) => {
+                    const isSelected = compareIds.includes(id);
+                    setCompareIds(prev =>
+                      isSelected ? prev.filter(x => x !== id) : prev.length < 2 ? [...prev, id] : prev
+                    );
+                  }}
+                  onStartCompare={() => setShowCompare(true)}
+                />
               )}
             </motion.div>
           )}
 
-          {view === 'manual' && brand && (
+                    {view === 'manual' && brand && (
             <motion.div key="manual" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <BrandManual
                 brand={brand}

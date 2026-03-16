@@ -326,3 +326,67 @@ export async function generateLogo(templateId?: string, params?: any) {
     body: JSON.stringify({ template_id: templateId || 'auto', params: params || {} }),
   });
 }
+
+// ─── V4 EDUCATION API ─────────────────────────────────────────────────────────
+
+export async function getFieldHint(field: string): Promise<{ content: string; source: string }> {
+  try {
+    return await request(`/education/hint?field=${encodeURIComponent(field)}`);
+  } catch {
+    // Fallback hints if API unavailable
+    const fallbacks: Record<string, { content: string; source: string }> = {
+      brand_idea: { content: 'Great brands are built on a belief, not a product. What does this brand stand for?', source: 'Brand Strategy' },
+      product: { content: 'Be specific — "premium compression activewear" beats "clothing". Detail helps the AI architect better.', source: 'HowIconic Engine' },
+      audience: { content: 'The tighter your audience definition, the stronger your brand. Who is NOT your customer?', source: 'Positioning 101' },
+      vibe: { content: 'Vibe sets the emotional frequency. Bold attracts attention; Clean signals trust; Warm builds loyalty.', source: 'Design Psychology' },
+    };
+    return fallbacks[field] || { content: 'Define this clearly — it shapes every design decision.', source: 'HowIconic' };
+  }
+}
+
+export async function getLoadingTip(): Promise<{ content: string; source: string }> {
+  try {
+    return await request('/education/tip?context=loading_tip');
+  } catch {
+    const tips = [
+      { content: '85% of purchasing decisions are influenced by color. Your color system is being chosen with scientific intent.', source: 'Color Research Institute' },
+      { content: 'Coined brand names like Kodak and Spotify are legally stronger — they own their entire category.', source: 'Trademark Law' },
+      { content: 'Brands with a clear archetype generate 2x more revenue than those without.', source: 'Jung & Brand Archetypes' },
+      { content: 'The average person sees 10,000 brand impressions per day. Distinctiveness is survival.', source: 'Media Research' },
+      { content: 'Typography carries 40% of a brand\'s personality signal. Font choice is not decoration.', source: 'Typography Research' },
+      { content: 'Brands with consistent visual identity are 3.5x more visible than those without.', source: 'Lucidpress, 2019' },
+    ];
+    return tips[Math.floor(Math.random() * tips.length)];
+  }
+}
+
+// ─── V4 ARCHITECTURE API ──────────────────────────────────────────────────────
+
+export async function createSubBrand(parentId: number, input: any): Promise<any> {
+  return request('/brands/sub-brand', {
+    method: 'POST',
+    body: JSON.stringify({ parent_id: parentId, ...input }),
+  });
+}
+
+export async function getBrandArchitecture(brandId: number): Promise<any> {
+  return request(`/brands/${brandId}/architecture`);
+}
+
+// ─── V4 VAULT API ─────────────────────────────────────────────────────────────
+
+export async function getBrandAssets(brandId: number): Promise<any[]> {
+  try {
+    return await request(`/brands/${brandId}/assets`);
+  } catch {
+    return [];
+  }
+}
+
+export async function shareBrand(brandId: number): Promise<{ token: string; url: string }> {
+  return request(`/brands/${brandId}/share`, { method: 'POST' });
+}
+
+export async function getSharedKit(token: string): Promise<any> {
+  return request(`/brands/shared/${token}`);
+}

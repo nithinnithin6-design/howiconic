@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BrandVibe } from '../types';
+import * as api from '../api';
 
 const VIBES: BrandVibe[] = ['Bold', 'Clean', 'Warm', 'Raw', 'Future'];
 
@@ -29,6 +30,51 @@ const BlueprintBloom = ({ vibe, isPressing }: { vibe: BrandVibe; isPressing?: bo
         style={{ backgroundColor: color, transform: isPressing ? 'scale(1.2)' : 'scale(1)' }}
       />
     </div>
+  );
+};
+
+// Education hint — shows below input fields
+interface EducationHintProps {
+  field: string;
+}
+
+const EducationHint: React.FC<EducationHintProps> = ({ field }) => {
+  const [hint, setHint] = useState<{ content: string; source: string } | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const data = await api.getFieldHint(field);
+      if (!cancelled) {
+        setHint(data);
+        // Small extra delay for the fade-in after data arrives
+        setTimeout(() => { if (!cancelled) setVisible(true); }, 100);
+      }
+    }, 400); // stagger based on field
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [field]);
+
+  if (!hint) return null;
+
+  return (
+    <p
+      style={{
+        opacity: visible ? 0.35 : 0,
+        transition: 'opacity 0.6s ease',
+        fontSize: 11,
+        fontStyle: 'italic',
+        color: 'rgba(255,255,255,0.7)',
+        marginTop: 8,
+        lineHeight: 1.5,
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: 6,
+      }}
+    >
+      <span style={{ flexShrink: 0 }}>💡</span>
+      <span>{hint.content}</span>
+    </p>
   );
 };
 
@@ -115,6 +161,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
               className={`${inputClass} resize-none min-h-[64px]`}
               disabled={isManifesting}
             />
+            <EducationHint field="brand_idea" />
           </div>
 
           {/* Field 2: Product */}
@@ -130,6 +177,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
               className={inputClass}
               disabled={isManifesting}
             />
+            <EducationHint field="product" />
           </div>
 
           {/* Field 3: Audience */}
@@ -145,6 +193,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
               className={inputClass}
               disabled={isManifesting}
             />
+            <EducationHint field="audience" />
           </div>
 
           {/* Field 4: Vibe */}
@@ -174,6 +223,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
                 {VIBE_DESC[vibe]}
               </p>
             )}
+            <EducationHint field="vibe" />
           </div>
 
           {/* CTA */}

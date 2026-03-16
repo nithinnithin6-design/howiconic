@@ -384,3 +384,33 @@ export interface V3Integration {
   dos: string[];
   donts: string[];
 }
+
+// ─── V4 NEW TYPES ─────────────────────────────────────────────────────────────
+
+export interface BrandAsset {
+  id: number;
+  brand_id: number;
+  asset_type: string;
+  file_path: string;
+  file_format: string;
+  version: number;
+  metadata: any;
+  created_at: string;
+}
+
+export interface BrandTree {
+  brand: BrandSystem;
+  children: BrandTree[];
+  relationship_type: string;
+}
+
+export interface SharedBrandKit {
+  brand: BrandSystem;
+  assets: BrandAsset[];
+}
+
+export interface EducationMoment {
+  content: string;
+  source: string;
+  category: string;
+}

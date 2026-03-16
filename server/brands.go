@@ -48,19 +48,36 @@ func (s *Server) handleBrandByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id := extractIDFromPath(r.URL.Path, "/api/brands/")
-	if id == "" {
+	// path after /api/brands/ — may be "42", "42/sub-brand", "42/architecture", etc.
+	brandID, subPath := brandIDFromPath(r.URL.Path, "/api/brands/")
+	if brandID == "" {
 		writeError(w, 400, "Missing brand ID")
+		return
+	}
+
+	// Route sub-paths to dedicated handlers
+	switch subPath {
+	case "sub-brand":
+		s.handleCreateSubBrand(w, r, brandID, claims.UserID)
+		return
+	case "architecture":
+		s.handleGetArchitecture(w, r, brandID, claims.UserID)
+		return
+	case "assets":
+		s.handleListAssets(w, r, brandID, claims.UserID)
+		return
+	case "share":
+		s.handleCreateShare(w, r, brandID, claims.UserID)
 		return
 	}
 
 	switch r.Method {
 	case "GET":
-		s.getBrand(w, id, claims.UserID)
+		s.getBrand(w, brandID, claims.UserID)
 	case "PUT":
-		s.updateBrand(w, r, id, claims.UserID)
+		s.updateBrand(w, r, brandID, claims.UserID)
 	case "DELETE":
-		s.deleteBrand(w, id, claims.UserID)
+		s.deleteBrand(w, brandID, claims.UserID)
 	default:
 		writeError(w, 405, "Method not allowed")
 	}

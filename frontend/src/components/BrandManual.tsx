@@ -1,12 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BrandSystem, V3Strategy, V3Names, V3Visual, V3Integration, DalleLogo, Mockup } from '../types';
 import LogoRenderer from './LogoRenderer';
 import * as api from '../api';
-
-gsap.registerPlugin(ScrollTrigger);
 
 function hexToRgb(hex: string): string {
   const h = (hex || '').replace('#', '');
@@ -16,6 +12,35 @@ function hexToRgb(hex: string): string {
   const b = parseInt(h.substring(4, 6), 16);
   return isNaN(r) ? '' : `${r}, ${g}, ${b}`;
 }
+
+// ─── EDUCATION CALLOUT ────────────────────────────────────────────────────────
+
+interface EducationCalloutProps {
+  children: React.ReactNode;
+}
+
+const EducationCallout: React.FC<EducationCalloutProps> = ({ children }) => (
+  <div style={{
+    background: 'rgba(241, 112, 34, 0.05)',
+    borderLeft: '2px solid #f17022',
+    padding: '16px 20px',
+    margin: '24px 0',
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.5)',
+    fontStyle: 'italic',
+    lineHeight: 1.7,
+    fontFamily: 'Georgia, serif',
+  }}>
+    <span style={{
+      display: 'block', fontSize: 8, fontWeight: 900, letterSpacing: '0.5em',
+      textTransform: 'uppercase', color: '#f17022', fontStyle: 'normal',
+      marginBottom: 8, fontFamily: 'Inter, sans-serif',
+    }}>
+      💡 Why This Works
+    </span>
+    {children}
+  </div>
+);
 
 // ─── SHARED PRIMITIVES ────────────────────────────────────────────────────────
 
@@ -308,6 +333,7 @@ interface FullSystemProps {
 const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRefine }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const primaryHex = brand.colors?.primary?.hex || '#f17022';
+  const [selectedDalleIdx, setSelectedDalleIdx] = useState<number>(0);
 
   // V2 data (for backward compat)
   const v2s = brand.v2Strategy;
@@ -323,19 +349,35 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
 
   const isV3 = !!brand.isV3;
 
+  // Simple scroll-reveal using IntersectionObserver (no gsap dependency)
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.manual-reveal').forEach(el => {
-        gsap.fromTo(el,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).style.opacity = '1';
+            (entry.target as HTMLElement).style.transform = 'translateY(0)';
+            observer.unobserve(entry.target);
           }
-        );
+        });
+      },
+      { threshold: 0.1 }
+    );
+    const els = containerRef.current?.querySelectorAll('.manual-reveal');
+    els?.forEach(el => {
+      (el as HTMLElement).style.opacity = '0';
+      (el as HTMLElement).style.transform = 'translateY(30px)';
+      (el as HTMLElement).style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+    // Safety: make everything visible after 2s regardless
+    const safety = setTimeout(() => {
+      containerRef.current?.querySelectorAll('.manual-reveal').forEach(el => {
+        (el as HTMLElement).style.opacity = '1';
+        (el as HTMLElement).style.transform = 'translateY(0)';
       });
-    }, containerRef);
-    return () => ctx.revert();
+    }, 2000);
+    return () => { observer.disconnect(); clearTimeout(safety); };
   }, [brand]);
 
   const colorEntries = [
@@ -539,6 +581,11 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
               )}
             </div>
           )}
+          <EducationCallout>
+            Brand strategy is the invisible architecture everything else is built on. Brands with a clear archetype
+            generate 2× more revenue than those without — because every decision becomes easier when you know who you are.
+            Your positioning, tensions, and promise aren't constraints — they're the rules that make creativity possible.
+          </EducationCallout>
         </section>
 
         <Divider />
@@ -650,6 +697,13 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
               )}
             </div>
           ) : null}
+
+          <EducationCallout>
+            Coined names like Kodak, Spotify, and Rolex have a massive trademark advantage — they can be legally
+            protected in every category because they mean nothing except the brand itself. A coined name is a clean
+            slate. It becomes whatever you make it. That's why strong brands often choose invented words over
+            descriptive ones.
+          </EducationCallout>
         </section>
 
         <Divider />
@@ -715,6 +769,13 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
               ))}
             </div>
           )}
+
+          <EducationCallout>
+            Color is the fastest brand signal the human brain processes. 85% of purchasing decisions are influenced
+            by color — and research shows people form a color impression of a brand within 90 seconds. Your color
+            system isn't decoration: it's your brand's emotional frequency, scientifically chosen to signal exactly
+            what your audience needs to feel.
+          </EducationCallout>
         </section>
 
         <Divider />
@@ -774,6 +835,13 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
               )}
             </div>
           )}
+
+          <EducationCallout>
+            Typography carries 40% of a brand's personality signal before anyone reads a single word. The weight,
+            rhythm, and spacing of your type tells people whether to trust you, aspire to you, or feel comfortable
+            with you. Great type pairings create tension: a serif heading paired with a clean sans creates contrast
+            — authority meets accessibility.
+          </EducationCallout>
         </section>
 
         <Divider />
@@ -897,6 +965,13 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
                 </div>
               ))}
             </div>
+
+            <EducationCallout>
+              The most iconic logos are built on geometric principles — the Nike swoosh is a single line with one
+              curve, the Apple logo is circles aligned by the golden ratio, the Mercedes star is three perfect lines
+              at 120°. Geometry is why logos work at 8px and at 8 meters. Simple geometric construction isn't a
+              limitation — it's how marks achieve permanence.
+            </EducationCallout>
           </section>
         )}
 

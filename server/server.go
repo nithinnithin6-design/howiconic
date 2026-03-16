@@ -65,6 +65,13 @@ func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("/api/brands", s.handleBrands)
 	s.mux.HandleFunc("/api/brands/", s.handleBrandByID)
 
+	// Education
+	s.mux.HandleFunc("/api/education/tip", s.handleEducationTip)
+	s.mux.HandleFunc("/api/education/hint", s.handleEducationHint)
+
+	// Public share (no auth)
+	s.mux.HandleFunc("/api/share/", s.handlePublicShare)
+
 	// Generate (Gemini proxy) — /stream must be registered before /brand
 	s.mux.HandleFunc("/api/generate/brand/stream", s.handleGenerateBrandStream)
 	s.mux.HandleFunc("/api/generate/brand", s.handleGenerateBrand)
