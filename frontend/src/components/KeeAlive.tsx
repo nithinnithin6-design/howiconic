@@ -40,16 +40,24 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
-  const [autoListening, setAutoListening] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'kee'; text: string }>>([]);
   const [isListening, setIsListening] = useState(false);
+  const [micActive, setMicActive] = useState(false);
+  const [micPermission, setMicPermission] = useState<'prompt' | 'granted' | 'denied'>('prompt');
+
   const textRef = useRef(children);
   const indexRef = useRef(0);
   const timerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const recognitionRef = useRef<any>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const silenceTimerRef = useRef<number | null>(null);
+  const isRecordingRef = useRef(false);
+  const chunksRef = useRef<Blob[]>([]);
 
   // Typewriter effect
   useEffect(() => {
@@ -137,16 +145,198 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
     }
   }, [children, voiceEnabled, animate, speed, speak]);
 
-  // Cleanup
+  const transcribeAndSend = useCallback(async (audioBlob: Blob, filename: string) => {
+    setChatLoading(true);
+    try {
+      const token = localStorage.getItem('howiconic_token');
+
+      // Step 1: Transcribe with Whisper
+      const formData = new FormData();
+      formData.append('audio', audioBlob, filename);
+
+      const transcribeRes = await fetch('/api/transcribe', {
+        method: 'POST',
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      });
+
+      if (!transcribeRes.ok) {
+        setChatLoading(false);
+        return;
+      }
+
+      const { text } = await transcribeRes.json();
+      if (!text || !text.trim()) {
+        setChatLoading(false);
+        return;
+      }
+
+      const transcript = text.trim();
+      setChatHistory(prev => [...prev, { role: 'user', text: transcript }]);
+
+      // Step 2: Send to Kee
+      const chatRes = await fetch('/api/guide/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          action: 'chat',
+          message: transcript,
+          step: chatContext?.step || 0,
+          step_name: chatContext?.stepName || 'general',
+          history: chatHistory,
+        }),
+      });
+
+      const data = await chatRes.json();
+      const reply = data.message || "I'm here. Ask me something specific.";
+      setChatHistory(prev => [...prev, { role: 'kee', text: reply }]);
+      if (voiceEnabled) speak(reply);
+    } catch {
+      setChatHistory(prev => [...prev, { role: 'kee', text: "Something went wrong. Try again." }]);
+    }
+    setChatLoading(false);
+  }, [chatContext, chatHistory, voiceEnabled, speak]);
+
+  const detectVoice = useCallback((analyser: AnalyserNode, stream: MediaStream) => {
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    const SPEECH_THRESHOLD = 25;
+    const SILENCE_DURATION = 1500;
+
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus'
+      : 'audio/mp4';
+    const filename = mimeType.startsWith('audio/webm') ? 'recording.webm' : 'recording.mp4';
+    const blobType = mimeType.startsWith('audio/webm') ? 'audio/webm' : 'audio/mp4';
+
+    const check = () => {
+      if (!streamRef.current) return; // Stopped
+
+      analyser.getByteFrequencyData(dataArray);
+      const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+
+      if (avg > SPEECH_THRESHOLD) {
+        // Voice detected
+        if (silenceTimerRef.current) {
+          clearTimeout(silenceTimerRef.current);
+          silenceTimerRef.current = null;
+        }
+
+        if (!isRecordingRef.current) {
+          // Start recording
+          isRecordingRef.current = true;
+          chunksRef.current = [];
+
+          const recorder = new MediaRecorder(stream, { mimeType });
+          recorderRef.current = recorder;
+
+          recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) chunksRef.current.push(e.data);
+          };
+
+          recorder.onstop = async () => {
+            isRecordingRef.current = false;
+            const blob = new Blob(chunksRef.current, { type: blobType });
+            if (blob.size > 1000) {
+              await transcribeAndSend(blob, filename);
+            }
+          };
+
+          recorder.start(100);
+          setIsListening(true);
+        }
+      } else {
+        // Silence
+        if (isRecordingRef.current && !silenceTimerRef.current) {
+          silenceTimerRef.current = window.setTimeout(() => {
+            if (recorderRef.current && recorderRef.current.state === 'recording') {
+              recorderRef.current.stop();
+            }
+            setIsListening(false);
+            silenceTimerRef.current = null;
+          }, SILENCE_DURATION);
+        }
+      }
+
+      requestAnimationFrame(check);
+    };
+
+    requestAnimationFrame(check);
+  }, [transcribeAndSend]);
+
+  const initMic = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      setMicPermission('granted');
+      setMicActive(true);
+
+      const audioCtx = new AudioContext();
+      audioCtxRef.current = audioCtx;
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0.85;
+      source.connect(analyser);
+      analyserRef.current = analyser;
+
+      detectVoice(analyser, stream);
+    } catch {
+      setMicPermission('denied');
+      setMicActive(false);
+    }
+  }, [detectVoice]);
+
+  const stopMic = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      audioCtxRef.current.close();
+      audioCtxRef.current = null;
+    }
+    if (recorderRef.current && recorderRef.current.state === 'recording') {
+      recorderRef.current.stop();
+    }
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+    setMicActive(false);
+    setIsListening(false);
+  }, []);
+
+  // Auto-start mic when chatEnabled
+  useEffect(() => {
+    if (chatEnabled && micPermission !== 'denied') {
+      const timer = setTimeout(() => initMic(), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [chatEnabled, initMic, micPermission]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         URL.revokeObjectURL(audioRef.current.src);
       }
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => t.stop());
+        streamRef.current = null;
       }
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close();
+      }
+      if (recorderRef.current && recorderRef.current.state === 'recording') {
+        recorderRef.current.stop();
+      }
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
     };
   }, []);
 
@@ -160,118 +350,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
     if (next) speak(children);
   };
 
-  // Start listening (auto-restarts after each result for continuous conversation)
-  const startListening = useCallback(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
-
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch {}
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.continuous = true;
-    recognition.interimResults = false;
-    recognitionRef.current = recognition;
-
-    recognition.onstart = () => setIsListening(true);
-
-    recognition.onresult = (event: any) => {
-      // Get the latest result
-      const last = event.results[event.results.length - 1];
-      if (!last.isFinal) return;
-      const transcript = last[0].transcript.trim();
-      if (!transcript) return;
-
-      setChatHistory(prev => [...prev, { role: 'user', text: transcript }]);
-      setChatLoading(true);
-
-      (async () => {
-        try {
-          const token = localStorage.getItem('howiconic_token');
-          const res = await fetch('/api/guide/message', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            },
-            body: JSON.stringify({
-              action: 'chat',
-              message: transcript,
-              step: chatContext?.step || 0,
-              step_name: chatContext?.stepName || 'general',
-              history: chatHistory,
-            }),
-          });
-          const data = await res.json();
-          const reply = data.message || "I'm here. Ask me something specific.";
-          setChatHistory(prev => [...prev, { role: 'kee', text: reply }]);
-          if (voiceEnabled) speak(reply);
-        } catch {
-          setChatHistory(prev => [...prev, { role: 'kee', text: "Something went wrong. Try again." }]);
-        }
-        setChatLoading(false);
-      })();
-    };
-
-    recognition.onerror = (e: any) => {
-      // Restart on non-fatal errors (like no-speech timeout)
-      if (e.error === 'no-speech' || e.error === 'aborted') {
-        setTimeout(() => {
-          if (autoListening && chatEnabled) startListening();
-        }, 500);
-      } else {
-        setIsListening(false);
-      }
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      // Auto-restart if continuous mode is on
-      if (autoListening && chatEnabled) {
-        setTimeout(() => startListening(), 300);
-      }
-    };
-
-    recognition.start();
-  }, [chatContext, chatEnabled, autoListening, voiceEnabled, speak]);
-
-  const stopListening = useCallback(() => {
-    setAutoListening(false);
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch {}
-    }
-    setIsListening(false);
-  }, []);
-
-  // Auto-start listening when chatEnabled and component mounts
-  useEffect(() => {
-    if (chatEnabled && !autoListening) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        // Small delay to let the page settle + typewriter finish
-        const timer = setTimeout(() => {
-          setAutoListening(true);
-        }, 1500);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [chatEnabled]);
-
-  // Start recognition when autoListening turns on
-  useEffect(() => {
-    if (autoListening && chatEnabled) {
-      startListening();
-    }
-    return () => {
-      if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch {}
-      }
-    };
-  }, [autoListening, chatEnabled, startListening]);
-
-  // Chat with Kee
+  // Chat with Kee (text input)
   const sendChat = async () => {
     if (!chatInput.trim() || chatLoading) return;
     const msg = chatInput.trim();
@@ -384,7 +463,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
       {/* Always-on conversation */}
       {chatEnabled && (
         <div style={{ marginTop: chatHistory.length > 0 ? 8 : 12 }}>
-          {/* Listening indicator — subtle, always on */}
+          {/* Listening indicator */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             padding: '6px 0', marginBottom: 6,
@@ -396,27 +475,23 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
                 animation: 'keeMicPulse 1.5s ease-in-out infinite',
               }} />
             )}
+            {micActive && !isListening && !chatLoading && (
+              <span style={{
+                display: 'inline-block', width: 6, height: 6, borderRadius: '50%',
+                background: 'rgba(241,112,34,0.3)',
+              }} />
+            )}
             <span style={{
-              fontSize: 10, color: isListening ? 'rgba(241,112,34,0.6)' : 'rgba(255,255,255,0.15)',
+              fontSize: 10,
+              color: isListening ? 'rgba(241,112,34,0.6)' : chatLoading ? 'rgba(255,255,255,0.3)' : micActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.15)',
               letterSpacing: '0.15em', fontWeight: 600,
               transition: 'color 0.3s ease',
             }}>
-              {chatLoading ? 'thinking...' : isListening ? 'listening — just speak' : 'mic paused'}
+              {chatLoading ? 'thinking...' : isListening ? 'listening...' : micActive ? 'ready — just speak' : micPermission === 'denied' ? 'mic blocked' : 'mic off'}
             </span>
-            {!isListening && !chatLoading && (
+            {micActive && (
               <button
-                onClick={() => { setAutoListening(true); }}
-                style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: 10, color: 'rgba(241,112,34,0.4)',
-                }}
-              >
-                resume
-              </button>
-            )}
-            {isListening && (
-              <button
-                onClick={stopListening}
+                onClick={stopMic}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
                   fontSize: 10, color: 'rgba(255,255,255,0.15)',
@@ -425,9 +500,20 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
                 pause
               </button>
             )}
+            {!micActive && micPermission !== 'denied' && (
+              <button
+                onClick={initMic}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 10, color: 'rgba(241,112,34,0.4)',
+                }}
+              >
+                enable
+              </button>
+            )}
           </div>
 
-          {/* Secondary: Type instead (collapsed by default) */}
+          {/* Type instead */}
           {!showTextInput && (
             <button
               onClick={() => setShowTextInput(true)}

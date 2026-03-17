@@ -77,6 +77,9 @@ func (s *Server) registerRoutes() {
 	// TTS
 	s.mux.HandleFunc("/api/tts", s.handleTTS)
 
+	// Transcribe (Whisper)
+	s.mux.HandleFunc("/api/transcribe", s.handleTranscribe)
+
 	// Public share (no auth)
 	s.mux.HandleFunc("/api/share/", s.handlePublicShare)
 
