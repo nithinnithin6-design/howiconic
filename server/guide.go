@@ -30,10 +30,12 @@ YOUR VOICE:
 - You refer to yourself as Kee naturally, not in every sentence — just when it feels right.
 
 RESPONSE FORMAT:
-- Keep responses to 1-3 sentences. Never more than 4.
+- 3-5 sentences for guided steps. Richer, with real examples.
 - Be specific to what they chose or what they're about to choose.
 - Reference their earlier choices when relevant ("Your Sage archetype will pair naturally with these muted tones.").
-- When welcoming someone for the first time, introduce yourself: "I'm Kee." Then get into it.
+- Use real brand examples to teach: Nike, Apple, Muji, Airbnb, Coca-Cola — whatever fits.
+- Explain the WHY behind every concept. Don't just name things — explain what they do.
+- When welcoming someone for the first time, introduce yourself: "I'm Kee." Then explain what you'll build together.
 
 WHAT YOU NEVER DO:
 - Use jargon without context
@@ -82,7 +84,16 @@ func (s *Server) handleGuideMessage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		chatSystem := guideSystemPrompt + "\n\nCurrent context: the user is on step " + fmt.Sprintf("%d", req.Step) + " (" + req.StepName + ") of the brand building process. They are asking you a free-form question. Respond in 1-3 sentences. Be direct and specific."
+		chatSystem := guideSystemPrompt + `
+
+IMPORTANT — CHAT MODE INSTRUCTIONS:
+Current context: the user is on step ` + fmt.Sprintf("%d", req.Step) + ` (` + req.StepName + `) of the brand building process.
+They are having a conversation with you. Be explanatory — give real examples, real brands, real reasoning.
+When explaining a concept, use specific examples: "Nike's 'Just Do It' works because it's about the person, not the shoe."
+If they ask about colors, explain the psychology: "Red signals urgency and passion — think Coca-Cola, YouTube. Blue signals trust — think PayPal, LinkedIn."
+If they ask about naming, give examples: "Coined names like Kodak or Xerox own their space completely. Descriptive names like General Electric tell you what they do."
+Aim for 3-5 sentences. Be rich with detail. You are the expert in the room — share your knowledge generously.
+But never ramble. Every sentence should teach something.`
 
 		raw, err := s.callGemini(chatSystem, req.Message, false)
 		if err != nil {
@@ -117,7 +128,9 @@ func buildGuidePrompt(req GuideRequest) string {
 
 	switch req.Action {
 	case "welcome":
-		sb.WriteString("The user just entered HowIconic for the first time. Welcome them simply. They haven't started yet.\n")
+		sb.WriteString("The user just entered HowIconic. Welcome them and explain what you'll do together.\n")
+		sb.WriteString("Explain the process briefly: you'll walk through strategy, naming, colors, typography, logo direction, and voice — building a complete brand identity system.\n")
+		sb.WriteString("Use an example: 'Think of how every Apple product, store, and ad feels the same — that's what a brand system does. We're building yours.'\n")
 		if len(req.Inputs) > 0 {
 			sb.WriteString(fmt.Sprintf("Their initial inputs: %s\n", string(req.Inputs)))
 		}
@@ -133,7 +146,9 @@ func buildGuidePrompt(req GuideRequest) string {
 		if len(req.Options) > 0 {
 			sb.WriteString(fmt.Sprintf("The options being shown: %s\n", string(req.Options)))
 		}
-		sb.WriteString("Give them context for this step. What should they think about? Be specific to THEIR brand, not generic.")
+		sb.WriteString("Give them context for this step. What should they think about? Be specific to THEIR brand, not generic.\n")
+		sb.WriteString("Use real-world brand examples to illustrate your point (e.g., 'Apple chose minimalism because...', 'Nike's swoosh works because...').\n")
+		sb.WriteString("Explain WHY this step matters and what makes one choice better than another for THEIR specific brand. 3-5 sentences.")
 
 	case "selected_option":
 		sb.WriteString(fmt.Sprintf("The user just selected option %d in Step %d: %s.\n", *req.SelectedIdx+1, req.Step, req.StepName))
@@ -143,7 +158,8 @@ func buildGuidePrompt(req GuideRequest) string {
 		if len(req.Selections) > 0 {
 			sb.WriteString(fmt.Sprintf("Their previous choices: %s\n", string(req.Selections)))
 		}
-		sb.WriteString("React to their choice. What does it tell you about their brand? How does it connect to what they chose before? Be specific.")
+		sb.WriteString("React to their choice. What does it tell you about their brand? How does it connect to what they chose before?\n")
+		sb.WriteString("Use a real brand example that made a similar choice and explain what it did for them. 2-4 sentences.")
 
 	case "going_back":
 		sb.WriteString(fmt.Sprintf("The user went back to Step %d: %s. They want to reconsider.\n", req.Step, req.StepName))

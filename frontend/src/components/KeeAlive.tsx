@@ -121,8 +121,14 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
     }
   }, []);
 
-  // Auto-speak when voice enabled and text changes
+  // Cancel audio + re-speak when text changes (keeps voice and text in sync)
   useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      URL.revokeObjectURL(audioRef.current.src);
+      audioRef.current = null;
+      setIsSpeaking(false);
+    }
     if (voiceEnabled && children) {
       const delay = animate ? children.length * speed + 500 : 300;
       const timer = setTimeout(() => speak(children), delay);
