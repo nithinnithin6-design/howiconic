@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { login, register } from '../api';
 import { User } from '../types';
+import KeeAlive from './KeeAlive';
 
 interface AuthScreenProps {
   onAuth: (user: User) => void;
@@ -67,21 +68,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
           <p className="text-[11px] uppercase tracking-[1.2em] text-white/50 font-black">
             Brand Identity Engine
           </p>
-          <div style={{
-            background: 'rgba(241,112,34,0.04)',
-            borderLeft: '3px solid #f17022',
-            borderRadius: '0 12px 12px 0',
-            padding: '14px 18px 16px',
-            margin: '24px auto 0', maxWidth: 400, textAlign: 'left',
-          }}>
-            <p style={{
-              fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
-              color: '#f17022', margin: '0 0 6px',
-            }}>Kee</p>
-            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
-              {mode === 'login' ? 'Welcome back. Your brands are waiting.' : 'Every iconic brand started with someone who cared enough to begin.'}
-            </p>
-          </div>
+          <KeeAlive animate={true}>
+            {mode === 'login' ? 'Your brands are one step away.' : 'This takes two minutes. Then we build.'}
+          </KeeAlive>
         </div>
 
         {/* Form */}

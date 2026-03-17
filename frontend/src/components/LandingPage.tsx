@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import KeeAlive from './KeeAlive';
 
 interface LandingPageProps {
   onStartBuilding: () => void;
@@ -718,9 +719,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           </p>
 
           {/* Kee */}
-          <KeePresence>
-            I'm Kee. I'll walk you through building a brand that lasts — from strategy to visual identity. Four questions is all it takes.
-          </KeePresence>
+          <KeeAlive animate={true} speakable={false}>
+            {"Every satisfying brand you've ever seen started with a clear answer to one question: what do you believe? Start there."}
+          </KeeAlive>
 
           {/* CTAs */}
           <div className="hi-animate" style={{

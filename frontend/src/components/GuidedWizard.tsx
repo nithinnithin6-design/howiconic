@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import * as api from '../api';
+import KeeAlive from './KeeAlive';
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -927,9 +928,13 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
 
       {/* Kee — the AI soul */}
       <div style={{ maxWidth: 600, margin: '0 auto', width: '100%' }}>
-        <KeeMessage loading={guideLoading}>
-          {guideMessage || STEP_GUIDE_FALLBACK[currentStep] || ''}
-        </KeeMessage>
+        {guideLoading ? (
+          <KeeAlive animate={false}>· · ·</KeeAlive>
+        ) : (
+          <KeeAlive animate={true} speed={20}>
+            {guideMessage || STEP_GUIDE_FALLBACK[currentStep] || ''}
+          </KeeAlive>
+        )}
       </div>
 
       {/* Content */}

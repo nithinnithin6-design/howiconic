@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { BrandSystem } from '../types';
 import * as api from '../api';
+import KeeAlive from './KeeAlive';
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -832,20 +833,10 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
         overflow: 'auto',
       }}>
         {/* Kee */}
-        <div style={{
-          background: 'rgba(241,112,34,0.04)',
-          borderLeft: '3px solid #f17022',
-          borderRadius: '0 12px 12px 0',
-          padding: '14px 18px 16px',
-          margin: '24px 24px 0', maxWidth: 520,
-        }}>
-          <p style={{
-            fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
-            color: '#f17022', margin: '0 0 6px',
-          }}>Kee</p>
-          <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
-            {noBrand ? 'Build a brand first, then come here to create designs from it.' : 'The studio is where your brand comes to life. Social posts, business cards, presentations — all guided by your brand system.'}
-          </p>
+        <div style={{ margin: '24px 24px 0', maxWidth: 520 }}>
+          <KeeAlive animate={false}>
+            {noBrand ? 'You need a brand before you can design with it. Head to the engine.' : 'What does your brand need today? Pick a format and I will keep it on-brand.'}
+          </KeeAlive>
         </div>
 
         {/* No brand warning */}

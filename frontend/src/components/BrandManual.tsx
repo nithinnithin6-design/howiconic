@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BrandSystem, V3Strategy, V3Names, V3Visual, V3Integration, DalleLogo, Mockup } from '../types';
 import LogoRenderer from './LogoRenderer';
 import * as api from '../api';
+import KeeAlive from './KeeAlive';
 
 function hexToRgb(hex: string): string {
   const h = (hex || '').replace('#', '');
@@ -707,20 +708,10 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
         </section>
 
         {/* Kee */}
-        <div style={{
-          background: 'rgba(241,112,34,0.04)',
-          borderLeft: '3px solid #f17022',
-          borderRadius: '0 12px 12px 0',
-          padding: '14px 18px 16px',
-          margin: '0 auto 0 32px', maxWidth: 520,
-        }} className="manual-reveal">
-          <p style={{
-            fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
-            color: '#f17022', margin: '0 0 6px',
-          }}>Kee</p>
-          <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
-            This is your brand manual — everything in one place. Share it with designers, developers, partners. It's yours.
-          </p>
+        <div style={{ margin: '0 auto 0 32px', maxWidth: 520 }} className="manual-reveal">
+          <KeeAlive animate={false}>
+            {"Everything your team needs to stay on-brand. Send this to designers, developers, anyone who touches the brand."}
+          </KeeAlive>
         </div>
 
         <Divider />
