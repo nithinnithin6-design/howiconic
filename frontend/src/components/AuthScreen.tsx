@@ -85,7 +85,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
                   mode === 'login' ? 'bg-white text-black' : 'text-white/40 hover:text-white/70'
                 }`}
               >
-                Access
+                Log in
               </button>
               <button
                 type="button"
@@ -94,13 +94,13 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
                   mode === 'register' ? 'bg-white text-black' : 'text-white/40 hover:text-white/70'
                 }`}
               >
-                Initialize
+                Sign up
               </button>
             </div>
 
             {mode === 'register' && (
               <div className="space-y-2">
-                <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Identity</label>
+                <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Name</label>
                 <input
                   type="text"
                   value={name}
@@ -113,7 +113,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
             )}
 
             <div className="space-y-2">
-              <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Credential</label>
+              <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Email</label>
               <input
                 type="email"
                 value={email}
@@ -125,7 +125,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Passphrase</label>
+              <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Password</label>
               <input
                 type="password"
                 value={password}
