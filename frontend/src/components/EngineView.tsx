@@ -93,7 +93,7 @@ interface EngineViewProps {
 }
 
 const KeeWelcome = () => {
-  const [message, setMessage] = useState("Let's build your brand identity system. We start with strategy — what your brand believes, who it serves, and what makes it different. Everything else flows from here.");
+  const [message, setMessage] = useState("What does your brand believe? Not what it sells — what it stands for. Nike believes in human potential. Muji believes in simplicity. What's yours?");
 
   useEffect(() => {
     let cancelled = false;
