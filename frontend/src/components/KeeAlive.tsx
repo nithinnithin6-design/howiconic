@@ -38,8 +38,9 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
   const [displayedText, setDisplayedText] = useState(animate ? '' : children);
   const [isTyping, setIsTyping] = useState(animate);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
+  const [autoListening, setAutoListening] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'kee'; text: string }>>([]);
@@ -159,70 +160,115 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
     if (next) speak(children);
   };
 
-  // Voice input via Web Speech Recognition
-  const toggleListening = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
-      return;
-    }
-
+  // Start listening (auto-restarts after each result for continuous conversation)
+  const startListening = useCallback(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) return;
 
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch {}
+    }
+
     const recognition = new SpeechRecognition();
     recognition.lang = 'en-US';
-    recognition.continuous = false;
+    recognition.continuous = true;
     recognition.interimResults = false;
     recognitionRef.current = recognition;
 
     recognition.onstart = () => setIsListening(true);
 
     recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      if (transcript.trim()) {
-        setChatInput(transcript.trim());
-        setChatHistory(prev => [...prev, { role: 'user', text: transcript.trim() }]);
-        setChatLoading(true);
-        // Auto-enable voice when user speaks
-        setVoiceEnabled(true);
+      // Get the latest result
+      const last = event.results[event.results.length - 1];
+      if (!last.isFinal) return;
+      const transcript = last[0].transcript.trim();
+      if (!transcript) return;
 
-        (async () => {
-          try {
-            const token = localStorage.getItem('howiconic_token');
-            const res = await fetch('/api/guide/message', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-              },
-              body: JSON.stringify({
-                action: 'chat',
-                message: transcript.trim(),
-                step: chatContext?.step || 0,
-                step_name: chatContext?.stepName || 'general',
-              }),
-            });
-            const data = await res.json();
-            const reply = data.message || "I'm here. Ask me something specific.";
-            setChatHistory(prev => [...prev, { role: 'kee', text: reply }]);
-            // Always speak reply when voice input was used
-            speak(reply);
-          } catch {
-            setChatHistory(prev => [...prev, { role: 'kee', text: "Something went wrong. Try again." }]);
-          }
-          setChatLoading(false);
-          setChatInput('');
-        })();
-      }
-      setIsListening(false);
+      setChatHistory(prev => [...prev, { role: 'user', text: transcript }]);
+      setChatLoading(true);
+
+      (async () => {
+        try {
+          const token = localStorage.getItem('howiconic_token');
+          const res = await fetch('/api/guide/message', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({
+              action: 'chat',
+              message: transcript,
+              step: chatContext?.step || 0,
+              step_name: chatContext?.stepName || 'general',
+            }),
+          });
+          const data = await res.json();
+          const reply = data.message || "I'm here. Ask me something specific.";
+          setChatHistory(prev => [...prev, { role: 'kee', text: reply }]);
+          if (voiceEnabled) speak(reply);
+        } catch {
+          setChatHistory(prev => [...prev, { role: 'kee', text: "Something went wrong. Try again." }]);
+        }
+        setChatLoading(false);
+      })();
     };
 
-    recognition.onerror = () => setIsListening(false);
-    recognition.onend = () => setIsListening(false);
+    recognition.onerror = (e: any) => {
+      // Restart on non-fatal errors (like no-speech timeout)
+      if (e.error === 'no-speech' || e.error === 'aborted') {
+        setTimeout(() => {
+          if (autoListening && chatEnabled) startListening();
+        }, 500);
+      } else {
+        setIsListening(false);
+      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      // Auto-restart if continuous mode is on
+      if (autoListening && chatEnabled) {
+        setTimeout(() => startListening(), 300);
+      }
+    };
 
     recognition.start();
-  };
+  }, [chatContext, chatEnabled, autoListening, voiceEnabled, speak]);
+
+  const stopListening = useCallback(() => {
+    setAutoListening(false);
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch {}
+    }
+    setIsListening(false);
+  }, []);
+
+  // Auto-start listening when chatEnabled and component mounts
+  useEffect(() => {
+    if (chatEnabled && !autoListening) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        // Small delay to let the page settle + typewriter finish
+        const timer = setTimeout(() => {
+          setAutoListening(true);
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [chatEnabled]);
+
+  // Start recognition when autoListening turns on
+  useEffect(() => {
+    if (autoListening && chatEnabled) {
+      startListening();
+    }
+    return () => {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch {}
+      }
+    };
+  }, [autoListening, chatEnabled, startListening]);
 
   // Chat with Kee
   const sendChat = async () => {
@@ -333,49 +379,63 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         </div>
       )}
 
-      {/* Voice-first interaction */}
+      {/* Always-on conversation */}
       {chatEnabled && (
         <div style={{ marginTop: chatHistory.length > 0 ? 8 : 12 }}>
-          {/* Primary: Mic button — large, centered */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 8 }}>
-            <button
-              onClick={toggleListening}
-              disabled={chatLoading}
-              style={{
-                background: isListening ? '#f17022' : 'rgba(241,112,34,0.12)',
-                border: isListening ? '2px solid #f17022' : '2px solid rgba(241,112,34,0.25)',
-                borderRadius: '50%',
-                cursor: chatLoading ? 'wait' : 'pointer',
-                color: isListening ? '#fff' : '#f17022',
-                fontSize: 20,
-                transition: 'all 0.2s ease',
-                animation: isListening ? 'keeMicPulse 1.5s ease-in-out infinite' : 'none',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 48, height: 48, flexShrink: 0,
-              }}
-              title={isListening ? 'Stop listening' : 'Speak to Kee'}
-            >
-              {chatLoading ? '...' : isListening ? '⏺' : '🎤'}
-            </button>
-          </div>
-          <p style={{
-            textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.2)',
-            letterSpacing: '0.1em', margin: '0 0 6px',
+          {/* Listening indicator — subtle, always on */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            padding: '6px 0', marginBottom: 6,
           }}>
-            {isListening ? 'listening...' : chatLoading ? 'thinking...' : 'tap to speak'}
-          </p>
+            {isListening && (
+              <span style={{
+                display: 'inline-block', width: 6, height: 6, borderRadius: '50%',
+                background: '#f17022',
+                animation: 'keeMicPulse 1.5s ease-in-out infinite',
+              }} />
+            )}
+            <span style={{
+              fontSize: 10, color: isListening ? 'rgba(241,112,34,0.6)' : 'rgba(255,255,255,0.15)',
+              letterSpacing: '0.15em', fontWeight: 600,
+              transition: 'color 0.3s ease',
+            }}>
+              {chatLoading ? 'thinking...' : isListening ? 'listening — just speak' : 'mic paused'}
+            </span>
+            {!isListening && !chatLoading && (
+              <button
+                onClick={() => { setAutoListening(true); }}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 10, color: 'rgba(241,112,34,0.4)',
+                }}
+              >
+                resume
+              </button>
+            )}
+            {isListening && (
+              <button
+                onClick={stopListening}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 10, color: 'rgba(255,255,255,0.15)',
+                }}
+              >
+                pause
+              </button>
+            )}
+          </div>
 
           {/* Secondary: Type instead (collapsed by default) */}
           {!showTextInput && (
             <button
               onClick={() => setShowTextInput(true)}
               style={{
-                display: 'block', margin: '4px auto 0', background: 'none', border: 'none',
-                color: 'rgba(255,255,255,0.15)', fontSize: 9, cursor: 'pointer',
+                display: 'block', margin: '2px auto 0', background: 'none', border: 'none',
+                color: 'rgba(255,255,255,0.12)', fontSize: 9, cursor: 'pointer',
                 letterSpacing: '0.1em',
               }}
             >
-              or type instead
+              or type
             </button>
           )}
           {showTextInput && (
@@ -386,7 +446,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
                 onChange={e => setChatInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') sendChat(); }}
                 placeholder="Type to Kee..."
-                disabled={chatLoading || isListening}
+                disabled={chatLoading}
                 style={{
                   flex: 1, background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.08)',
