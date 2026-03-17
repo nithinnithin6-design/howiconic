@@ -80,6 +80,7 @@ const EducationHint: React.FC<EducationHintProps> = ({ field }) => {
 
 interface EngineViewProps {
   onManifest: (brandIdea: string, product: string, audience: string, vibe: BrandVibe) => void;
+  onGuided?: (brandIdea: string, product: string, audience: string, vibe: BrandVibe) => void;
   isManifesting?: boolean;
   sound?: {
     click: () => void;
@@ -98,7 +99,7 @@ const GuideText = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, sound }) => {
+const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifesting, sound }) => {
   const [brandIdea, setBrandIdea] = useState('');
   const [product, setProduct] = useState('');
   const [audience, setAudience] = useState('');
@@ -264,8 +265,38 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
             )}
 
             <p className="text-[9px] uppercase tracking-[0.5em] text-white/18 font-black">
-              ~45–60 seconds · 5-step AI pipeline
+              ~45–60 seconds · Everything at once
             </p>
+
+            {onGuided && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (!brandIdea.trim()) {
+                    setValidationMsg('Tell us what this brand believes first.');
+                    setTimeout(() => setValidationMsg(''), 4000);
+                    return;
+                  }
+                  if (!product.trim()) {
+                    setValidationMsg("Tell us what it sells.");
+                    setTimeout(() => setValidationMsg(''), 4000);
+                    return;
+                  }
+                  onGuided(brandIdea.trim(), product.trim(), audience.trim(), vibe);
+                }}
+                disabled={isManifesting}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: 'rgba(255,255,255,0.3)', fontSize: 12,
+                  fontFamily: 'Georgia, serif', fontStyle: 'italic',
+                  padding: '8px 0', transition: 'color 0.2s ease',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#f17022'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.3)'; }}
+              >
+                Or build step-by-step →
+              </button>
+            )}
           </div>
         </form>
       </div>

@@ -6,6 +6,7 @@ import AuthScreen from './components/AuthScreen';
 import LoadingScreen from './components/LoadingScreen';
 import EngineView from './components/EngineView';
 import BrandManual from './components/BrandManual';
+import GuidedWizard from './components/GuidedWizard';
 import LandingPage from './components/LandingPage';
 import CustomCursor from './components/CustomCursor';
 import MagneticButton from './components/MagneticButton';
@@ -441,7 +442,8 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
-  const [view, setView] = useState<'engine' | 'audit' | 'manual' | 'about' | 'vault' | 'architecture' | 'studio'>('engine');
+  const [view, setView] = useState<'engine' | 'audit' | 'manual' | 'about' | 'vault' | 'architecture' | 'studio' | 'guided'>('engine');
+  const [guidedInputs, setGuidedInputs] = useState<{ brandIdea: string; product: string; audience: string; vibe: string } | null>(null);
   const [brand, setBrand] = useState<BrandSystem | null>(null);
   const [history, setHistory] = useState<BrandSystem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -892,6 +894,10 @@ const App: React.FC = () => {
                 onManifest={(brandIdea, product, audience, vibe) =>
                   handleManifest(brandIdea, product, audience, vibe)
                 }
+                onGuided={(brandIdea, product, audience, vibe) => {
+                  setGuidedInputs({ brandIdea, product, audience, vibe });
+                  setView('guided');
+                }}
                 isManifesting={loading}
                 sound={sound}
               />
@@ -993,6 +999,34 @@ const App: React.FC = () => {
                 </h2>
                 <p className="text-xl font-serif-elegant italic text-white/40 mb-16 gsap-reveal">Forensic brand maturity analysis. Coming soon.</p>
               </main>
+            </motion.div>
+          )}
+
+          {view === 'guided' && guidedInputs && (
+            <motion.div key="guided" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <GuidedWizard
+                initialInputs={guidedInputs}
+                onComplete={async (brandId) => {
+                  // Fetch the completed brand and show it
+                  try {
+                    const brands = await api.getHistory();
+                    const brand = brands.find((b: any) => b.id === brandId || b.uid === String(brandId));
+                    if (brand) {
+                      setBrand(brand);
+                      setView('manual');
+                    } else {
+                      setView('vault');
+                    }
+                  } catch {
+                    setView('vault');
+                  }
+                  setGuidedInputs(null);
+                }}
+                onBack={() => {
+                  setView('engine');
+                  setGuidedInputs(null);
+                }}
+              />
             </motion.div>
           )}
 

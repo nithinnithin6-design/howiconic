@@ -418,3 +418,30 @@ export async function createProduction(brandId: number | string, data: {
     body: JSON.stringify(data),
   });
 }
+
+// ─── GUIDED CO-CREATION ─────────────────────────────────────────────────────
+
+export async function guidedStart(brandIdea: string, product: string, audience: string, vibe: string) {
+  return request('/brands/guided/start', {
+    method: 'POST',
+    body: JSON.stringify({ brand_idea: brandIdea, product, audience, vibe }),
+  });
+}
+
+export async function guidedStep(brandId: number, step: number, selectedIndex: number, wishlisted: number[] = [], edits: any = {}) {
+  return request(`/brands/${brandId}/guided/step`, {
+    method: 'POST',
+    body: JSON.stringify({ step, selected_index: selectedIndex, wishlisted, edits }),
+  });
+}
+
+export async function guidedState(brandId: number) {
+  return request(`/brands/${brandId}/guided/state`);
+}
+
+export async function guidedBack(brandId: number, toStep: number) {
+  return request(`/brands/${brandId}/guided/back`, {
+    method: 'POST',
+    body: JSON.stringify({ to_step: toStep }),
+  });
+}
