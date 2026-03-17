@@ -25,7 +25,7 @@ const NAV_ITEMS = [
   { key: 'vault' as AppView, icon: '◈', label: 'Vault', desc: 'Brand dashboard' },
   { key: 'architecture' as AppView, icon: '⊹', label: 'Architecture', desc: 'Brand tree' },
   { key: 'studio' as AppView, icon: '◉', label: 'Studio', desc: 'Design production' },
-  { key: 'about' as AppView, icon: '◇', label: 'Manifesto', desc: 'Our philosophy' },
+  { key: 'about' as AppView, icon: '◇', label: 'Our Story', desc: 'The Parijata story' },
 ];
 
 const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandCount = 0 }) => {

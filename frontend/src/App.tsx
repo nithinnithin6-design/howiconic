@@ -772,7 +772,7 @@ const App: React.FC = () => {
     { key: 'engine' as const, label: 'Create' },
     { key: 'audit' as const, label: 'Analyze' },
     { key: 'vault' as const, label: 'Vault' },
-    { key: 'about' as const, label: 'Manifesto' },
+    { key: 'about' as const, label: 'Our Story' },
   ];
 
   return (
@@ -801,7 +801,7 @@ const App: React.FC = () => {
       >
         <div className="flex items-center gap-4">
           <span className="text-[9px] uppercase tracking-[0.6em] font-black text-white/20">
-            {view === 'engine' ? 'Identity Engine' : view === 'vault' ? 'Brand Vault' : view === 'audit' ? 'Audit Lab' : view === 'architecture' ? 'Brand Architecture' : view === 'studio' ? 'Design Studio' : 'Manifesto'}
+            {view === 'engine' ? 'Brand Engine' : view === 'vault' ? 'Brand Vault' : view === 'audit' ? 'Audit Lab' : view === 'architecture' ? 'Brand Architecture' : view === 'studio' ? 'Design Studio' : 'Our Story'}
           </span>
         </div>
 
@@ -867,7 +867,7 @@ const App: React.FC = () => {
               transition={{ delay: 0.5 }}
               className="absolute bottom-10 text-[9px] uppercase tracking-[0.8em] font-black text-white/15"
             >
-              HowIconic · Sovereign Engine 7.0
+              HowIconic · Build what lasts.
             </motion.p>
           </motion.div>
         )}
@@ -1001,36 +1001,35 @@ const App: React.FC = () => {
               <main className="max-w-[1100px] mx-auto px-6 py-24 md:py-40 space-y-28">
                 <header className="text-center space-y-8">
                   <h1 className="text-5xl sm:text-6xl md:text-[8rem] font-serif-display uppercase italic font-black text-white tracking-tighter leading-none">
-                    <SplitChars text="Industrial Sovereignty" />
+                    <SplitChars text="Build What Lasts" />
                   </h1>
                   <p className="text-xl md:text-3xl font-serif-elegant italic text-white/50 max-w-3xl mx-auto gsap-reveal">
-                    Engineering absolute identity systems for high-velocity brands between <span className="text-brand-primary">5CR and 200CR</span> annual revenue.
+                    A Brand Operating System for companies between <span className="text-brand-primary">₹5CR and ₹200CR</span> annual revenue.
                   </p>
                 </header>
 
                 {/* Pullquote */}
                 <motion.div variants={staggerItem} initial="initial" animate="animate" className="gsap-reveal py-16 md:py-24 text-center">
                   <blockquote className="text-3xl md:text-5xl font-serif-elegant italic text-white/80 leading-snug max-w-4xl mx-auto">
-                    "Identity is not decoration—<br />it is <span className="text-brand-primary">structural mandate.</span>"
+                    "A brand isn't a logo—<br />it's <span className="text-brand-primary">every choice, made coherent.</span>"
                   </blockquote>
-                  <p className="mt-8 text-[10px] uppercase tracking-[0.8em] font-black text-white/30">HowIconic Manifesto</p>
+                  <p className="mt-8 text-[10px] uppercase tracking-[0.8em] font-black text-white/30">The Parijata Story</p>
                 </motion.div>
 
-                {/* Manifesto */}
+                {/* Origin story */}
                 <div className="gsap-reveal p-10 md:p-16 border-l-4 border-brand-primary rounded-r-3xl bg-white/[0.02] space-y-4">
-                  <p className="text-[11px] uppercase tracking-[0.5em] font-black text-white">Manifesto</p>
+                  <p className="text-[11px] uppercase tracking-[0.5em] font-black text-white">Our story</p>
                   <p className="text-xl md:text-2xl font-serif-elegant italic text-white/70 leading-relaxed">
-                    Identity is not a suggestion; it is a structural mandate. We eliminate subjective debris and manifest brand systems based on immutable sensory logic.
-                    Every color is chosen for psychological resonance. Every typeface carries kinetic intent. Every element exists with industrial purpose.
+                    Born from a flower on a terrace in Tirupur. The Parijata blooms in the dark and leaves something beautiful at dawn — no announcement, no noise. That's how we believe brands should be built. Strategy first. Every color chosen with intent. Every name coined with care. Every element assembled into one coherent system.
                   </p>
                 </div>
 
                 {/* Feature cards */}
                 <motion.div variants={staggerContainer} initial="initial" animate="animate" className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                   {[
-                    { title: 'Sensory Logic', desc: 'Brand decisions rooted in human perception science, not subjective opinion.', icon: '◈' },
-                    { title: 'Industrial Precision', desc: 'Every element measured, specified, and systematized for perfect reproduction.', icon: '⬡' },
-                    { title: 'Sovereign Output', desc: 'Complete identity systems you own entirely. No subscriptions, no dependencies.', icon: '◇' },
+                    { title: 'Strategy-first', desc: 'Brand decisions rooted in what you believe and who you serve — not templates or trends.', icon: '◈' },
+                    { title: 'Complete system', desc: 'Strategy, naming, colors, typography, voice, logo, brand manual — everything, together.', icon: '⬡' },
+                    { title: 'Yours to keep', desc: 'Complete identity systems you own entirely. No subscriptions, no dependencies.', icon: '◇' },
                   ].map((f, i) => (
                     <motion.div key={i} variants={staggerItem} className="gsap-reveal p-8 md:p-10 border border-white/10 rounded-[2rem] bg-white/[0.02] hover:border-white/20 transition-all group">
                       <span className="text-3xl text-brand-primary block mb-6 group-hover:scale-110 transition-transform inline-block">{f.icon}</span>

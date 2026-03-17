@@ -661,7 +661,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             textTransform: 'uppercase', color: '#f17022',
             marginBottom: 36, animationDelay: '0.08s',
           }}>
-            AI Brand Identity Engine
+            Brand Operating System
           </p>
 
           {/* Main title — word-by-word stagger */}
@@ -740,7 +740,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
               fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
             }}>
               Three steps to<br />
-              <span style={{ color: '#f17022' }}>brand sovereignty.</span>
+              <span style={{ color: '#f17022' }}>a complete brand.</span>
             </h2>
           </Reveal>
 
@@ -837,7 +837,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.05)',
                 }}>Others</p>
                 {[
-                  { title: 'Strategy Engine', text: 'Generate a logo.' },
+                  { title: 'Strategy Engine', text: 'Make a logo.' },
                   { title: 'Coined Names', text: 'Suggest existing words.' },
                   { title: 'Domain Check', text: 'Give you a name.' },
                 ].map(({ title, text }) => (

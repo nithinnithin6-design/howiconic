@@ -147,7 +147,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
         {/* Header */}
         <header className="text-center space-y-3 pb-4">
           <h1 className="text-[3rem] sm:text-[4.5rem] md:text-[6rem] font-serif-display uppercase italic font-black text-white leading-none tracking-tighter">
-            Identity Engine
+            Brand Engine
           </h1>
           <p className="text-[10px] md:text-[12px] uppercase tracking-[0.6em] text-white/40 font-black">
             Describe your vision. We'll build your brand.
