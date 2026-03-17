@@ -108,7 +108,7 @@ const KeeWelcome = () => {
     return () => { cancelled = true; };
   }, []);
 
-  return <KeeAlive animate={true}>{message}</KeeAlive>;
+  return <KeeAlive animate={true} chatEnabled={true} chatContext={{ step: 0, stepName: 'engine' }}>{message}</KeeAlive>;
 };
 
 const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifesting, sound }) => {

@@ -74,6 +74,9 @@ func (s *Server) registerRoutes() {
 	// AI Guide
 	s.mux.HandleFunc("/api/guide/message", s.handleGuideMessage)
 
+	// TTS
+	s.mux.HandleFunc("/api/tts", s.handleTTS)
+
 	// Public share (no auth)
 	s.mux.HandleFunc("/api/share/", s.handlePublicShare)
 

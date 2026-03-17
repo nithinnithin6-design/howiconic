@@ -929,9 +929,9 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
       {/* Kee — the AI soul */}
       <div style={{ maxWidth: 600, margin: '0 auto', width: '100%' }}>
         {guideLoading ? (
-          <KeeAlive animate={false}>· · ·</KeeAlive>
+          <KeeAlive animate={false} chatEnabled={true} chatContext={{ step: currentStep, stepName: STEP_NAMES[currentStep - 1] }}>{'· · ·'}</KeeAlive>
         ) : (
-          <KeeAlive animate={true} speed={20}>
+          <KeeAlive animate={true} speed={20} chatEnabled={true} chatContext={{ step: currentStep, stepName: STEP_NAMES[currentStep - 1] }}>
             {guideMessage || STEP_GUIDE_FALLBACK[currentStep] || ''}
           </KeeAlive>
         )}

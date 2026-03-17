@@ -17,11 +17,13 @@ const KeeAvatar = ({ speaking }: { speaking: boolean }) => (
 );
 
 interface KeeAliveProps {
-  children: string; // Text Kee will say
-  animate?: boolean; // Whether to typewriter-animate (default true)
-  speakable?: boolean; // Whether to show voice toggle (default true)
-  speed?: number; // Typing speed in ms per char (default 25)
-  onDone?: () => void; // Called when typing finishes
+  children: string;
+  animate?: boolean;
+  speakable?: boolean;
+  speed?: number;
+  onDone?: () => void;
+  chatEnabled?: boolean; // Show chat input
+  chatContext?: { step?: number; stepName?: string }; // Context for chat
 }
 
 const KeeAlive: React.FC<KeeAliveProps> = ({
@@ -29,15 +31,21 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
   animate = true,
   speakable = true,
   speed = 25,
-  onDone
+  onDone,
+  chatEnabled = false,
+  chatContext,
 }) => {
   const [displayedText, setDisplayedText] = useState(animate ? '' : children);
   const [isTyping, setIsTyping] = useState(animate);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
+  const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'kee'; text: string }>>([]);
   const textRef = useRef(children);
   const indexRef = useRef(0);
   const timerRef = useRef<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Typewriter effect
   useEffect(() => {
@@ -46,8 +54,6 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
       setIsTyping(false);
       return;
     }
-
-    // Reset if text changes
     textRef.current = children;
     indexRef.current = 0;
     setDisplayedText('');
@@ -63,58 +69,70 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         onDone?.();
       }
     };
-
-    timerRef.current = window.setTimeout(tick, 300); // Small delay before starting
-
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
+    timerRef.current = window.setTimeout(tick, 300);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, [children, animate, speed, onDone]);
 
-  // Voice synthesis
-  const speak = useCallback(() => {
-    if (!('speechSynthesis' in window)) return;
+  // OpenAI TTS
+  const speak = useCallback(async (text: string) => {
+    try {
+      const token = localStorage.getItem('howiconic_token');
+      if (!token) return;
 
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(children);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    utterance.volume = 0.8;
+      setIsSpeaking(true);
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text }),
+      });
 
-    // Try to find a good voice
-    const voices = window.speechSynthesis.getVoices();
-    const preferred = voices.find(v =>
-      v.name.includes('Samantha') ||
-      v.name.includes('Karen') ||
-      v.name.includes('Google UK English Female') ||
-      v.name.includes('Microsoft Zira') ||
-      (v.lang.startsWith('en') && v.name.toLowerCase().includes('female'))
-    ) || voices.find(v => v.lang.startsWith('en'));
+      if (!res.ok) {
+        setIsSpeaking(false);
+        return;
+      }
 
-    if (preferred) utterance.voice = preferred;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        URL.revokeObjectURL(audioRef.current.src);
+      }
 
-    window.speechSynthesis.speak(utterance);
-  }, [children]);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(url);
+      };
+      audio.onerror = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(url);
+      };
+      audio.play().catch(() => setIsSpeaking(false));
+    } catch {
+      setIsSpeaking(false);
+    }
+  }, []);
 
-  // Auto-speak when voice is enabled and text changes
+  // Auto-speak when voice enabled and text changes
   useEffect(() => {
     if (voiceEnabled && children) {
-      // Wait for typing to finish, then speak
       const delay = animate ? children.length * speed + 500 : 300;
-      const timer = setTimeout(speak, delay);
+      const timer = setTimeout(() => speak(children), delay);
       return () => clearTimeout(timer);
     }
   }, [children, voiceEnabled, animate, speed, speak]);
 
-  // Stop speech on unmount
+  // Cleanup
   useEffect(() => {
     return () => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        URL.revokeObjectURL(audioRef.current.src);
       }
     };
   }, []);
@@ -122,11 +140,44 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
   const toggleVoice = () => {
     const next = !voiceEnabled;
     setVoiceEnabled(next);
-    if (!next && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+    if (!next && audioRef.current) {
+      audioRef.current.pause();
       setIsSpeaking(false);
     }
-    if (next) speak();
+    if (next) speak(children);
+  };
+
+  // Chat with Kee
+  const sendChat = async () => {
+    if (!chatInput.trim() || chatLoading) return;
+    const msg = chatInput.trim();
+    setChatInput('');
+    setChatHistory(prev => [...prev, { role: 'user', text: msg }]);
+    setChatLoading(true);
+
+    try {
+      const token = localStorage.getItem('howiconic_token');
+      const res = await fetch('/api/guide/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          action: 'chat',
+          message: msg,
+          step: chatContext?.step || 0,
+          step_name: chatContext?.stepName || 'general',
+        }),
+      });
+      const data = await res.json();
+      const reply = data.message || "I'm here. Ask me something specific.";
+      setChatHistory(prev => [...prev, { role: 'kee', text: reply }]);
+      if (voiceEnabled) speak(reply);
+    } catch {
+      setChatHistory(prev => [...prev, { role: 'kee', text: "Something went wrong. Try again." }]);
+    }
+    setChatLoading(false);
   };
 
   return (
@@ -139,14 +190,14 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
       animation: (isTyping || isSpeaking) ? 'keeGlow 2s ease-in-out infinite' : 'none',
       transition: 'box-shadow 0.5s ease',
     }}>
-      {/* Header: avatar + label + voice toggle */}
+      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <KeeAvatar speaking={isTyping || isSpeaking} />
         <p style={{
           fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
           color: '#f17022', margin: 0, flex: 1,
         }}>Kee</p>
-        {speakable && 'speechSynthesis' in window && (
+        {speakable && (
           <button
             onClick={toggleVoice}
             style={{
@@ -162,11 +213,10 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         )}
       </div>
 
-      {/* Text with cursor */}
+      {/* Main message */}
       <p style={{
         fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14,
-        lineHeight: 1.7, color: 'rgba(255,255,255,0.55)', margin: 0,
-        minHeight: 24,
+        lineHeight: 1.7, color: 'rgba(255,255,255,0.55)', margin: 0, minHeight: 24,
       }}>
         {displayedText}
         {isTyping && (
@@ -179,19 +229,75 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         )}
       </p>
 
+      {/* Chat history */}
+      {chatHistory.length > 0 && (
+        <div style={{ marginTop: 12, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 10 }}>
+          {chatHistory.slice(-4).map((msg, i) => (
+            <div key={i} style={{
+              marginBottom: 8,
+              textAlign: msg.role === 'user' ? 'right' : 'left',
+            }}>
+              <span style={{
+                display: 'inline-block',
+                background: msg.role === 'user' ? 'rgba(255,255,255,0.06)' : 'rgba(241,112,34,0.08)',
+                borderRadius: 10,
+                padding: '6px 12px',
+                fontSize: 12,
+                color: msg.role === 'user' ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.55)',
+                fontFamily: msg.role === 'kee' ? 'Georgia, serif' : 'Inter, sans-serif',
+                fontStyle: msg.role === 'kee' ? 'italic' : 'normal',
+                maxWidth: '85%',
+                lineHeight: 1.5,
+              }}>
+                {msg.text}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Chat input */}
+      {chatEnabled && (
+        <div style={{
+          marginTop: chatHistory.length > 0 ? 8 : 12,
+          display: 'flex', gap: 8, alignItems: 'center',
+        }}>
+          <input
+            type="text"
+            value={chatInput}
+            onChange={e => setChatInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') sendChat(); }}
+            placeholder="Ask Kee..."
+            disabled={chatLoading}
+            style={{
+              flex: 1, background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 8, padding: '8px 12px',
+              fontSize: 12, color: 'rgba(255,255,255,0.6)',
+              fontFamily: 'Inter, sans-serif',
+              outline: 'none',
+            }}
+          />
+          <button
+            onClick={sendChat}
+            disabled={chatLoading || !chatInput.trim()}
+            style={{
+              background: chatLoading ? 'rgba(241,112,34,0.3)' : '#f17022',
+              border: 'none', borderRadius: 8,
+              padding: '8px 14px', cursor: chatLoading ? 'wait' : 'pointer',
+              color: '#fff', fontSize: 11, fontWeight: 700,
+              transition: 'background 0.2s ease',
+            }}
+          >
+            {chatLoading ? '...' : '→'}
+          </button>
+        </div>
+      )}
+
       <style>{`
-        @keyframes keeBreathe {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.08); }
-        }
-        @keyframes keeGlow {
-          0%, 100% { box-shadow: none; }
-          50% { box-shadow: 0 0 20px rgba(241,112,34,0.08); }
-        }
-        @keyframes keeCursor {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
+        @keyframes keeBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        @keyframes keeGlow { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 20px rgba(241,112,34,0.08); } }
+        @keyframes keeCursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
       `}</style>
     </div>
   );

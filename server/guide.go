@@ -54,8 +54,9 @@ type GuideRequest struct {
 	Inputs      json.RawMessage `json:"inputs"`
 	Selections  json.RawMessage `json:"selections"`  // previous step selections
 	Options     json.RawMessage `json:"options"`      // current step options (if available)
-	Action      string          `json:"action"`       // "entering_step", "selected_option", "going_back", "welcome"
+	Action      string          `json:"action"`       // "entering_step", "selected_option", "going_back", "welcome", "chat"
 	SelectedIdx *int            `json:"selected_idx"`
+	Message     string          `json:"message"`     // for "chat" action: free-form user message
 }
 
 type GuideResponse struct {
@@ -71,6 +72,24 @@ func (s *Server) handleGuideMessage(w http.ResponseWriter, r *http.Request) {
 	var req GuideRequest
 	if err := decodeJSON(r, &req); err != nil {
 		writeError(w, 400, "Invalid request")
+		return
+	}
+
+	// Handle free-form chat action
+	if req.Action == "chat" {
+		if req.Message == "" {
+			writeJSON(w, 200, GuideResponse{Message: "Ask me anything about building your brand."})
+			return
+		}
+
+		chatSystem := guideSystemPrompt + "\n\nCurrent context: the user is on step " + fmt.Sprintf("%d", req.Step) + " (" + req.StepName + ") of the brand building process. They are asking you a free-form question. Respond in 1-3 sentences. Be direct and specific."
+
+		raw, err := s.callGemini(chatSystem, req.Message, false)
+		if err != nil {
+			writeJSON(w, 200, GuideResponse{Message: "I'm here. Ask me something specific about your brand."})
+			return
+		}
+		writeJSON(w, 200, GuideResponse{Message: strings.TrimSpace(raw)})
 		return
 	}
 
