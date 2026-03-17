@@ -43,13 +43,33 @@ async function fetchGuideMessage(params: {
 
 // ─── SUB-COMPONENTS ───────────────────────────────────────────────────────────
 
-const GuideText = ({ children }: { children: React.ReactNode }) => (
-  <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '20px 0' }}>
-    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-      {children}
-    </p>
+const KeeMessage = ({ children, loading }: { children: React.ReactNode; loading?: boolean }) => (
+  <div style={{
+    background: 'rgba(241,112,34,0.04)',
+    borderLeft: '3px solid #f17022',
+    borderRadius: '0 12px 12px 0',
+    padding: '16px 20px 18px',
+    margin: '16px 0 24px',
+  }}>
+    <p style={{
+      fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
+      color: '#f17022', margin: '0 0 8px',
+    }}>Kee</p>
+    {loading ? (
+      <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+        <span style={{ animation: 'keePulse 1.5s ease-in-out infinite' }}>· · ·</span>
+      </p>
+    ) : (
+      <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, lineHeight: 1.7, color: 'rgba(255,255,255,0.55)', margin: 0 }}>
+        {children}
+      </p>
+    )}
+    <style>{`@keyframes keePulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.9; } }`}</style>
   </div>
 );
+
+// Keep backward compat
+const GuideText = ({ children }: { children: React.ReactNode }) => <KeeMessage>{children}</KeeMessage>;
 
 const ParijataSpinner = () => (
   <div style={{ textAlign: 'center', padding: '80px 0' }}>
@@ -60,8 +80,8 @@ const ParijataSpinner = () => (
       <circle cx="50" cy="50" r="8" fill="#f17022" style={{ filter: 'drop-shadow(0 0 8px rgba(241,112,34,0.5))' }} />
       <circle cx="50" cy="50" r="3" fill="white" opacity="0.7" />
     </svg>
-    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, color: 'rgba(255,255,255,0.35)' }}>
-      Your brand is taking shape...
+    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, color: 'rgba(255,255,255,0.4)' }}>
+      Kee is thinking...
     </p>
     <style>{`@keyframes gentleSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
   </div>
@@ -88,7 +108,7 @@ const HeartIcon = ({ filled, onClick }: { filled: boolean; onClick: (e: React.Mo
 // ─── PROGRESS BAR ─────────────────────────────────────────────────────────────
 
 const ProgressBar = ({ currentStep, completedSteps }: { currentStep: number; completedSteps: number }) => (
-  <div style={{ padding: '24px 0', maxWidth: 600, margin: '0 auto' }}>
+  <div style={{ padding: '24px 16px', maxWidth: 640, margin: '0 auto' }}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
       {/* Connecting line */}
       <div style={{
@@ -122,13 +142,15 @@ const ProgressBar = ({ currentStep, completedSteps }: { currentStep: number; com
               marginTop: 8, fontSize: 9, fontWeight: 700,
               letterSpacing: '0.05em', textTransform: 'uppercase',
               color: isCurrent ? '#f17022' : isFuture ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.5)',
-              display: 'none',
-            }} className="step-label">{name}</span>
+            }} className="step-label">{name.slice(0, 3)}</span>
           </div>
         );
       })}
     </div>
-    <style>{`@media (min-width: 640px) { .step-label { display: block !important; } }`}</style>
+    <style>{`
+      .step-label { display: none; }
+      @media (min-width: 640px) { .step-label { display: block !important; } }
+    `}</style>
   </div>
 );
 
@@ -145,18 +167,33 @@ interface CardProps {
 
 const cardStyle = (selected: boolean): React.CSSProperties => ({
   position: 'relative',
-  background: '#111',
-  border: `2px solid ${selected ? '#f17022' : 'rgba(255,255,255,0.08)'}`,
+  background: selected ? 'rgba(241,112,34,0.06)' : '#111',
+  border: `${selected ? '2px' : '1px'} solid ${selected ? '#f17022' : 'rgba(255,255,255,0.08)'}`,
   borderRadius: 16,
   padding: '28px 24px',
   cursor: 'pointer',
   transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-  boxShadow: selected ? '0 0 24px rgba(241,112,34,0.12)' : 'none',
+  boxShadow: selected ? '0 0 30px rgba(241,112,34,0.15), inset 0 0 30px rgba(241,112,34,0.03)' : 'none',
   flex: 1, minWidth: 260,
+  transform: selected ? 'none' : undefined,
 });
+
+const SelectedCheck = () => (
+  <div style={{
+    position: 'absolute', top: -8, left: -8,
+    width: 24, height: 24, borderRadius: '50%',
+    background: '#f17022', display: 'flex',
+    alignItems: 'center', justifyContent: 'center',
+    boxShadow: '0 2px 8px rgba(241,112,34,0.4)',
+    zIndex: 2,
+  }}>
+    <span style={{ color: '#fff', fontSize: 12, fontWeight: 900 }}>✓</span>
+  </div>
+);
 
 const StrategyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
   <div style={cardStyle(selected)} onClick={onSelect}>
+    {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
     <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#f17022', marginBottom: 16 }}>
       {option.archetype}
@@ -186,6 +223,7 @@ const StrategyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: Ca
 
 const NamingCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
   <div style={cardStyle(selected)} onClick={onSelect}>
+    {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
     <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 32, color: '#fff', marginBottom: 8, lineHeight: 1.1, paddingRight: 24 }}>
       {option.name}
@@ -224,6 +262,7 @@ const ColorCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
   const accent = colors[2] || option.accent;
   return (
     <div style={cardStyle(selected)} onClick={onSelect}>
+      {selected && <SelectedCheck />}
       <HeartIcon filled={wishlisted} onClick={onWishlist} />
       <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 16, paddingRight: 24 }}>
         {option.palette_name || option.name || 'Palette'}
@@ -299,6 +338,7 @@ const TypographyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: 
 
 const LogoCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
   <div style={cardStyle(selected)} onClick={onSelect}>
+    {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
     <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 20, color: '#fff', marginBottom: 12, paddingRight: 24 }}>
       {option.name}
@@ -327,6 +367,7 @@ const LogoCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardPr
 
 const VoiceCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
   <div style={cardStyle(selected)} onClick={onSelect}>
+    {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
     <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#f17022', marginBottom: 8, paddingRight: 24 }}>
       {option.voice_name}
@@ -666,18 +707,11 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
         </h2>
       </div>
 
-      {/* Guide message — the AI soul */}
-      <div style={{ maxWidth: 560, margin: '0 auto', width: '100%' }}>
-        {guideLoading ? (
-          <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '20px 0' }}>
-            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, color: 'rgba(255,255,255,0.25)', margin: 0 }}>
-              <span style={{ animation: 'pulse 1.5s ease-in-out infinite' }}>···</span>
-            </p>
-            <style>{`@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }`}</style>
-          </div>
-        ) : guideMessage ? (
-          <GuideText>{guideMessage}</GuideText>
-        ) : null}
+      {/* Kee — the AI soul */}
+      <div style={{ maxWidth: 600, margin: '0 auto', width: '100%' }}>
+        <KeeMessage loading={guideLoading}>
+          {guideMessage || STEP_GUIDE_FALLBACK[currentStep] || ''}
+        </KeeMessage>
       </div>
 
       {/* Content */}
@@ -717,12 +751,22 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
       {!loading && !error && (
         <div style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
-          background: 'linear-gradient(transparent, #0a0a0a 30%)',
-          padding: '40px 24px 24px',
+          background: 'rgba(10,10,10,0.85)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+          padding: '16px 24px',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          maxWidth: 900, margin: '0 auto',
           zIndex: 10,
         }}>
+          {/* Step counter — center */}
+          <p style={{
+            position: 'absolute', left: '50%', transform: 'translateX(-50%)',
+            fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
+            color: 'rgba(255,255,255,0.25)', margin: 0,
+          }}>
+            Step {currentStep} of 7 · {STEP_NAMES[currentStep - 1]}
+          </p>
           <button
             onClick={handleBack}
             style={{

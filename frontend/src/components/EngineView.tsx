@@ -152,6 +152,14 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
 
         {/* Header */}
         <header className="text-center space-y-3 pb-4">
+          {/* Parijata Mark */}
+          <svg viewBox="0 0 100 100" fill="none" style={{ width: 72, height: 72, margin: '0 auto 16px', display: 'block' }}>
+            {[0, 51.4, 102.8, 154.3, 205.7, 257.1, 308.6].map((angle, i) => (
+              <ellipse key={i} cx="50" cy="25" rx="8" ry="20" fill="white" opacity={0.85} transform={`rotate(${angle} 50 50)`} />
+            ))}
+            <circle cx="50" cy="50" r="8" fill="#f17022" style={{ filter: 'drop-shadow(0 0 8px rgba(241,112,34,0.6))' }} />
+            <circle cx="50" cy="50" r="3" fill="white" opacity="0.8" />
+          </svg>
           <h1 className="text-[3rem] sm:text-[4.5rem] md:text-[6rem] font-serif-display uppercase italic font-black text-white leading-none tracking-tighter">
             Brand Engine
           </h1>

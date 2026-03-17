@@ -505,14 +505,14 @@ func (s *Server) generateGuidedStep(step int, inputs GuidedStartRequest, context
 
 func (s *Server) generateGuidedStrategy(inputs GuidedStartRequest) (interface{}, error) {
 	system := `You are a senior brand strategist. Return ONLY valid JSON. No markdown, no explanation outside the JSON.`
-	user := fmt.Sprintf(`Generate TWO distinct strategic directions for this brand. Each must be a completely different strategic angle.
+	user := fmt.Sprintf(`Generate THREE distinct strategic directions for this brand. Each must be a completely different strategic angle.
 
 Brand idea: %s
 Product: %s
 Who it's for: %s
 Vibe: %s
 
-Return EXACTLY this JSON (array of 2 options):
+Return EXACTLY this JSON (array of 3 options):
 [
   {
     "positioning": "one sentence: who it's for, what specific gap it fills, why this matters now",
@@ -521,7 +521,8 @@ Return EXACTLY this JSON (array of 2 options):
     "archetype": "one word archetype (e.g., Creator, Rebel, Sage, Hero, Outlaw, Explorer)",
     "archetype_why": "one sentence: why this archetype fits this brand specifically",
     "promise": "one sentence: the single most important commitment this brand makes",
-    "tensions": ["brand paradox 1 (e.g., Raw and refined)", "brand paradox 2"]
+    "tensions": ["brand paradox 1 (e.g., Raw and refined)", "brand paradox 2"],
+    "whitespace": "one sentence: the market gap this brand uniquely fills"
   },
   {
     "positioning": "a different strategic angle — not just a variation of option 1",
@@ -530,12 +531,23 @@ Return EXACTLY this JSON (array of 2 options):
     "archetype": "different archetype from option 1",
     "archetype_why": "one sentence",
     "promise": "different core promise from option 1",
-    "tensions": ["brand paradox 1", "brand paradox 2"]
+    "tensions": ["brand paradox 1", "brand paradox 2"],
+    "whitespace": "one sentence: different market gap from option 1"
+  },
+  {
+    "positioning": "a third strategic angle — genuinely different from both options above",
+    "values": ["value 1", "value 2", "value 3"],
+    "personality": "2-3 adjectives, distinct from options 1 and 2",
+    "archetype": "different archetype from options 1 and 2",
+    "archetype_why": "one sentence",
+    "promise": "different core promise from options 1 and 2",
+    "tensions": ["brand paradox 1", "brand paradox 2"],
+    "whitespace": "one sentence: different market gap from options 1 and 2"
   }
 ]
 
 Rules:
-- The two options must represent genuinely different strategic territories
+- The three options must represent genuinely different strategic territories
 - Do NOT write paragraphs. Maximum 1 sentence per field.
 - Think like a McKinsey partner presenting to a board: maximum clarity, zero filler
 - Every answer must be unmistakably about THIS brand, not transferable to any other`, inputs.BrandIdea, inputs.Product, inputs.Audience, inputs.Vibe)
