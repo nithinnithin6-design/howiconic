@@ -63,6 +63,8 @@ func (s *Server) registerRoutes() {
 
 	// Brands
 	s.mux.HandleFunc("/api/brands", s.handleBrands)
+	// Guided start — must be registered before /api/brands/ to take priority
+	s.mux.HandleFunc("/api/brands/guided/start", s.handleGuidedStart)
 	s.mux.HandleFunc("/api/brands/", s.handleBrandByID)
 
 	// Education

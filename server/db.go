@@ -53,6 +53,31 @@ func migrate(db *sql.DB) error {
 	migrateAddColumn(db, "brands", "subcategory", "TEXT DEFAULT ''")
 	migrateAddColumn(db, "brands", "status", "TEXT DEFAULT 'active'")
 
+	// v5 guided co-creation
+	migrateAddColumn(db, "brands", "current_step", "INTEGER DEFAULT 0")
+	migrateAddColumn(db, "brands", "generation_mode", "TEXT DEFAULT 'classic'")
+
+	// v5 brand_steps table (guided wizard)
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS brand_steps (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			brand_id INTEGER NOT NULL,
+			step_number INTEGER NOT NULL,
+			step_name TEXT NOT NULL,
+			options_json TEXT NOT NULL,
+			selected_index INTEGER,
+			wishlisted_json TEXT,
+			user_edits_json TEXT,
+			completed_at DATETIME,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (brand_id) REFERENCES brands(id)
+		);
+		CREATE INDEX IF NOT EXISTS idx_brand_steps_brand_id ON brand_steps(brand_id);
+	`)
+	if err != nil {
+		return err
+	}
+
 	// v4 new tables
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS brand_assets (

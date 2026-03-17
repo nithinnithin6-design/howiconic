@@ -6,25 +6,39 @@ interface LandingPageProps {
 }
 
 // ─── MASTER SEAL (8-petal flower with orange center) ─────────────────────────
-const MasterSeal = ({ className = 'w-10 h-10', animate = false }: { className?: string; animate?: boolean }) => (
+// ─── THE PARIJATA MARK ────────────────────────────────────────────────────────
+// Stylized Parijata flower — 7 geometric white petals, orange center (the fire)
+const ParijataMark = ({ className = 'w-10 h-10', animate = false }: { className?: string; animate?: boolean }) => (
   <svg
     viewBox="0 0 100 100"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
     style={animate ? {
-      animation: 'sealEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+      animation: 'bloomIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
       opacity: 0,
     } : undefined}
   >
-    <g transform="translate(50, 50)">
-      {[0, 45, 90, 135, 180, 225, 270, 315].map(a => (
-        <path key={a} d="M0 0 C-6 -8, -10 -25, 0 -35 C10 -25, 6 -8, 0 0 Z" fill="white" transform={`rotate(${a})`} />
-      ))}
-      <circle cx="0" cy="0" r="6" fill="#f17022" style={{ filter: 'drop-shadow(0 0 12px #f17022)' }} />
-    </g>
+    {[0, 51.4, 102.8, 154.3, 205.7, 257.1, 308.6].map((angle, i) => (
+      <ellipse key={i} cx="50" cy="25" rx="8" ry="20" fill="white" opacity={0.9} transform={`rotate(${angle} 50 50)`} />
+    ))}
+    <circle cx="50" cy="50" r="8" fill="#f17022" style={{ filter: 'drop-shadow(0 0 8px rgba(241,112,34,0.6))' }} />
+    <circle cx="50" cy="50" r="3" fill="white" opacity="0.8" />
   </svg>
 );
+
+// ─── GUIDE TEXT ───────────────────────────────────────────────────────────────
+// The guide: no name, just a presence. Quiet, generous, like the Parijata itself.
+const GuideText = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px auto', maxWidth: 600 }}>
+    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+      {children}
+    </p>
+  </div>
+);
+
+// Keep backward compat alias
+const MasterSeal = ParijataMark;
 
 // ─── BRAND CONSTRUCTION SVG (Hero — letters forming, colors crystallizing) ───
 const BrandConstruction = () => (
@@ -390,6 +404,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           from { opacity: 0; transform: rotate(-20deg) scale(0.6); }
           to   { opacity: 1; transform: rotate(0deg) scale(1); }
         }
+        @keyframes bloomIn {
+          from { opacity: 0; transform: scale(0.8); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes petalDrift {
+          0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+          10%  { opacity: 0.5; }
+          90%  { opacity: 0.3; }
+          100% { transform: translateY(80vh) rotate(360deg); opacity: 0; }
+        }
         @keyframes wordUp {
           from { opacity: 0; transform: translateY(32px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -691,6 +715,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           }}>
             Strategy · Naming · Visual System · Brand Manual
           </p>
+
+          <GuideText>
+            Every great brand starts with a question: what do you actually stand for? Not what you sell — what you believe.
+          </GuideText>
         </div>
       </section>
 
@@ -1163,7 +1191,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                 fontSize: 13, color: 'rgba(255,255,255,0.3)', lineHeight: 1.85,
                 fontFamily: 'Georgia, serif', fontStyle: 'italic', maxWidth: 280,
               }}>
-                HowIconic is a Brand Operating System built in India. Strategy-first. AI-powered. Human-guided.
+                Born from a flower on a terrace in Tirupur. HowIconic is a Brand Operating System built in India. Strategy-first. Parijata-inspired. Build what lasts.
               </p>
             </div>
 

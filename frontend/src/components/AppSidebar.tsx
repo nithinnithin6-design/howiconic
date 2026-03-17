@@ -8,15 +8,15 @@ interface AppSidebarProps {
   brandCount?: number;
 }
 
+// Parijata Mark — small version for sidebar
 const MasterSealSmall = () => (
   <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
     style={{ width: 28, height: 28, flexShrink: 0 }}>
-    <g transform="translate(50, 50)">
-      {[0, 45, 90, 135, 180, 225, 270, 315].map(a => (
-        <path key={a} d="M0 0 C-6 -8, -10 -25, 0 -35 C10 -25, 6 -8, 0 0 Z" fill="white" transform={`rotate(${a})`} />
-      ))}
-      <circle cx="0" cy="0" r="6" fill="#f17022" style={{ filter: 'drop-shadow(0 0 8px #f17022)' }} />
-    </g>
+    {[0, 51.4, 102.8, 154.3, 205.7, 257.1, 308.6].map((angle, i) => (
+      <ellipse key={i} cx="50" cy="25" rx="8" ry="20" fill="white" opacity={0.9} transform={`rotate(${angle} 50 50)`} />
+    ))}
+    <circle cx="50" cy="50" r="8" fill="#f17022" style={{ filter: 'drop-shadow(0 0 8px rgba(241,112,34,0.6))' }} />
+    <circle cx="50" cy="50" r="3" fill="white" opacity="0.8" />
   </svg>
 );
 

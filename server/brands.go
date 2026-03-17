@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -78,6 +79,17 @@ func (s *Server) handleBrandByID(w http.ResponseWriter, r *http.Request) {
 		default:
 			writeError(w, 405, "Method not allowed")
 		}
+		return
+	}
+
+	// Guided co-creation routes: /api/brands/:id/guided/step, /state, /back
+	if subPath == "guided/step" || subPath == "guided/state" || subPath == "guided/back" {
+		parts := strings.SplitN(subPath, "/", 2)
+		guidedSub := ""
+		if len(parts) == 2 {
+			guidedSub = parts[1]
+		}
+		s.handleGuidedBrand(w, r, brandID, claims.UserID, guidedSub)
 		return
 	}
 
