@@ -38,14 +38,17 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
   const [displayedText, setDisplayedText] = useState(animate ? '' : children);
   const [isTyping, setIsTyping] = useState(animate);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [showTextInput, setShowTextInput] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'kee'; text: string }>>([]);
+  const [isListening, setIsListening] = useState(false);
   const textRef = useRef(children);
   const indexRef = useRef(0);
   const timerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   // Typewriter effect
   useEffect(() => {
@@ -134,6 +137,9 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         audioRef.current.pause();
         URL.revokeObjectURL(audioRef.current.src);
       }
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
     };
   }, []);
 
@@ -145,6 +151,71 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
       setIsSpeaking(false);
     }
     if (next) speak(children);
+  };
+
+  // Voice input via Web Speech Recognition
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognitionRef.current = recognition;
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      if (transcript.trim()) {
+        setChatInput(transcript.trim());
+        setChatHistory(prev => [...prev, { role: 'user', text: transcript.trim() }]);
+        setChatLoading(true);
+        // Auto-enable voice when user speaks
+        setVoiceEnabled(true);
+
+        (async () => {
+          try {
+            const token = localStorage.getItem('howiconic_token');
+            const res = await fetch('/api/guide/message', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({
+                action: 'chat',
+                message: transcript.trim(),
+                step: chatContext?.step || 0,
+                step_name: chatContext?.stepName || 'general',
+              }),
+            });
+            const data = await res.json();
+            const reply = data.message || "I'm here. Ask me something specific.";
+            setChatHistory(prev => [...prev, { role: 'kee', text: reply }]);
+            // Always speak reply when voice input was used
+            speak(reply);
+          } catch {
+            setChatHistory(prev => [...prev, { role: 'kee', text: "Something went wrong. Try again." }]);
+          }
+          setChatLoading(false);
+          setChatInput('');
+        })();
+      }
+      setIsListening(false);
+    };
+
+    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
   };
 
   // Chat with Kee
@@ -256,41 +327,83 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         </div>
       )}
 
-      {/* Chat input */}
+      {/* Voice-first interaction */}
       {chatEnabled && (
-        <div style={{
-          marginTop: chatHistory.length > 0 ? 8 : 12,
-          display: 'flex', gap: 8, alignItems: 'center',
-        }}>
-          <input
-            type="text"
-            value={chatInput}
-            onChange={e => setChatInput(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') sendChat(); }}
-            placeholder="Ask Kee..."
-            disabled={chatLoading}
-            style={{
-              flex: 1, background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 8, padding: '8px 12px',
-              fontSize: 12, color: 'rgba(255,255,255,0.6)',
-              fontFamily: 'Inter, sans-serif',
-              outline: 'none',
-            }}
-          />
-          <button
-            onClick={sendChat}
-            disabled={chatLoading || !chatInput.trim()}
-            style={{
-              background: chatLoading ? 'rgba(241,112,34,0.3)' : '#f17022',
-              border: 'none', borderRadius: 8,
-              padding: '8px 14px', cursor: chatLoading ? 'wait' : 'pointer',
-              color: '#fff', fontSize: 11, fontWeight: 700,
-              transition: 'background 0.2s ease',
-            }}
-          >
-            {chatLoading ? '...' : '→'}
-          </button>
+        <div style={{ marginTop: chatHistory.length > 0 ? 8 : 12 }}>
+          {/* Primary: Mic button — large, centered */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 8 }}>
+            <button
+              onClick={toggleListening}
+              disabled={chatLoading}
+              style={{
+                background: isListening ? '#f17022' : 'rgba(241,112,34,0.12)',
+                border: isListening ? '2px solid #f17022' : '2px solid rgba(241,112,34,0.25)',
+                borderRadius: '50%',
+                cursor: chatLoading ? 'wait' : 'pointer',
+                color: isListening ? '#fff' : '#f17022',
+                fontSize: 20,
+                transition: 'all 0.2s ease',
+                animation: isListening ? 'keeMicPulse 1.5s ease-in-out infinite' : 'none',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: 48, height: 48, flexShrink: 0,
+              }}
+              title={isListening ? 'Stop listening' : 'Speak to Kee'}
+            >
+              {chatLoading ? '...' : isListening ? '⏺' : '🎤'}
+            </button>
+          </div>
+          <p style={{
+            textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.2)',
+            letterSpacing: '0.1em', margin: '0 0 6px',
+          }}>
+            {isListening ? 'listening...' : chatLoading ? 'thinking...' : 'tap to speak'}
+          </p>
+
+          {/* Secondary: Type instead (collapsed by default) */}
+          {!showTextInput && (
+            <button
+              onClick={() => setShowTextInput(true)}
+              style={{
+                display: 'block', margin: '4px auto 0', background: 'none', border: 'none',
+                color: 'rgba(255,255,255,0.15)', fontSize: 9, cursor: 'pointer',
+                letterSpacing: '0.1em',
+              }}
+            >
+              or type instead
+            </button>
+          )}
+          {showTextInput && (
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
+              <input
+                type="text"
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') sendChat(); }}
+                placeholder="Type to Kee..."
+                disabled={chatLoading || isListening}
+                style={{
+                  flex: 1, background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 8, padding: '7px 10px',
+                  fontSize: 11, color: 'rgba(255,255,255,0.5)',
+                  fontFamily: 'Inter, sans-serif',
+                  outline: 'none',
+                }}
+              />
+              <button
+                onClick={sendChat}
+                disabled={chatLoading || !chatInput.trim()}
+                style={{
+                  background: chatLoading ? 'rgba(241,112,34,0.3)' : '#f17022',
+                  border: 'none', borderRadius: 8,
+                  padding: '7px 12px', cursor: chatLoading ? 'wait' : 'pointer',
+                  color: '#fff', fontSize: 10, fontWeight: 700,
+                }}
+              >
+                →
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -298,6 +411,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         @keyframes keeBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
         @keyframes keeGlow { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 20px rgba(241,112,34,0.08); } }
         @keyframes keeCursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes keeMicPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(241,112,34,0.4); } 50% { box-shadow: 0 0 0 8px rgba(241,112,34,0); } }
       `}</style>
     </div>
   );
