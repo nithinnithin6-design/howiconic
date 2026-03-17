@@ -54,20 +54,24 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
         <div className="text-center mb-16 space-y-6">
           <div className="flex items-center justify-center gap-4 mb-8">
             <svg viewBox="0 0 100 100" className="w-16 h-16 drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-              <g transform="translate(50, 50)">
-                {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
-                  <path key={angle} d="M0 0 C-6 -8, -10 -25, 0 -35 C10 -25, 6 -8, 0 0 Z" fill="white" transform={`rotate(${angle})`} />
-                ))}
-                <circle cx="0" cy="0" r="6" fill="#f17022" style={{ filter: 'drop-shadow(0 0 12px #f17022)' }} />
-              </g>
+              {[0, 51.4, 102.8, 154.3, 205.7, 257.1, 308.6].map((angle, i) => (
+                <ellipse key={i} cx="50" cy="25" rx="8" ry="20" fill="white" opacity={0.9} transform={`rotate(${angle} 50 50)`} />
+              ))}
+              <circle cx="50" cy="50" r="8" fill="#f17022" style={{ filter: 'drop-shadow(0 0 8px rgba(241,112,34,0.6))' }} />
+              <circle cx="50" cy="50" r="3" fill="white" opacity="0.8" />
             </svg>
           </div>
           <h1 className="font-serif-display text-5xl md:text-7xl uppercase italic font-black tracking-tighter text-white">
             HOWICONIC
           </h1>
           <p className="text-[11px] uppercase tracking-[1.2em] text-white/50 font-black">
-            Sovereign Identity Engine
+            Brand Identity Engine
           </p>
+          <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px auto 0', maxWidth: 360, textAlign: 'left' }}>
+            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+              Welcome. Let's build something that lasts.
+            </p>
+          </div>
         </div>
 
         {/* Form */}
@@ -147,12 +151,12 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
               loading ? 'opacity-50 cursor-wait' : 'hover:bg-[#d95e15] hover:shadow-[0_16px_50px_rgba(241,112,34,0.35)] active:scale-[0.98] cursor-pointer'
             }`}
           >
-            {loading ? 'Synchronizing...' : mode === 'login' ? 'Authenticate' : 'Initialize System'}
+            {loading ? 'One moment...' : mode === 'login' ? 'Log in' : 'Create account'}
           </button>
         </form>
 
         <p className="text-center mt-12 text-[9px] uppercase tracking-[0.5em] text-white/20 font-black">
-          Sovereign Engine v7.0 — Industrial Grade
+          Build what lasts.
         </p>
       </div>
     </div>

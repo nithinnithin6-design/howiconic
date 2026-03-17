@@ -402,15 +402,16 @@ const VaultView: React.FC<VaultViewProps> = ({
               fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 28,
               color: 'rgba(255,255,255,0.8)', marginBottom: 16, textTransform: 'uppercase',
             }}>
-              Your brand vault is empty
+              Your garden is waiting
             </h3>
-            <p style={{
-              fontStyle: 'italic', color: 'rgba(255,255,255,0.35)',
-              fontSize: 16, maxWidth: 400, margin: '0 auto 40px',
-              lineHeight: 1.7, fontFamily: 'Georgia, serif',
-            }}>
-              Every iconic brand starts with a single idea. Ready to build yours?
-            </p>
+            <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px auto 40px', maxWidth: 400, textAlign: 'left' }}>
+              <p style={{
+                fontStyle: 'italic', color: 'rgba(255,255,255,0.4)',
+                fontSize: 13, lineHeight: 1.7, fontFamily: 'Georgia, serif', margin: 0,
+              }}>
+                Every brand you build lives here. Start with one — you can always grow more.
+              </p>
+            </div>
             <button
               onClick={onNewBrand}
               style={{

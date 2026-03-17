@@ -831,6 +831,15 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
         flexDirection: 'column',
         overflow: 'auto',
       }}>
+        {/* Guide intro */}
+        {!noBrand && (
+          <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px 24px 0', maxWidth: 400 }}>
+            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+              Let's make something. What does your brand need today?
+            </p>
+          </div>
+        )}
+
         {/* No brand warning */}
         {noBrand && (
           <div style={{

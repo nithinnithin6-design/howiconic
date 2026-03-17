@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 
 const phases = [
-  { msg: "SEEKING SENSORY ANCHOR", threshold: 15 },
-  { msg: "SYNCHRONIZING RESONANCE", threshold: 35 },
-  { msg: "SYNTHESIZING MATERIAL TRUTH", threshold: 55 },
-  { msg: "ENCODING NARRATIVE HERITAGE", threshold: 75 },
-  { msg: "ALIGNING INDUSTRIAL STRATEGY", threshold: 90 },
-  { msg: "CRYSTALLIZING SOVEREIGN FORM", threshold: 100 }
+  { msg: "Laying the foundation...", threshold: 20 },
+  { msg: "Finding your voice...", threshold: 40 },
+  { msg: "Shaping the visual system...", threshold: 60 },
+  { msg: "Choosing your colors...", threshold: 75 },
+  { msg: "Assembling your brand...", threshold: 90 },
+  { msg: "Almost there...", threshold: 100 },
+];
+
+// Falling petal configs — each with unique timing
+const PETALS = [
+  { left: '12%', size: 8, duration: 6, delay: 0, rotation: 120 },
+  { left: '28%', size: 5, duration: 7.5, delay: 1.2, rotation: 200 },
+  { left: '45%', size: 10, duration: 5.5, delay: 0.5, rotation: 300 },
+  { left: '62%', size: 6, duration: 8, delay: 2, rotation: 160 },
+  { left: '78%', size: 7, duration: 6.5, delay: 0.8, rotation: 250 },
+  { left: '88%', size: 4, duration: 9, delay: 1.5, rotation: 180 },
+  { left: '35%', size: 9, duration: 7, delay: 3, rotation: 140 },
 ];
 
 const LoadingScreen: React.FC = () => {
@@ -17,8 +28,8 @@ const LoadingScreen: React.FC = () => {
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 99.8) return 99.8;
-        const increment = prev < 40 ? 0.5 : prev < 80 ? 0.22 : 0.015;
-        const next = Math.min(99.8, prev + increment + Math.random() * 0.05);
+        const increment = prev < 40 ? 0.45 : prev < 80 ? 0.2 : 0.012;
+        const next = Math.min(99.8, prev + increment + Math.random() * 0.04);
         const phaseMatch = phases.find(p => next <= p.threshold);
         if (phaseMatch) setCurrentPhase(phaseMatch.msg);
         return next;
@@ -27,63 +38,105 @@ const LoadingScreen: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const petalPath = "M0,0 C-15,-15 -25,-40 0,-70 C25,-40 15,-15 0,0";
-
   return (
-    <div className="fixed inset-0 bg-[#050505] flex flex-col z-[250] overflow-hidden select-none font-mono">
-      <div className="absolute inset-0 blueprint-grid opacity-[0.08] pointer-events-none" />
+    <div style={{
+      position: 'fixed', inset: 0, background: '#0a0a0a',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      zIndex: 250, overflow: 'hidden', userSelect: 'none',
+    }}>
 
-      {/* Top bar */}
-      <div className="p-8 md:p-12 flex justify-between items-center w-full relative z-20 border-b border-white/20 bg-black/80 backdrop-blur-xl">
-        <div className="flex items-center gap-6">
-          <svg viewBox="0 0 100 100" className="w-10 h-10 md:w-14 md:h-14">
-            <g transform="translate(50, 50)">
-              {[0, 45, 90, 135, 180, 225, 270, 315].map(a => (
-                <path key={a} d="M0 -3 C5 -12, 7 -22, 0 -25 C-7 -22, -5 -12, 0 -3 Z" fill="white" transform={`rotate(${a})`} />
-              ))}
-              <circle cx="0" cy="0" r="5" fill="#f17022" />
-            </g>
-          </svg>
-          <div>
-            <p className="text-white text-sm md:text-base font-black uppercase tracking-[0.8em]">HOWICONIC</p>
-            <p className="text-white/60 text-[10px] uppercase tracking-[0.4em] mt-1">SOVEREIGN_ENGINE_7.0</p>
-          </div>
+      {/* Dawn glow at top */}
+      <div style={{
+        position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+        width: '100%', maxWidth: 800, height: 400,
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(241,112,34,0.12) 0%, rgba(241,112,34,0.04) 40%, transparent 70%)',
+        pointerEvents: 'none',
+        animation: 'dawnPulse 8s ease-in-out infinite',
+      }} />
+
+      {/* Falling petals */}
+      {PETALS.map((p, i) => (
+        <div key={i} style={{
+          position: 'absolute', top: -20, left: p.left,
+          width: p.size, height: p.size * 1.6,
+          borderRadius: '50%',
+          background: 'white',
+          opacity: 0,
+          animation: `petalFall ${p.duration}s ease-in-out ${p.delay}s infinite`,
+        }} />
+      ))}
+
+      {/* Center: Parijata Mark */}
+      <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+          style={{ width: 120, height: 120, margin: '0 auto 48px', animation: 'gentleSpin 30s linear infinite' }}>
+          {[0, 51.4, 102.8, 154.3, 205.7, 257.1, 308.6].map((angle, i) => (
+            <ellipse key={i} cx="50" cy="25" rx="8" ry="20" fill="white" opacity={0.85}
+              transform={`rotate(${angle} 50 50)`} />
+          ))}
+          <circle cx="50" cy="50" r="8" fill="#f17022"
+            style={{ filter: 'drop-shadow(0 0 12px rgba(241,112,34,0.5))' }} />
+          <circle cx="50" cy="50" r="3" fill="white" opacity="0.7" />
+        </svg>
+
+        {/* Phase text */}
+        <p style={{
+          fontFamily: 'Georgia, serif', fontStyle: 'italic',
+          fontSize: 16, color: 'rgba(255,255,255,0.5)',
+          marginBottom: 40, letterSpacing: '0.02em',
+          transition: 'opacity 0.5s ease',
+        }}>
+          {currentPhase}
+        </p>
+
+        {/* Progress bar */}
+        <div style={{
+          width: 280, height: 2, background: 'rgba(255,255,255,0.08)',
+          borderRadius: 1, overflow: 'hidden', margin: '0 auto 16px',
+        }}>
+          <div style={{
+            height: '100%', borderRadius: 1,
+            background: 'linear-gradient(90deg, rgba(255,255,255,0.6), #f17022)',
+            transition: 'width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            width: `${progress}%`,
+          }} />
         </div>
-        <div className="text-right">
-          <p className="text-white text-3xl md:text-5xl font-black tabular-nums">
-            {progress.toFixed(1)}<span className="text-white/40 text-xl">%</span>
-          </p>
-        </div>
+
+        {/* Percentage */}
+        <p style={{
+          fontSize: 11, color: 'rgba(255,255,255,0.2)',
+          fontFamily: 'Inter, sans-serif', fontWeight: 500,
+          letterSpacing: '0.1em',
+        }}>
+          {Math.round(progress)}%
+        </p>
       </div>
 
-      {/* Bloom */}
-      <div className="flex-1 flex flex-col items-center justify-center relative">
-        <div className="relative z-10 w-64 h-64 md:w-[500px] md:h-[500px] flex items-center justify-center">
-          <svg viewBox="-100 -100 200 200" className="w-full h-full overflow-visible" style={{ animation: 'spin 100s linear infinite' }}>
-            <g>
-              {[0, 45, 90, 135, 180, 225, 270, 315].map(a => (
-                <g key={a} transform={`rotate(${a})`}>
-                  <path d={petalPath} fill="white" opacity="0.9" />
-                </g>
-              ))}
-            </g>
-            <circle cx="0" cy="0" r="14" fill="rgba(241,112,34,0.15)" />
-            <circle cx="0" cy="0" r="8.5" fill="#f17022" className="animate-pulse" />
-            <circle cx="0" cy="0" r="4" fill="white" opacity="0.4" />
-          </svg>
-        </div>
-      </div>
+      {/* Bottom tagline */}
+      <p style={{
+        position: 'absolute', bottom: 40,
+        fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase',
+        color: 'rgba(255,255,255,0.12)', fontWeight: 600,
+      }}>
+        Build what lasts.
+      </p>
 
-      {/* Bottom status */}
-      <div className="pb-20 md:pb-32 flex flex-col items-center z-20 space-y-8">
-        <h2 className="text-white text-lg md:text-2xl font-black uppercase tracking-[2em]">MANIFESTING</h2>
-        <div className="w-64 md:w-96 h-2 bg-white/10 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-white to-[#f17022] transition-all duration-1000" style={{ width: `${progress}%` }} />
-        </div>
-        <p className="text-white text-[11px] md:text-sm uppercase tracking-[1em] font-black animate-pulse">{currentPhase}</p>
-      </div>
-
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes petalFall {
+          0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+          8%   { opacity: 0.5; }
+          85%  { opacity: 0.3; }
+          100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes dawnPulse {
+          0%, 100% { opacity: 0.7; }
+          50%      { opacity: 1; }
+        }
+        @keyframes gentleSpin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

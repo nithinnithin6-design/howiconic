@@ -90,6 +90,14 @@ interface EngineViewProps {
   };
 }
 
+const GuideText = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px 0' }}>
+    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+      {children}
+    </p>
+  </div>
+);
+
 const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, sound }) => {
   const [brandIdea, setBrandIdea] = useState('');
   const [product, setProduct] = useState('');
@@ -144,6 +152,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
           <p className="text-[10px] md:text-[12px] uppercase tracking-[0.6em] text-white/40 font-black">
             Describe your vision. We'll build your brand.
           </p>
+          <GuideText>Four questions. That's all it takes to start.</GuideText>
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -241,7 +250,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, isManifesting, soun
                   : 'cursor-pointer hover:bg-[#f17022] hover:text-white hover:border-[#f17022] hover:shadow-[0_12px_40px_rgba(241,112,34,0.25)]'
               }`}
             >
-              {isManifesting ? 'Building...' : 'Manifest'}
+              {isManifesting ? 'Your brand is taking shape...' : 'Start building'}
             </motion.button>
 
             {validationMsg && (
