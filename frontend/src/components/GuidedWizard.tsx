@@ -15,6 +15,32 @@ const STEP_GUIDE_FALLBACK: Record<number, string> = {
   7: 'Every choice you\'ve made, assembled into one coherent system. This is your brand.',
 };
 
+// Fetch AI guide message (non-blocking, falls back gracefully)
+async function fetchGuideMessage(params: {
+  step: number;
+  stepName: string;
+  inputs?: any;
+  selections?: any;
+  options?: any;
+  action: 'welcome' | 'entering_step' | 'selected_option' | 'going_back';
+  selectedIdx?: number;
+}): Promise<string> {
+  try {
+    const res = await api.guideMessage({
+      step: params.step,
+      step_name: params.stepName,
+      inputs: params.inputs,
+      selections: params.selections,
+      options: params.options,
+      action: params.action,
+      selected_idx: params.selectedIdx,
+    });
+    return res.message || STEP_GUIDE_FALLBACK[params.step] || '';
+  } catch {
+    return STEP_GUIDE_FALLBACK[params.step] || '';
+  }
+}
+
 // ─── SUB-COMPONENTS ───────────────────────────────────────────────────────────
 
 const GuideText = ({ children }: { children: React.ReactNode }) => (
@@ -468,8 +494,10 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [wishlisted, setWishlisted] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [guideLoading, setGuideLoading] = useState(false);
   const [error, setError] = useState('');
   const [fullState, setFullState] = useState<any>(null);
+  const [selections, setSelections] = useState<Record<number, any>>({});
 
   // Start the guided flow
   useEffect(() => {
@@ -484,21 +512,47 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
         );
         setBrandId(res.brand_id);
         setCurrentStep(res.step);
-        setGuideMessage(res.guide_message || STEP_GUIDE_FALLBACK[res.step] || '');
         const opts = typeof res.options === 'string' ? JSON.parse(res.options) : res.options;
         setOptions(Array.isArray(opts) ? opts : []);
+        setLoading(false);
+
+        // Fetch AI guide message (non-blocking)
+        setGuideLoading(true);
+        const msg = await fetchGuideMessage({
+          step: res.step,
+          stepName: STEP_NAMES[res.step - 1],
+          inputs: initialInputs,
+          options: opts,
+          action: 'entering_step',
+        });
+        setGuideMessage(msg);
+        setGuideLoading(false);
       } catch (err: any) {
         setError(err.message || 'Failed to start. Please try again.');
-      } finally {
         setLoading(false);
       }
     };
     start();
   }, [initialInputs]);
 
-  const handleSelect = useCallback((index: number) => {
+  const handleSelect = useCallback(async (index: number) => {
     setSelectedIndex(index);
-  }, []);
+    // Get AI reaction to selection (non-blocking)
+    if (currentStep < 7) {
+      setGuideLoading(true);
+      const msg = await fetchGuideMessage({
+        step: currentStep,
+        stepName: STEP_NAMES[currentStep - 1],
+        inputs: initialInputs,
+        selections,
+        options,
+        action: 'selected_option',
+        selectedIdx: index,
+      });
+      setGuideMessage(msg);
+      setGuideLoading(false);
+    }
+  }, [currentStep, initialInputs, selections, options]);
 
   const handleWishlist = useCallback((index: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -520,19 +574,37 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
         return;
       }
 
+      // Save current selection
+      const selectedOption = options[selectedIndex];
+      const newSelections = { ...selections, [currentStep]: selectedOption };
+      setSelections(newSelections);
+
       const res = await api.guidedStep(brandId, currentStep, selectedIndex, wishlisted);
       setCurrentStep(res.step);
-      setGuideMessage(res.guide_message || STEP_GUIDE_FALLBACK[res.step] || '');
       const opts = typeof res.options === 'string' ? JSON.parse(res.options) : res.options;
       setOptions(Array.isArray(opts) ? opts : []);
       setSelectedIndex(null);
       setWishlisted([]);
+      setLoading(false);
 
       // If assembly step, fetch full state
       if (res.step === 7) {
         const state = await api.guidedState(brandId);
         setFullState(state);
       }
+
+      // Fetch AI guide for new step (non-blocking)
+      setGuideLoading(true);
+      const msg = await fetchGuideMessage({
+        step: res.step,
+        stepName: STEP_NAMES[res.step - 1],
+        inputs: initialInputs,
+        selections: newSelections,
+        options: opts,
+        action: 'entering_step',
+      });
+      setGuideMessage(msg);
+      setGuideLoading(false);
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
@@ -551,11 +623,23 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
       setError('');
       const res = await api.guidedBack(brandId, currentStep - 1);
       setCurrentStep(res.step);
-      setGuideMessage(res.guide_message || STEP_GUIDE_FALLBACK[res.step] || '');
       const opts = typeof res.options === 'string' ? JSON.parse(res.options) : res.options;
       setOptions(Array.isArray(opts) ? opts : []);
       setSelectedIndex(res.selected_index ?? null);
       setWishlisted(res.wishlisted || []);
+      setLoading(false);
+
+      // Fetch AI guide for back step (non-blocking)
+      setGuideLoading(true);
+      const msg = await fetchGuideMessage({
+        step: res.step,
+        stepName: STEP_NAMES[res.step - 1],
+        inputs: initialInputs,
+        selections,
+        action: 'going_back',
+      });
+      setGuideMessage(msg);
+      setGuideLoading(false);
     } catch (err: any) {
       setError(err.message || 'Could not go back.');
     } finally {
@@ -582,9 +666,18 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
         </h2>
       </div>
 
-      {/* Guide message */}
+      {/* Guide message — the AI soul */}
       <div style={{ maxWidth: 560, margin: '0 auto', width: '100%' }}>
-        {guideMessage && <GuideText>{guideMessage}</GuideText>}
+        {guideLoading ? (
+          <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '20px 0' }}>
+            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, color: 'rgba(255,255,255,0.25)', margin: 0 }}>
+              <span style={{ animation: 'pulse 1.5s ease-in-out infinite' }}>···</span>
+            </p>
+            <style>{`@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }`}</style>
+          </div>
+        ) : guideMessage ? (
+          <GuideText>{guideMessage}</GuideText>
+        ) : null}
       </div>
 
       {/* Content */}

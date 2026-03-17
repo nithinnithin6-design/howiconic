@@ -445,3 +445,20 @@ export async function guidedBack(brandId: number, toStep: number) {
     body: JSON.stringify({ to_step: toStep }),
   });
 }
+
+// ─── AI GUIDE ─────────────────────────────────────────────────────────────────
+
+export async function guideMessage(data: {
+  step: number;
+  step_name: string;
+  inputs?: any;
+  selections?: any;
+  options?: any;
+  action: 'welcome' | 'entering_step' | 'selected_option' | 'going_back';
+  selected_idx?: number;
+}) {
+  return request('/guide/message', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}

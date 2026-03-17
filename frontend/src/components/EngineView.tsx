@@ -129,7 +129,12 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
     }
     setValidationMsg('');
     sound?.click();
-    onManifest(brandIdea.trim(), product.trim(), audience.trim(), vibe);
+    // Primary path: guided wizard
+    if (onGuided) {
+      onGuided(brandIdea.trim(), product.trim(), audience.trim(), vibe);
+    } else {
+      onManifest(brandIdea.trim(), product.trim(), audience.trim(), vibe);
+    }
   };
 
   const inputClass =
@@ -265,38 +270,30 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
             )}
 
             <p className="text-[9px] uppercase tracking-[0.5em] text-white/18 font-black">
-              ~45–60 seconds · Everything at once
+              ~3–5 minutes · You choose at every step
             </p>
 
-            {onGuided && (
-              <button
-                type="button"
-                onClick={() => {
-                  if (!brandIdea.trim()) {
-                    setValidationMsg('Tell us what this brand believes first.');
-                    setTimeout(() => setValidationMsg(''), 4000);
-                    return;
-                  }
-                  if (!product.trim()) {
-                    setValidationMsg("Tell us what it sells.");
-                    setTimeout(() => setValidationMsg(''), 4000);
-                    return;
-                  }
-                  onGuided(brandIdea.trim(), product.trim(), audience.trim(), vibe);
-                }}
-                disabled={isManifesting}
-                style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  color: 'rgba(255,255,255,0.3)', fontSize: 12,
-                  fontFamily: 'Georgia, serif', fontStyle: 'italic',
-                  padding: '8px 0', transition: 'color 0.2s ease',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#f17022'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.3)'; }}
-              >
-                Or build step-by-step →
-              </button>
-            )}
+            {/* Secondary: classic all-at-once */}
+            <button
+              type="button"
+              disabled={isManifesting}
+              onClick={() => {
+                if (!brandIdea.trim() || !product.trim()) return;
+                sound?.click();
+                onManifest(brandIdea.trim(), product.trim(), audience.trim(), vibe);
+              }}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'rgba(255,255,255,0.25)', fontSize: 12,
+                fontFamily: 'Georgia, serif', fontStyle: 'italic',
+                padding: '8px 0', transition: 'color 0.2s ease',
+                marginTop: 4,
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.25)'; }}
+            >
+              Or build all at once →
+            </button>
           </div>
         </form>
       </div>
