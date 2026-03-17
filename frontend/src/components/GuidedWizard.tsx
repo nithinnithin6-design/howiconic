@@ -109,7 +109,7 @@ const HeartIcon = ({ filled, onClick }: { filled: boolean; onClick: (e: React.Mo
 
 const ProgressBar = ({ currentStep, completedSteps }: { currentStep: number; completedSteps: number }) => (
   <div style={{ padding: '24px 16px', maxWidth: 640, margin: '0 auto' }}>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', gap: 8 }}>
       {/* Connecting line */}
       <div style={{
         position: 'absolute', top: 10, left: 20, right: 20, height: 2,
@@ -128,7 +128,7 @@ const ProgressBar = ({ currentStep, completedSteps }: { currentStep: number; com
         const isCurrent = stepNum === currentStep;
         const isFuture = stepNum > currentStep;
         return (
-          <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 1 }}>
+          <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 1, minWidth: 64 }}>
             <div style={{
               width: 20, height: 20, borderRadius: '50%',
               border: `2px solid ${isFuture ? 'rgba(255,255,255,0.15)' : isCurrent ? '#f17022' : '#fff'}`,
@@ -142,7 +142,8 @@ const ProgressBar = ({ currentStep, completedSteps }: { currentStep: number; com
               marginTop: 8, fontSize: 9, fontWeight: 700,
               letterSpacing: '0.05em', textTransform: 'uppercase',
               color: isCurrent ? '#f17022' : isFuture ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.5)',
-            }} className="step-label">{name.slice(0, 3)}</span>
+              textAlign: 'center',
+            }} className="step-label">{name}</span>
           </div>
         );
       })}
@@ -257,9 +258,12 @@ const NamingCard = ({ option, selected, wishlisted, onSelect, onWishlist }: Card
 
 const ColorCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => {
   const colors = option.colors || option.palette || [];
-  const primary = colors[0] || option.primary;
-  const secondary = colors[1] || option.secondary;
-  const accent = colors[2] || option.accent;
+  const primary = colors[0];
+  const secondary = colors[1];
+  const accent = colors[2];
+  const getHex = (c: any) => typeof c === 'string' ? c : c?.hex || '#888';
+  const getName = (c: any) => typeof c === 'string' ? c : c?.creative_name || c?.name || c?.hex || '';
+
   return (
     <div style={cardStyle(selected)} onClick={onSelect}>
       {selected && <SelectedCheck />}
@@ -267,70 +271,121 @@ const ColorCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
       <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 16, paddingRight: 24 }}>
         {option.palette_name || option.name || 'Palette'}
       </p>
-      {/* Color swatches */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-        {primary && (
-          <div style={{ flex: 2 }}>
-            <div style={{ width: '100%', height: 56, borderRadius: 10, background: typeof primary === 'string' ? primary : primary.hex, marginBottom: 6 }} />
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>{typeof primary === 'string' ? primary : primary.name || primary.hex}</p>
+
+      {/* Primary color — full-width hero swatch */}
+      {primary && (
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ width: '100%', height: 80, borderRadius: 12, background: getHex(primary), marginBottom: 6 }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>{getName(primary)}</p>
+            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>{getHex(primary)}</p>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Secondary + Accent side by side */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
         {secondary && (
           <div style={{ flex: 1 }}>
-            <div style={{ width: '100%', height: 56, borderRadius: 10, background: typeof secondary === 'string' ? secondary : secondary.hex, marginBottom: 6 }} />
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>{typeof secondary === 'string' ? secondary : secondary.name || secondary.hex}</p>
+            <div style={{ width: '100%', height: 48, borderRadius: 10, background: getHex(secondary), marginBottom: 4 }} />
+            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{getName(secondary)}</p>
+            <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace' }}>{getHex(secondary)}</p>
           </div>
         )}
         {accent && (
           <div style={{ flex: 1 }}>
-            <div style={{ width: '100%', height: 56, borderRadius: 10, background: typeof accent === 'string' ? accent : accent.hex, marginBottom: 6 }} />
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>{typeof accent === 'string' ? accent : accent.name || accent.hex}</p>
+            <div style={{ width: '100%', height: 48, borderRadius: 10, background: getHex(accent), marginBottom: 4 }} />
+            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{getName(accent)}</p>
+            <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace' }}>{getHex(accent)}</p>
           </div>
         )}
       </div>
+
+      {/* Mini brand preview card */}
+      {primary && (
+        <div style={{
+          background: getHex(primary), borderRadius: 10, padding: '14px 16px',
+          marginBottom: 12,
+        }}>
+          <p style={{
+            fontSize: 14, fontWeight: 800, letterSpacing: '0.1em',
+            color: '#fff', textShadow: '0 1px 4px rgba(0,0,0,0.3)',
+            margin: 0,
+          }}>Brand Preview</p>
+          <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', margin: '4px 0 0' }}>
+            How your brand feels in color
+          </p>
+        </div>
+      )}
+
       {option.mood && (
         <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontStyle: 'italic' }}>{option.mood}</p>
+      )}
+      {option.contrast_note && (
+        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 6 }}>{option.contrast_note}</p>
       )}
     </div>
   );
 };
 
 const TypographyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => {
-  // Load Google Font dynamically
   useEffect(() => {
-    const fonts = [option.heading_font, option.body_font].filter(Boolean);
+    const fonts = [option.headline_font || option.heading_font, option.body_font].filter(Boolean);
     fonts.forEach(font => {
       const id = `gfont-${font.replace(/\s+/g, '-')}`;
       if (!document.getElementById(id)) {
         const link = document.createElement('link');
         link.id = id;
         link.rel = 'stylesheet';
-        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@400;700&display=swap`;
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@300;400;700;900&display=swap`;
         document.head.appendChild(link);
       }
     });
-  }, [option.heading_font, option.body_font]);
+  }, [option.headline_font, option.heading_font, option.body_font]);
+
+  const headingFont = option.headline_font || option.heading_font || 'serif';
+  const bodyFont = option.body_font || 'sans-serif';
 
   return (
     <div style={cardStyle(selected)} onClick={onSelect}>
+      {selected && <SelectedCheck />}
       <HeartIcon filled={wishlisted} onClick={onWishlist} />
       <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 20, paddingRight: 24 }}>
-        {option.name || 'Type System'}
+        {option.pairing_name || option.name || 'Type System'}
       </p>
-      <div style={{ marginBottom: 16 }}>
-        <p style={{ fontFamily: `'${option.heading_font}', serif`, fontSize: 28, fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: 4 }}>
-          Aa Bb Cc
+
+      {/* Heading font — large showcase */}
+      <div style={{ marginBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 16 }}>
+        <p style={{
+          fontFamily: `'${headingFont}', serif`,
+          fontSize: 36, fontWeight: 900, color: '#fff',
+          lineHeight: 1.1, marginBottom: 8,
+        }}>
+          {option.sample_headline || 'Your Brand'}
         </p>
-        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>{option.heading_font}</p>
-      </div>
-      <div style={{ marginBottom: 16 }}>
-        <p style={{ fontFamily: `'${option.body_font}', sans-serif`, fontSize: 15, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
-          The quick brown fox jumps over the lazy dog. 0123456789.
+        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', fontFamily: 'Inter, sans-serif' }}>
+          {headingFont} · {option.headline_weight || 'Bold'}
         </p>
-        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 4 }}>{option.body_font}</p>
       </div>
-      {option.scale && (
-        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>{option.scale}</p>
+
+      {/* Body font — paragraph showcase */}
+      <div style={{ marginBottom: 16 }}>
+        <p style={{
+          fontFamily: `'${bodyFont}', sans-serif`,
+          fontSize: 14, color: 'rgba(255,255,255,0.55)',
+          lineHeight: 1.7, marginBottom: 8,
+        }}>
+          {option.sample_body || 'The quick brown fox jumps over the lazy dog. Typography carries your voice before anyone reads a word.'}
+        </p>
+        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', fontFamily: 'Inter, sans-serif' }}>
+          {bodyFont} · {option.body_weight || 'Regular'}
+        </p>
+      </div>
+
+      {option.pairing_why && (
+        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12 }}>
+          {option.pairing_why}
+        </p>
       )}
     </div>
   );
@@ -340,27 +395,30 @@ const LogoCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardPr
   <div style={cardStyle(selected)} onClick={onSelect}>
     {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
-    <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 20, color: '#fff', marginBottom: 12, paddingRight: 24 }}>
-      {option.name}
-    </h3>
-    <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, marginBottom: 16 }}>
-      {option.concept}
+
+    {/* Render the SVG logo */}
+    {option.combined_svg ? (
+      <div style={{
+        textAlign: 'center', marginBottom: 20, padding: '20px 0',
+        background: 'rgba(255,255,255,0.02)', borderRadius: 12,
+      }} dangerouslySetInnerHTML={{ __html: option.combined_svg }} />
+    ) : option.symbol_svg ? (
+      <div style={{
+        textAlign: 'center', marginBottom: 20, padding: '20px 0',
+        background: 'rgba(255,255,255,0.02)', borderRadius: 12,
+      }} dangerouslySetInnerHTML={{ __html: option.symbol_svg }} />
+    ) : null}
+
+    <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#f17022', marginBottom: 8, paddingRight: 24 }}>
+      {option.concept_name || option.name}
     </p>
-    {option.construction && (
-      <div style={{ marginBottom: 12 }}>
-        <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 6 }}>Construction</p>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{option.construction}</p>
-      </div>
-    )}
-    {option.colors && Array.isArray(option.colors) && (
-      <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
-        {option.colors.map((c: string, i: number) => (
-          <div key={i} style={{ width: 24, height: 24, borderRadius: 6, background: c, border: '1px solid rgba(255,255,255,0.1)' }} />
-        ))}
-      </div>
-    )}
-    {option.typography_note && (
-      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>{option.typography_note}</p>
+    <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, marginBottom: 12 }}>
+      {option.concept_summary || option.concept}
+    </p>
+    {option.metaphor && (
+      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>
+        Metaphor: {option.metaphor}
+      </p>
     )}
   </div>
 );
@@ -417,86 +475,181 @@ const AssemblyView = ({ state }: { state: any }) => {
   const logo = getSelected(5);
   const voice = getSelected(6);
 
+  const getHex = (c: any) => typeof c === 'string' ? c : c?.hex || '#888';
+  const colorsList = colors?.colors || [];
+  const headingFont = typography?.headline_font || typography?.heading_font || 'Playfair Display';
+  const bodyFont = typography?.body_font || 'Inter';
+
+  // Load fonts
+  useEffect(() => {
+    [headingFont, bodyFont].forEach(font => {
+      const id = `gfont-${font.replace(/\s+/g, '-')}`;
+      if (!document.getElementById(id)) {
+        const link = document.createElement('link');
+        link.id = id;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@300;400;700;900&display=swap`;
+        document.head.appendChild(link);
+      }
+    });
+  }, [headingFont, bodyFont]);
+
   const sectionStyle: React.CSSProperties = {
-    background: '#111', borderRadius: 16, padding: '24px 20px', marginBottom: 16,
+    background: '#111', borderRadius: 16, padding: '28px 24px', marginBottom: 16,
     border: '1px solid rgba(255,255,255,0.06)',
   };
   const labelStyle: React.CSSProperties = {
     fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase',
-    color: '#f17022', marginBottom: 12,
+    color: '#f17022', marginBottom: 16,
   };
 
   return (
     <div style={{ maxWidth: 560, margin: '0 auto' }}>
-      <GuideText>Every choice you've made, assembled into one coherent system. Review it — this is your brand.</GuideText>
+      {/* Brand Name Hero */}
+      <div style={{ textAlign: 'center', padding: '32px 0 24px' }}>
+        <p style={labelStyle}>Your Brand</p>
+        {naming && (
+          <>
+            <h2 style={{
+              fontFamily: `'${headingFont}', serif`,
+              fontSize: 'clamp(2.5rem, 8vw, 4rem)',
+              fontWeight: 900, color: '#fff',
+              lineHeight: 1.1, margin: '0 0 12px',
+            }}>
+              {naming.name}
+            </h2>
+            {voice?.sample_copy?.tagline && (
+              <p style={{
+                fontFamily: `'${bodyFont}', sans-serif`,
+                fontSize: 16, color: 'rgba(255,255,255,0.45)',
+                fontStyle: 'italic',
+              }}>
+                "{voice.sample_copy.tagline}"
+              </p>
+            )}
+          </>
+        )}
+      </div>
 
-      {strategy && (
+      {/* Color Palette Strip */}
+      {colorsList.length > 0 && (
         <div style={sectionStyle}>
-          <p style={labelStyle}>Strategy</p>
-          <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 8 }}>
-            {strategy.archetype}
-          </p>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>{strategy.positioning}</p>
-        </div>
-      )}
-
-      {naming && (
-        <div style={sectionStyle}>
-          <p style={labelStyle}>Name</p>
-          <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 6 }}>
-            {naming.name}
-          </p>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>{naming.meaning}</p>
-          {naming.tagline && <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginTop: 8, fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>"{naming.tagline}"</p>}
-        </div>
-      )}
-
-      {colors && (
-        <div style={sectionStyle}>
-          <p style={labelStyle}>Colors</p>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {[colors.primary || colors.colors?.[0], colors.secondary || colors.colors?.[1], colors.accent || colors.colors?.[2]].filter(Boolean).map((c: any, i: number) => (
+          <p style={labelStyle}>Color System</p>
+          <div style={{ display: 'flex', borderRadius: 12, overflow: 'hidden', height: 80, marginBottom: 16 }}>
+            {colorsList.map((c: any, i: number) => (
+              <div key={i} style={{ flex: i === 0 ? 2 : 1, background: getHex(c) }} />
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 16 }}>
+            {colorsList.map((c: any, i: number) => (
               <div key={i} style={{ flex: i === 0 ? 2 : 1 }}>
-                <div style={{ width: '100%', height: 48, borderRadius: 8, background: typeof c === 'string' ? c : c.hex }} />
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 4 }}>{typeof c === 'string' ? c : c.name || c.hex}</p>
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>
+                  {typeof c === 'string' ? c : c?.creative_name || c?.name || ''}
+                </p>
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>
+                  {getHex(c)}
+                </p>
               </div>
             ))}
           </div>
         </div>
       )}
 
+      {/* Typography Pairing */}
       {typography && (
         <div style={sectionStyle}>
           <p style={labelStyle}>Typography</p>
-          <p style={{ fontFamily: `'${typography.heading_font}', serif`, fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 4 }}>
-            {typography.heading_font}
+          <p style={{
+            fontFamily: `'${headingFont}', serif`,
+            fontSize: 28, fontWeight: 900, color: '#fff',
+            lineHeight: 1.2, marginBottom: 8,
+          }}>
+            {naming?.name || 'Brand Name'}
           </p>
-          <p style={{ fontFamily: `'${typography.body_font}', sans-serif`, fontSize: 14, color: 'rgba(255,255,255,0.5)' }}>
-            {typography.body_font}
+          <p style={{
+            fontFamily: `'${bodyFont}', sans-serif`,
+            fontSize: 14, color: 'rgba(255,255,255,0.5)',
+            lineHeight: 1.7, marginBottom: 12,
+          }}>
+            {typography.sample_body || 'Your brand speaks with clarity and intention. Every word carries weight.'}
           </p>
+          <div style={{ display: 'flex', gap: 16, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12 }}>
+            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>Heading: {headingFont}</p>
+            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>Body: {bodyFont}</p>
+          </div>
         </div>
       )}
 
+      {/* Strategy */}
+      {strategy && (
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Strategy</p>
+          <p style={{
+            fontFamily: `'${headingFont}', serif`, fontSize: 20, fontWeight: 900,
+            color: '#f17022', marginBottom: 8,
+          }}>
+            The {strategy.archetype}
+          </p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+            {strategy.positioning}
+          </p>
+          {strategy.promise && (
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginTop: 8, fontStyle: 'italic' }}>
+              Promise: {strategy.promise}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Logo Concept */}
       {logo && (
         <div style={sectionStyle}>
           <p style={labelStyle}>Logo Concept</p>
-          <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 8 }}>
-            {logo.name}
+          {logo.combined_svg && (
+            <div style={{ textAlign: 'center', marginBottom: 16 }}
+              dangerouslySetInnerHTML={{ __html: logo.combined_svg }}
+            />
+          )}
+          {!logo.combined_svg && logo.symbol_svg && (
+            <div style={{ textAlign: 'center', marginBottom: 16 }}
+              dangerouslySetInnerHTML={{ __html: logo.symbol_svg }}
+            />
+          )}
+          <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 8 }}>
+            {logo.concept_name || logo.name}
           </p>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{logo.concept}</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
+            {logo.concept_summary || logo.concept}
+          </p>
         </div>
       )}
 
+      {/* Voice */}
       {voice && (
         <div style={sectionStyle}>
-          <p style={labelStyle}>Voice</p>
-          <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 8 }}>
+          <p style={labelStyle}>Brand Voice</p>
+          <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 12 }}>
             {voice.voice_name}
           </p>
-          {voice.sample_tagline && (
-            <p style={{ fontSize: 14, fontFamily: 'Georgia, serif', fontStyle: 'italic', color: 'rgba(255,255,255,0.5)' }}>
-              "{voice.sample_tagline}"
-            </p>
+          {voice.sample_copy?.headline && (
+            <div style={{ background: 'rgba(241,112,34,0.04)', borderRadius: 10, padding: '14px 16px', marginBottom: 12 }}>
+              <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 16, fontWeight: 700, color: '#fff', margin: 0 }}>
+                "{voice.sample_copy.headline}"
+              </p>
+            </div>
+          )}
+          {voice.tone_attributes && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {voice.tone_attributes.map((attr: string, i: number) => (
+                <span key={i} style={{
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.4)', padding: '4px 10px', borderRadius: 100,
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }}>
+                  {attr}
+                </span>
+              ))}
+            </div>
           )}
         </div>
       )}
@@ -693,6 +846,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
       flex: 1, display: 'flex', flexDirection: 'column',
       minHeight: '100vh', background: '#0a0a0a',
       padding: '0 16px',
+      position: 'relative', zIndex: 5,
     }}>
       {/* Progress */}
       <ProgressBar currentStep={currentStep} completedSteps={currentStep} />
