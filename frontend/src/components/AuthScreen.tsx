@@ -67,9 +67,19 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
           <p className="text-[11px] uppercase tracking-[1.2em] text-white/50 font-black">
             Brand Identity Engine
           </p>
-          <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px auto 0', maxWidth: 360, textAlign: 'left' }}>
-            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-              Welcome. Let's build something that lasts.
+          <div style={{
+            background: 'rgba(241,112,34,0.04)',
+            borderLeft: '3px solid #f17022',
+            borderRadius: '0 12px 12px 0',
+            padding: '14px 18px 16px',
+            margin: '24px auto 0', maxWidth: 400, textAlign: 'left',
+          }}>
+            <p style={{
+              fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
+              color: '#f17022', margin: '0 0 6px',
+            }}>Kee</p>
+            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+              {mode === 'login' ? 'Welcome back. Your brands are waiting.' : 'Every iconic brand started with someone who cared enough to begin.'}
             </p>
           </div>
         </div>

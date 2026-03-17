@@ -194,6 +194,23 @@ const VaultView: React.FC<VaultViewProps> = ({
   return (
     <main style={{ maxWidth: 1400, margin: '0 auto', padding: '64px 24px' }}>
 
+      {/* Kee */}
+      <div style={{
+        background: 'rgba(241,112,34,0.04)',
+        borderLeft: '3px solid #f17022',
+        borderRadius: '0 12px 12px 0',
+        padding: '14px 18px 16px',
+        margin: '0 0 32px', maxWidth: 520,
+      }}>
+        <p style={{
+          fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
+          color: '#f17022', margin: '0 0 6px',
+        }}>Kee</p>
+        <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+          {brands.length === 0 ? "No brands yet. Head to the engine and build your first." : "Your brands live here. Each one a system — strategy, name, colors, type, voice. Select one to explore."}
+        </p>
+      </div>
+
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 40 }}>
         <h2 style={{

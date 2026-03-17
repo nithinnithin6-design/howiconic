@@ -37,6 +37,25 @@ const GuideText = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+// ─── KEE PRESENCE ─────────────────────────────────────────────────────────────
+const KeePresence = ({ children }: { children: React.ReactNode }) => (
+  <div style={{
+    background: 'rgba(241,112,34,0.04)',
+    borderLeft: '3px solid #f17022',
+    borderRadius: '0 12px 12px 0',
+    padding: '14px 18px 16px',
+    margin: '20px auto', maxWidth: 520,
+  }}>
+    <p style={{
+      fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
+      color: '#f17022', margin: '0 0 6px',
+    }}>Kee</p>
+    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+      {children}
+    </p>
+  </div>
+);
+
 // Keep backward compat alias
 const MasterSeal = ParijataMark;
 
@@ -697,6 +716,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           }}>
             Strategy. Name. Identity. One engine.
           </p>
+
+          {/* Kee */}
+          <KeePresence>
+            I'm Kee. I'll walk you through building a brand that lasts — from strategy to visual identity. Four questions is all it takes.
+          </KeePresence>
 
           {/* CTAs */}
           <div className="hi-animate" style={{
