@@ -91,13 +91,49 @@ interface EngineViewProps {
   };
 }
 
-const GuideText = ({ children }: { children: React.ReactNode }) => (
-  <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px 0' }}>
-    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-      {children}
-    </p>
-  </div>
-);
+const KeeWelcome = () => {
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await api.guideMessage({
+          step: 0, step_name: 'engine', action: 'welcome',
+        });
+        if (!cancelled && res.message) setMessage(res.message);
+      } catch {}
+      if (!cancelled) setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  return (
+    <div style={{
+      background: 'rgba(241,112,34,0.04)',
+      borderLeft: '3px solid #f17022',
+      borderRadius: '0 12px 12px 0',
+      padding: '14px 18px 16px',
+      margin: '20px auto', maxWidth: 520,
+    }}>
+      <p style={{
+        fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
+        color: '#f17022', margin: '0 0 6px',
+      }}>Kee</p>
+      {loading ? (
+        <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+          <span style={{ animation: 'keePulse 1.5s ease-in-out infinite' }}>· · ·</span>
+        </p>
+      ) : (
+        <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+          {message || "I'm Kee. Four questions — that's all it takes. Tell me what your brand believes, and we'll build it together."}
+        </p>
+      )}
+      <style>{`@keyframes keePulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.9; } }`}</style>
+    </div>
+  );
+};
 
 const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifesting, sound }) => {
   const [brandIdea, setBrandIdea] = useState('');
@@ -166,7 +202,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
           <p className="text-[10px] md:text-[12px] uppercase tracking-[0.6em] text-white/40 font-black">
             Describe your vision. We'll build your brand.
           </p>
-          <GuideText>Four questions. That's all it takes to start.</GuideText>
+          <KeeWelcome />
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-4">
