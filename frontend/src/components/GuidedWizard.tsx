@@ -456,8 +456,18 @@ const VoiceCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
 
 // ─── ASSEMBLY VIEW ────────────────────────────────────────────────────────────
 
-const AssemblyView = ({ state }: { state: any }) => {
+const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }) => {
   if (!state?.steps) return null;
+
+  // Extract assembly options (step 7) which contains AI-generated summary + mockups
+  const assemblyOptions = (() => {
+    const step7 = state.steps?.find((s: any) => s.step_number === 7);
+    if (!step7?.options) return null;
+    try {
+      const opts = typeof step7.options === 'string' ? JSON.parse(step7.options) : step7.options;
+      return Array.isArray(opts) ? opts[0] : opts;
+    } catch { return null; }
+  })();
 
   const getSelected = (stepNum: number) => {
     const step = state.steps.find((s: any) => s.step_number === stepNum);
@@ -651,6 +661,60 @@ const AssemblyView = ({ state }: { state: any }) => {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Mockups Preview */}
+      {assemblyOptions?.mockups && (
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Brand Applications</p>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {assemblyOptions.mockups.business_card && (
+              <div>
+                <div dangerouslySetInnerHTML={{ __html: assemblyOptions.mockups.business_card }}
+                     style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }} />
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>Business Card</p>
+              </div>
+            )}
+            {assemblyOptions.mockups.social_header && (
+              <div style={{ maxWidth: '100%', overflow: 'hidden' }}>
+                <div dangerouslySetInnerHTML={{ __html: assemblyOptions.mockups.social_header }}
+                     style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', maxWidth: '100%' }} />
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>Social Header</p>
+              </div>
+            )}
+            {assemblyOptions.mockups.app_icon && (
+              <div>
+                <div dangerouslySetInnerHTML={{ __html: assemblyOptions.mockups.app_icon }}
+                     style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }} />
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>App Icon</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Export Brand Guide */}
+      {brandId && (
+        <div style={{ textAlign: 'center', padding: '24px 0 60px' }}>
+          <a
+            href={`/api/brands/${brandId}/export/guide`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              background: '#f17022', color: '#fff',
+              padding: '16px 32px', borderRadius: 100,
+              fontSize: 14, fontWeight: 700, letterSpacing: '0.05em',
+              textDecoration: 'none',
+              boxShadow: '0 8px 24px rgba(241,112,34,0.25)',
+            }}
+          >
+            ↗ Export Brand Guide
+          </a>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 12 }}>
+            Opens a printable brand guide — use your browser's print to save as PDF
+          </p>
         </div>
       )}
     </div>
@@ -887,7 +951,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
             </button>
           </div>
         ) : currentStep === 7 ? (
-          <AssemblyView state={fullState} />
+          <AssemblyView state={fullState} brandId={brandId} />
         ) : (
           <div style={{
             display: 'flex', gap: 16, flexWrap: 'wrap',

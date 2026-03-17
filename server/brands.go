@@ -82,6 +82,12 @@ func (s *Server) handleBrandByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Export routes
+	if subPath == "export/guide" {
+		s.handleExportGuide(w, r, brandID, claims.UserID)
+		return
+	}
+
 	// Guided co-creation routes: /api/brands/:id/guided/step, /state, /back
 	if subPath == "guided/step" || subPath == "guided/state" || subPath == "guided/back" {
 		parts := strings.SplitN(subPath, "/", 2)

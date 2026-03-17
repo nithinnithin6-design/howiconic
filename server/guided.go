@@ -918,6 +918,63 @@ Return EXACTLY this JSON:
 	if err := json.Unmarshal([]byte(cleanGeminiJSON(raw)), &result); err != nil {
 		return nil, fmt.Errorf("failed to parse assembly JSON: %w", err)
 	}
+
+	// Extract brand meta for mockups
+	chosenName := "BRAND"
+	if naming, ok := context["naming"].(map[string]interface{}); ok {
+		if n := safeStr(naming, "name"); n != "" {
+			chosenName = n
+		}
+	}
+	assemblyTagline := ""
+	if arr, ok := result.([]interface{}); ok && len(arr) > 0 {
+		if obj, ok2 := arr[0].(map[string]interface{}); ok2 {
+			if t := safeStr(obj, "tagline"); t != "" {
+				assemblyTagline = t
+			}
+		}
+	}
+	primaryHex := "#f17022"
+	secondaryHex := "#2a2a2a"
+	if colors, ok := context["colors"].(map[string]interface{}); ok {
+		if colorsList, ok2 := colors["colors"].([]interface{}); ok2 && len(colorsList) > 0 {
+			if c0, ok3 := colorsList[0].(map[string]interface{}); ok3 {
+				if h := safeStr(c0, "hex"); h != "" {
+					primaryHex = h
+				}
+			}
+			if len(colorsList) > 1 {
+				if c1, ok3 := colorsList[1].(map[string]interface{}); ok3 {
+					if h := safeStr(c1, "hex"); h != "" {
+						secondaryHex = h
+					}
+				}
+			}
+		}
+	}
+	headlineFont := "Playfair Display"
+	bodyFont := "Inter"
+	if typography, ok := context["typography"].(map[string]interface{}); ok {
+		if h := safeStr(typography, "headline_font"); h != "" {
+			headlineFont = h
+		}
+		if b := safeStr(typography, "body_font"); b != "" {
+			bodyFont = b
+		}
+	}
+
+	// Inject mockups into first assembly option
+	if arr, ok := result.([]interface{}); ok && len(arr) > 0 {
+		if obj, ok2 := arr[0].(map[string]interface{}); ok2 {
+			initial := string([]rune(chosenName)[0:1])
+			obj["mockups"] = map[string]string{
+				"business_card": generateBusinessCardSVG(chosenName, assemblyTagline, primaryHex, secondaryHex, headlineFont, bodyFont),
+				"social_header": generateSocialHeaderSVG(chosenName, assemblyTagline, primaryHex, secondaryHex, headlineFont),
+				"app_icon":      generateAppIconSVG(initial, primaryHex),
+			}
+		}
+	}
+
 	return result, nil
 }
 
@@ -1083,6 +1140,14 @@ func (s *Server) finalizeGuidedBrand(brandID int64, inputs GuidedStartRequest, c
 	brandData := composeV3Brand(vreq, strategyMap, namingFull, visualMap, integrationMap, logoSVGs, nil)
 	brandData["guided"] = true
 	brandData["guided_context"] = context
+
+	// Generate mockup SVGs and store in brand_data
+	initial := string([]rune(chosenName)[0:1])
+	brandData["mockups"] = map[string]string{
+		"business_card": generateBusinessCardSVG(chosenName, tagline, primaryHex, secondaryHex, headlineFont, bodyFont),
+		"social_header": generateSocialHeaderSVG(chosenName, tagline, primaryHex, secondaryHex, headlineFont),
+		"app_icon":      generateAppIconSVG(initial, primaryHex),
+	}
 
 	brandDataJSON, _ := json.Marshal(brandData)
 	_, err := s.db.Exec(
