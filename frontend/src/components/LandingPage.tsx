@@ -560,6 +560,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           .hero-shapes-left { display: none !important; }
         }
 
+        @media (max-width: 480px) {
+          section { padding-left: 16px !important; padding-right: 16px !important; }
+          .output-grid { grid-template-columns: 1fr !important; }
+          .output-card-hero { grid-column: span 1 !important; }
+        }
+
         @media (min-width: 769px) {
           .hi-mobile-btn { display: none !important; }
         }
@@ -983,6 +989,135 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
 
       {/* ─── 8. EDUCATION STRIP 3 ────────────────────────────────────────────── */}
       <EducationStrip fact="The Nike Swoosh cost $35. It's now worth $50 billion. Identity compounds." />
+
+      <SectionDivider />
+
+      {/* ─── SHOWCASE: Built with HowIconic ──────────────────────────────── */}
+      <section style={{ padding: '120px 48px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <Reveal style={{ marginBottom: 80, textAlign: 'center' }}>
+            <SectionLabel label="Built with HowIconic" />
+            <h2 style={{
+              fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
+            }}>
+              Real brands.<br />
+              <span style={{ color: '#f17022' }}>Built in minutes.</span>
+            </h2>
+          </Reveal>
+
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: 24,
+          }}>
+            {/* Brand 1: Seravona — Premium Coffee */}
+            <Reveal>
+              <div style={{
+                background: '#111', borderRadius: 20, overflow: 'hidden',
+                border: '1px solid rgba(255,255,255,0.06)',
+              }}>
+                {/* Color strip */}
+                <div style={{ display: 'flex', height: 8 }}>
+                  <div style={{ flex: 2, background: '#2D5016' }} />
+                  <div style={{ flex: 1, background: '#C4A35A' }} />
+                  <div style={{ flex: 1, background: '#8B4513' }} />
+                </div>
+                <div style={{ padding: '32px 28px' }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
+                    Sage · Coffee · Warm
+                  </p>
+                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 8, lineHeight: 1.1 }}>
+                    Seravona
+                  </h3>
+                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
+                    "Where every cup is a conversation with the earth."
+                  </p>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#2D5016' }} />
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#C4A35A' }} />
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#8B4513' }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                    Cormorant · Space Grotesk
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Brand 2: Voltarc — Electric Vehicles */}
+            <Reveal>
+              <div style={{
+                background: '#111', borderRadius: 20, overflow: 'hidden',
+                border: '1px solid rgba(255,255,255,0.06)',
+              }}>
+                <div style={{ display: 'flex', height: 8 }}>
+                  <div style={{ flex: 2, background: '#0066FF' }} />
+                  <div style={{ flex: 1, background: '#00D4FF' }} />
+                  <div style={{ flex: 1, background: '#1A1A2E' }} />
+                </div>
+                <div style={{ padding: '32px 28px' }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
+                    Hero · EV · Bold
+                  </p>
+                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 8, lineHeight: 1.1 }}>
+                    Voltarc
+                  </h3>
+                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
+                    "Power moves forward."
+                  </p>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#0066FF' }} />
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#00D4FF' }} />
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#1A1A2E' }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                    Bebas Neue · DM Sans
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Brand 3: Nourish & — Organic Skincare */}
+            <Reveal>
+              <div style={{
+                background: '#111', borderRadius: 20, overflow: 'hidden',
+                border: '1px solid rgba(255,255,255,0.06)',
+              }}>
+                <div style={{ display: 'flex', height: 8 }}>
+                  <div style={{ flex: 2, background: '#E8C4A0' }} />
+                  <div style={{ flex: 1, background: '#F5E6D3' }} />
+                  <div style={{ flex: 1, background: '#4A6741' }} />
+                </div>
+                <div style={{ padding: '32px 28px' }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
+                    Caregiver · Skincare · Clean
+                  </p>
+                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 8, lineHeight: 1.1 }}>
+                    Nourish &amp;
+                  </h3>
+                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
+                    "Skin that remembers kindness."
+                  </p>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#E8C4A0' }} />
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#F5E6D3' }} />
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#4A6741' }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                    DM Serif Display · Inter
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal style={{ textAlign: 'center', marginTop: 48 }}>
+            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, color: 'rgba(255,255,255,0.3)' }}>
+              Each brand was built from 4 inputs in under 5 minutes.
+            </p>
+          </Reveal>
+        </div>
+      </section>
 
       <SectionDivider />
 

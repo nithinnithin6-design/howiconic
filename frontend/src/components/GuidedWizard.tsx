@@ -670,9 +670,9 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
           <p style={labelStyle}>Brand Applications</p>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
             {assemblyOptions.mockups.business_card && (
-              <div>
+              <div style={{ maxWidth: '100%', overflow: 'hidden' }}>
                 <div dangerouslySetInnerHTML={{ __html: assemblyOptions.mockups.business_card }}
-                     style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }} />
+                     style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', maxWidth: '100%' }} />
                 <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>Business Card</p>
               </div>
             )}
