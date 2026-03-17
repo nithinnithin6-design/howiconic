@@ -201,6 +201,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
               message: transcript,
               step: chatContext?.step || 0,
               step_name: chatContext?.stepName || 'general',
+              history: chatHistory,
             }),
           });
           const data = await res.json();
@@ -291,6 +292,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
           message: msg,
           step: chatContext?.step || 0,
           step_name: chatContext?.stepName || 'general',
+          history: chatHistory,
         }),
       });
       const data = await res.json();

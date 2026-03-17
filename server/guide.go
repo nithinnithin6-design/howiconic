@@ -14,7 +14,7 @@ import (
 const guideSystemPrompt = `You are Kee — the soul of HowIconic.
 
 WHO YOU ARE:
-Your name is Kee. You introduce yourself when you first meet someone: "I'm Kee. I'll be with you through this."
+Your name is Kee. You NEVER introduce yourself — the UI already shows your name. Never say "I'm Kee" or "I'll be with you through this."
 You are the guide inside HowIconic, a Brand Operating System. You are like the Parijata flower — you bloom in the dark and leave something beautiful at dawn.
 You are quiet, generous, and present. You don't perform helpfulness. You simply help.
 You have decades of brand strategy experience. You've seen what works and what doesn't.
@@ -35,7 +35,7 @@ RESPONSE FORMAT:
 - Reference their earlier choices when relevant ("Your Sage archetype will pair naturally with these muted tones.").
 - Use real brand examples to teach: Nike, Apple, Muji, Airbnb, Coca-Cola — whatever fits.
 - Explain the WHY behind every concept. Don't just name things — explain what they do.
-- When welcoming someone for the first time, introduce yourself: "I'm Kee." Then explain what you'll build together.
+- NEVER introduce yourself. Never say "I'm Kee." The user already knows who you are.
 
 WHAT YOU NEVER DO:
 - Use jargon without context
@@ -43,7 +43,8 @@ WHAT YOU NEVER DO:
 - Give generic encouragement
 - Repeat yourself
 - Use the word "journey"
-- Over-introduce yourself — once is enough, then you're just present
+- Introduce yourself — EVER. The UI shows "KEE" label. Never say your name.
+- Start with "I'm Kee" or any variation of self-introduction
 
 BRAND CONTEXT:
 HowIconic helps companies between ₹5CR and ₹200CR build complete brand identity systems.
@@ -59,6 +60,12 @@ type GuideRequest struct {
 	Action      string          `json:"action"`       // "entering_step", "selected_option", "going_back", "welcome", "chat"
 	SelectedIdx *int            `json:"selected_idx"`
 	Message     string          `json:"message"`     // for "chat" action: free-form user message
+	History     []ChatMessage   `json:"history"`     // for "chat" action: conversation history
+}
+
+type ChatMessage struct {
+	Role string `json:"role"` // "user" or "kee"
+	Text string `json:"text"`
 }
 
 type GuideResponse struct {
@@ -95,7 +102,27 @@ If they ask about naming, give examples: "Coined names like Kodak or Xerox own t
 Aim for 3-5 sentences. Be rich with detail. You are the expert in the room — share your knowledge generously.
 But never ramble. Every sentence should teach something.`
 
-		raw, err := s.callGemini(chatSystem, req.Message, false)
+		// Build prompt with conversation history
+		var chatPrompt strings.Builder
+		if len(req.History) > 0 {
+			chatPrompt.WriteString("Previous conversation:\n")
+			// Include last 6 messages max
+			start := 0
+			if len(req.History) > 6 {
+				start = len(req.History) - 6
+			}
+			for _, msg := range req.History[start:] {
+				if msg.Role == "user" {
+					chatPrompt.WriteString("User: " + msg.Text + "\n")
+				} else {
+					chatPrompt.WriteString("Kee: " + msg.Text + "\n")
+				}
+			}
+			chatPrompt.WriteString("\nUser's new message: ")
+		}
+		chatPrompt.WriteString(req.Message)
+
+		raw, err := s.callGemini(chatSystem, chatPrompt.String(), false)
 		if err != nil {
 			writeJSON(w, 200, GuideResponse{Message: "I'm here. Ask me something specific about your brand."})
 			return
@@ -128,9 +155,10 @@ func buildGuidePrompt(req GuideRequest) string {
 
 	switch req.Action {
 	case "welcome":
-		sb.WriteString("The user just entered HowIconic. Welcome them and explain what you'll do together.\n")
-		sb.WriteString("Explain the process briefly: you'll walk through strategy, naming, colors, typography, logo direction, and voice — building a complete brand identity system.\n")
-		sb.WriteString("Use an example: 'Think of how every Apple product, store, and ad feels the same — that's what a brand system does. We're building yours.'\n")
+		sb.WriteString("The user just entered HowIconic. Do NOT introduce yourself. Jump straight into what you're building together.\n")
+		sb.WriteString("Explain the process briefly: strategy, naming, colors, typography, logo direction, and voice — a complete brand identity system.\n")
+		sb.WriteString("Use an example: 'Think of how every Apple product, store, and ad feels the same — that's what a brand system does.'\n")
+		sb.WriteString("NEVER say 'I'm Kee' or introduce yourself. Start with the work.\n")
 		if len(req.Inputs) > 0 {
 			sb.WriteString(fmt.Sprintf("Their initial inputs: %s\n", string(req.Inputs)))
 		}
