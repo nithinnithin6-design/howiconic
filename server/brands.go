@@ -88,6 +88,20 @@ func (s *Server) handleBrandByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Mockup routes
+	if subPath == "mockup/business-card" {
+		s.handleMockupBusinessCard(w, r, brandID, claims.UserID)
+		return
+	}
+	if subPath == "mockup/social" {
+		s.handleMockupSocial(w, r, brandID, claims.UserID)
+		return
+	}
+	if subPath == "mockup/letterhead" {
+		s.handleMockupLetterhead(w, r, brandID, claims.UserID)
+		return
+	}
+
 	// Guided co-creation routes: /api/brands/:id/guided/step, /state, /back
 	if subPath == "guided/step" || subPath == "guided/state" || subPath == "guided/back" {
 		parts := strings.SplitN(subPath, "/", 2)

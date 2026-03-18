@@ -5,7 +5,7 @@ import KeeAlive from './KeeAlive';
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
-type ProductionType = 'business-card' | 'social-post' | 'label' | 'letterhead' | 'email-signature';
+type ProductionType = 'business-card' | 'social-post' | 'label' | 'letterhead' | 'email-signature' | 'mockups' | 'brand-guide';
 
 interface ProductionItem {
   id: ProductionType;
@@ -15,6 +15,8 @@ interface ProductionItem {
 }
 
 const PRODUCTION_TYPES: ProductionItem[] = [
+  { id: 'mockups', icon: '⬡', label: 'Mockup Preview', desc: 'Brand in context' },
+  { id: 'brand-guide', icon: '◈', label: 'Brand Guide', desc: 'Download PDF guide' },
   { id: 'business-card', icon: '▣', label: 'Business Card', desc: 'Professional identity card' },
   { id: 'social-post', icon: '◈', label: 'Social Post', desc: 'Instagram, LinkedIn, Twitter' },
   { id: 'label', icon: '⊡', label: 'Label / Tag', desc: 'Garment & product labels' },
@@ -707,9 +709,10 @@ interface StudioViewProps {
 }
 
 const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
-  const [activeType, setActiveType] = useState<ProductionType>('business-card');
+  const [activeType, setActiveType] = useState<ProductionType>('mockups');
   const [copyMsg, setCopyMsg] = useState('');
   const [saving, setSaving] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Business card state
   const [cardData, setCardData] = useState<BusinessCardData>({
@@ -762,13 +765,16 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
 
       {/* ── LEFT SIDEBAR: production types ── */}
       <aside style={{
-        width: 200,
+        width: sidebarOpen ? 200 : 0,
+        minWidth: sidebarOpen ? 200 : 0,
         flexShrink: 0,
-        borderRight: '1px solid var(--border)',
-        padding: '24px 0',
+        borderRight: sidebarOpen ? '1px solid var(--border)' : 'none',
+        padding: sidebarOpen ? '24px 0' : 0,
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
+        overflow: 'hidden',
+        transition: 'width 0.2s ease, min-width 0.2s ease',
       }}>
         <p style={{
           margin: '0 0 12px',
@@ -832,8 +838,30 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
         flexDirection: 'column',
         overflow: 'auto',
       }}>
+        {/* Top bar with sidebar toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '16px 24px 0' }}>
+          <button
+            onClick={() => setSidebarOpen(p => !p)}
+            style={{
+              padding: '6px 10px',
+              background: 'transparent',
+              border: '1px solid var(--border)',
+              borderRadius: 6,
+              cursor: 'pointer',
+              color: 'var(--text-muted)',
+              fontSize: 12,
+              lineHeight: 1,
+            }}
+            title="Toggle sidebar"
+          >
+            {sidebarOpen ? '◀' : '▶'}
+          </button>
+          <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>
+            {PRODUCTION_TYPES.find(p => p.id === activeType)?.label || 'Studio'}
+          </span>
+        </div>
         {/* Kee */}
-        <div style={{ margin: '24px 24px 0', maxWidth: 520 }}>
+        <div style={{ margin: '16px 24px 0', maxWidth: 520 }}>
           <KeeAlive animate={false}>
             {noBrand ? 'You need a brand before you can design with it. Head to the engine.' : 'What does your brand need today? Pick a format and I will keep it on-brand.'}
           </KeeAlive>
@@ -866,13 +894,15 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
           flexWrap: 'wrap',
         }}>
 
-          {/* Form panel */}
+          {/* Form panel — hidden for mockups & brand-guide views */}
           <div style={{
-            width: 300,
+            width: (activeType === 'mockups' || activeType === 'brand-guide') ? 0 : 300,
             flexShrink: 0,
-            padding: '28px 24px',
-            borderRight: '1px solid var(--border)',
-            display: 'flex', flexDirection: 'column', gap: 16,
+            padding: (activeType === 'mockups' || activeType === 'brand-guide') ? 0 : '28px 24px',
+            borderRight: (activeType === 'mockups' || activeType === 'brand-guide') ? 'none' : '1px solid var(--border)',
+            display: (activeType === 'mockups' || activeType === 'brand-guide') ? 'none' : 'flex',
+            flexDirection: 'column', gap: 16,
+            overflow: 'hidden',
           }}>
             {/* Section header */}
             <div style={{ marginBottom: 4 }}>
@@ -1044,6 +1074,133 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
               {activeType === 'email-signature' && (
                 <EmailSignaturePreview data={sigData} brand={brand} />
               )}
+
+              {/* ── MOCKUP PREVIEWS ── */}
+              {activeType === 'mockups' && (() => {
+                const brandId = brand?.id || brand?.uid;
+                if (!brandId) return (
+                  <div style={{ padding: '32px', textAlign: 'center' }}>
+                    <p style={{ color: 'var(--text-muted)', fontSize: 12 }}>Select a brand from the Vault first.</p>
+                  </div>
+                );
+                const mockupCards = [
+                  { key: 'business-card', label: 'Business Card', path: 'business-card' },
+                  { key: 'social', label: 'Social Profile', path: 'social' },
+                  { key: 'letterhead', label: 'Letterhead', path: 'letterhead' },
+                ];
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%' }}>
+                    {mockupCards.map(mc => (
+                      <div key={mc.key} style={{
+                        border: '1px solid var(--border)',
+                        borderRadius: 12,
+                        overflow: 'hidden',
+                        background: 'var(--card-bg)',
+                      }}>
+                        <div style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          padding: '12px 16px',
+                          borderBottom: '1px solid var(--border)',
+                        }}>
+                          <p style={{ margin: 0, fontSize: 9, fontWeight: 900, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                            {mc.label}
+                          </p>
+                          <button
+                            onClick={() => window.open(`/api/brands/${brandId}/mockup/${mc.path}`, '_blank')}
+                            style={{
+                              padding: '5px 12px',
+                              background: 'rgba(241,112,34,0.1)',
+                              border: '1px solid rgba(241,112,34,0.25)',
+                              borderRadius: 6,
+                              color: '#f17022',
+                              fontSize: 9,
+                              fontWeight: 900,
+                              letterSpacing: '0.2em',
+                              textTransform: 'uppercase',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Open in Tab ↗
+                          </button>
+                        </div>
+                        <div style={{ position: 'relative', height: 320, overflow: 'hidden', background: '#111' }}>
+                          <iframe
+                            src={`/api/brands/${brandId}/mockup/${mc.path}`}
+                            title={mc.label}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              border: 'none',
+                              display: 'block',
+                            }}
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              {/* ── BRAND GUIDE DOWNLOAD ── */}
+              {activeType === 'brand-guide' && (() => {
+                const brandId = brand?.id || brand?.uid;
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 520 }}>
+                    <div style={{
+                      padding: '28px 24px',
+                      background: 'var(--card-bg)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 12,
+                    }}>
+                      <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 900, color: 'var(--text)' }}>
+                        Brand Identity Guide
+                      </p>
+                      <p style={{ margin: '0 0 20px', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                        An 8-page brand guide covering strategy, naming, color system, typography, logo, and voice — all formatted for print.
+                      </p>
+                      {!brandId ? (
+                        <p style={{ color: 'rgba(241,112,34,0.8)', fontSize: 11, fontWeight: 700 }}>
+                          Select a brand from the Vault first.
+                        </p>
+                      ) : (
+                        <button
+                          onClick={() => window.open(`/api/brands/${brandId}/export/guide`, '_blank')}
+                          style={{
+                            padding: '12px 24px',
+                            background: '#f17022',
+                            border: 'none',
+                            borderRadius: 8,
+                            color: '#fff',
+                            fontSize: 11,
+                            fontWeight: 900,
+                            letterSpacing: '0.2em',
+                            textTransform: 'uppercase',
+                            cursor: 'pointer',
+                            display: 'inline-block',
+                          }}
+                        >
+                          ⬇ Open Brand Guide
+                        </button>
+                      )}
+                    </div>
+                    <div style={{
+                      padding: '16px 20px',
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 8,
+                    }}>
+                      <p style={{ margin: 0, fontSize: 10, color: 'var(--text-subtle)', lineHeight: 1.6 }}>
+                        <strong style={{ color: 'var(--text-muted)' }}>How to save as PDF:</strong><br/>
+                        1. Click "Open Brand Guide" — it opens in a new tab<br/>
+                        2. Press <strong>Cmd+P</strong> (Mac) or <strong>Ctrl+P</strong> (Windows)<br/>
+                        3. Choose "Save as PDF" as the printer<br/>
+                        4. Done — professional brand guide ready to share
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Usage hint */}
@@ -1057,6 +1214,10 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
               <p style={{ margin: 0, fontSize: 9, color: 'var(--text-subtle)', lineHeight: 1.6 }}>
                 {activeType === 'email-signature'
                   ? '→ Click "Copy HTML" then paste into Gmail/Outlook Settings → Signature.'
+                  : activeType === 'mockups'
+                  ? '→ Click "Open in Tab" on any mockup to view full-size. Print via Cmd+P / Ctrl+P to save.'
+                  : activeType === 'brand-guide'
+                  ? '→ Opens the brand guide in a new tab. Use Cmd+P / Ctrl+P to save as PDF.'
                   : '→ Take a screenshot of the preview above to save your design. Use browser zoom to adjust scale.'}
               </p>
             </div>

@@ -356,6 +356,13 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onExplore, onBack, onOpenR
           >
             ↓ Export
           </button>
+          <button
+            onClick={() => { const id = brand.id || brand.uid; if (id) window.open(`/api/brands/${id}/export/guide`, '_blank'); }}
+            className="no-print text-[9px] uppercase font-black tracking-[0.3em] text-white/30 hover:text-white px-4 py-2 border border-white/10 rounded-full transition-all cursor-pointer hover:border-brand-primary/30 hover:text-brand-primary/60"
+            title="Opens the brand guide in a new tab — use Cmd+P / Ctrl+P to save as PDF"
+          >
+            ⬇ Brand Kit
+          </button>
         </div>
       </div>
 
@@ -644,6 +651,13 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
             className="no-print text-[9px] uppercase font-black tracking-[0.3em] text-white/30 hover:text-white px-4 py-2 border border-white/10 rounded-full transition-all cursor-pointer"
           >
             ↓ Export
+          </button>
+          <button
+            onClick={() => { const id = brand.id || brand.uid; if (id) window.open(`/api/brands/${id}/export/guide`, '_blank'); }}
+            className="no-print text-[9px] uppercase font-black tracking-[0.3em] text-white/30 hover:text-white px-4 py-2 border border-white/10 rounded-full transition-all cursor-pointer hover:border-brand-primary/30 hover:text-brand-primary/60"
+            title="Opens the brand guide in a new tab — use Cmd+P / Ctrl+P to save as PDF"
+          >
+            ⬇ Brand Kit PDF
           </button>
         </div>
       </div>
