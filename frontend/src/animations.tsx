@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 // Hook: triggers when element enters viewport
-export function useReveal(threshold = 0.15) {
+export function useReveal(threshold = 0.01) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -9,14 +9,21 @@ export function useReveal(threshold = 0.15) {
     const el = ref.current;
     if (!el) return;
 
+    // Check if element is in or near viewport on mount
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 200) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.unobserve(el); // Only animate once
+          observer.unobserve(el);
         }
       },
-      { threshold }
+      { threshold, rootMargin: '0px 0px 200px 0px' }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -28,9 +35,9 @@ export function useReveal(threshold = 0.15) {
 // Component: wraps children with reveal animation
 interface RevealProps {
   children: React.ReactNode;
-  delay?: number; // ms
+  delay?: number;
   direction?: 'up' | 'down' | 'left' | 'right' | 'fade' | 'scale';
-  duration?: number; // ms
+  duration?: number;
   style?: React.CSSProperties;
   className?: string;
 }
@@ -55,7 +62,6 @@ export function Reveal({ children, delay = 0, direction = 'up', duration = 800, 
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0) translateX(0) scale(1)' : transforms[direction],
         transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
-        willChange: 'opacity, transform',
         ...style,
       }}
     >
