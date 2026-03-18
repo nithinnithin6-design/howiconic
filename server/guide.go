@@ -84,6 +84,19 @@ func (s *Server) handleGuideMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Optional authentication — load memory if authenticated, skip silently if not
+	var userID int64
+	claims, authErr := s.authenticate(r)
+	if authErr == nil && claims != nil {
+		userID = claims.UserID
+	}
+
+	// Build memory context (empty string if unauthenticated or no memories yet)
+	memoryCtx := ""
+	if userID > 0 {
+		memoryCtx = s.buildKeeMemoryContext(userID)
+	}
+
 	// Handle free-form chat action
 	if req.Action == "chat" {
 		if req.Message == "" {
@@ -91,7 +104,12 @@ func (s *Server) handleGuideMessage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		chatSystem := guideSystemPrompt + `
+		// Increment interaction count asynchronously (best-effort)
+		if userID > 0 {
+			go s.incrementInteractionCount(userID)
+		}
+
+		chatSystem := guideSystemPrompt + memoryCtx + `
 
 IMPORTANT — CHAT MODE INSTRUCTIONS:
 Current context: the user is on step ` + fmt.Sprintf("%d", req.Step) + ` (` + req.StepName + `) of the brand building process.
@@ -134,8 +152,9 @@ But never ramble. Every sentence should teach something.`
 	// Build user prompt with context
 	userPrompt := buildGuidePrompt(req)
 
-	// Call Gemini
-	response, err := s.callGemini(guideSystemPrompt, userPrompt, false)
+	// Call Gemini (with memory context injected into system prompt)
+	systemWithMemory := guideSystemPrompt + memoryCtx
+	response, err := s.callGemini(systemWithMemory, userPrompt, false)
 	if err != nil {
 		// Fallback to static messages
 		fallback := getGuideFallback(req.Step, req.Action)

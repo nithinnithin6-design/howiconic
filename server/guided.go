@@ -221,6 +221,21 @@ func (s *Server) handleGuidedStep(w http.ResponseWriter, r *http.Request, brandI
 		log.Printf("[guided] Failed to update step %d for brand %d: %v", req.Step, numericID, err)
 	}
 
+	// Save notable choice to Kee's memory (best-effort, in background)
+	go func(uid int64, stepNum int, stepName string, selIdx int) {
+		if uid <= 0 {
+			return
+		}
+		notable, _ := s.getKeeMemory(uid, "notable_choices")
+		newChoice := fmt.Sprintf("Step %d (%s): chose option %d", stepNum, stepName, selIdx+1)
+		if notable != "" {
+			notable += "; " + newChoice
+		} else {
+			notable = newChoice
+		}
+		s.setKeeMemory(uid, "notable_choices", notable) //nolint
+	}(userID, req.Step, stepNames[req.Step], req.SelectedIndex)
+
 	// Parse the brand inputs
 	var inputs GuidedStartRequest
 	json.Unmarshal([]byte(inputsStr), &inputs)
@@ -1158,6 +1173,28 @@ func (s *Server) finalizeGuidedBrand(brandID int64, inputs GuidedStartRequest, c
 		log.Printf("[guided] Failed to finalize brand %d: %v", brandID, err)
 	} else {
 		log.Printf("[guided] Brand %d finalized with name %q", brandID, chosenName)
+	}
+
+	// Save brand to Kee's memory — look up the owning user
+	var ownerID int64
+	if err2 := s.db.QueryRow("SELECT user_id FROM brands WHERE id = ?", brandID).Scan(&ownerID); err2 == nil && ownerID > 0 {
+		s.setKeeMemory(ownerID, "last_brand", chosenName) //nolint
+
+		// Rebuild full brand names list
+		brandRows, err3 := s.db.Query("SELECT name FROM brands WHERE user_id = ? AND name != '' AND name != 'Untitled Brand'", ownerID)
+		if err3 == nil {
+			defer brandRows.Close()
+			var names []string
+			for brandRows.Next() {
+				var n string
+				brandRows.Scan(&n) //nolint
+				names = append(names, n)
+			}
+			if len(names) > 0 {
+				summaryBytes, _ := json.Marshal(names)
+				s.setKeeMemory(ownerID, "brands_summary", string(summaryBytes)) //nolint
+			}
+		}
 	}
 }
 

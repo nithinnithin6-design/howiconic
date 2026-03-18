@@ -94,6 +94,12 @@ func (s *Server) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID, _ := result.LastInsertId()
+
+	// Save user's name in Kee's memory so she can address them by name
+	if req.Name != "" {
+		go s.setKeeMemory(userID, "user_name", req.Name) //nolint
+	}
+
 	token, err := s.createToken(userID, req.Email)
 	if err != nil {
 		writeError(w, 500, "Failed to create session")

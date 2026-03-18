@@ -142,6 +142,23 @@ func migrate(db *sql.DB) error {
 		return err
 	}
 
+	// v5 kee_memory — cross-session user memory for Kee
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS kee_memory (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			key TEXT NOT NULL,
+			value TEXT NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE(user_id, key)
+		);
+		CREATE INDEX IF NOT EXISTS idx_kee_memory_user_id ON kee_memory(user_id);
+	`)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
