@@ -193,9 +193,40 @@ func buildGuidePrompt(req GuideRequest) string {
 		if len(req.Options) > 0 {
 			sb.WriteString(fmt.Sprintf("The options being shown: %s\n", string(req.Options)))
 		}
-		sb.WriteString("Give them context for this step. What should they think about? Be specific to THEIR brand, not generic.\n")
-		sb.WriteString("Use real-world brand examples to illustrate your point (e.g., 'Apple chose minimalism because...', 'Nike's swoosh works because...').\n")
-		sb.WriteString("Explain WHY this step matters and what makes one choice better than another for THEIR specific brand. 3-5 sentences.")
+
+		// Step-specific guidance — Kee drives the conversation
+		switch req.Step {
+		case 1:
+			sb.WriteString("This is STRATEGY. Ask them to think about what their brand believes — not what it sells.\n")
+			sb.WriteString("Use an example: 'Patagonia believes the planet matters more than profit. That belief drives everything — their materials, their ads, their repair program. What does YOUR brand believe?'\n")
+			sb.WriteString("Frame it as a question they need to answer before choosing an option.\n")
+		case 2:
+			sb.WriteString("This is NAMING. Explain the three types of brand names with examples.\n")
+			sb.WriteString("Coined names (Kodak, Xerox) — own the space completely, no dictionary baggage. Descriptive (General Electric) — say what you do. Evocative (Nike, Apple) — borrow meaning from something else.\n")
+			sb.WriteString("Ask: 'Which direction feels right for what you're building?'\n")
+		case 3:
+			sb.WriteString("This is COLORS. Teach color psychology with specific examples.\n")
+			sb.WriteString("Red = urgency, passion (Coca-Cola, YouTube). Blue = trust, stability (PayPal, LinkedIn). Green = growth, nature (Whole Foods). Black = luxury (Chanel). Orange = energy, warmth.\n")
+			sb.WriteString("Ask: 'What emotion should someone feel the moment they see your brand?'\n")
+		case 4:
+			sb.WriteString("This is TYPOGRAPHY. Explain how type carries personality.\n")
+			sb.WriteString("Serif = tradition, trust (The New York Times). Sans-serif = modern, clean (Google). Script = personal, elegant (Cadillac). Geometric = structured, technical (Futura).\n")
+			sb.WriteString("Ask: 'Should your brand feel established and timeless, or modern and forward-looking?'\n")
+		case 5:
+			sb.WriteString("This is LOGO. Explain logo types.\n")
+			sb.WriteString("Wordmark (Google, Coca-Cola) — the name IS the logo. Symbol (Apple, Nike) — an icon that stands alone. Combination (Adidas, Burger King) — both together.\n")
+			sb.WriteString("Ask: 'Does your brand need to be recognized by name first, or do you want a symbol people remember?'\n")
+		case 6:
+			sb.WriteString("This is VOICE. Explain brand voice with examples.\n")
+			sb.WriteString("Innocent Smoothies = playful and cheeky. Apple = minimal and confident. Nike = intense and motivational. Muji = quiet and understated.\n")
+			sb.WriteString("Ask: 'If your brand walked into a room, how would it introduce itself?'\n")
+		case 7:
+			sb.WriteString("This is ASSEMBLY. Everything comes together.\n")
+			sb.WriteString("Remind them what they chose. Point out how the pieces connect. 'Your Sage archetype with those deep blues and that serif typeface — this is starting to feel like a brand that teaches, not sells.'\n")
+		}
+
+		sb.WriteString("IMPORTANT: Frame your response as a QUESTION or PROMPT — not a statement. Kee is leading the conversation, not narrating it.\n")
+		sb.WriteString("Give real-world examples to help them think. 3-5 sentences max.\n")
 
 	case "selected_option":
 		sb.WriteString(fmt.Sprintf("The user just selected option %d in Step %d: %s.\n", *req.SelectedIdx+1, req.Step, req.StepName))
@@ -206,7 +237,8 @@ func buildGuidePrompt(req GuideRequest) string {
 			sb.WriteString(fmt.Sprintf("Their previous choices: %s\n", string(req.Selections)))
 		}
 		sb.WriteString("React to their choice. What does it tell you about their brand? How does it connect to what they chose before?\n")
-		sb.WriteString("Use a real brand example that made a similar choice and explain what it did for them. 2-4 sentences.")
+		sb.WriteString("Use a real brand example that made a similar choice and explain what it did for them. 2-4 sentences.\n")
+		sb.WriteString("Then LOOK FORWARD: briefly hint at what the next step will explore. 'Next, we're looking at [next step] — and your choice here will shape what works there.'\n")
 
 	case "going_back":
 		sb.WriteString(fmt.Sprintf("The user went back to Step %d: %s. They want to reconsider.\n", req.Step, req.StepName))
@@ -221,19 +253,19 @@ func buildGuidePrompt(req GuideRequest) string {
 
 func getGuideFallback(step int, action string) string {
 	if action == "welcome" {
-		return "Welcome. Let's build something that lasts."
+		return "What does your brand believe? Not what it sells — what it stands for."
 	}
 	fallbacks := map[int]string{
-		1: "Strategy is the foundation. Everything else grows from what you choose here.",
-		2: "A name is the first thing people hear. Choose the one that feels like yours.",
-		3: "Color is emotion before language. Trust your instinct.",
-		4: "Typography carries your voice before anyone reads a word.",
-		5: "Your mark is how the world recognizes you at a glance.",
-		6: "Voice is how your brand speaks when you're not in the room.",
-		7: "Every choice you've made, assembled into one coherent system.",
+		1: "Before you pick a strategy, think about this: what would your brand fight for, even if it cost money? Patagonia fights for the planet. Nike fights for the athlete in everyone. What's your fight?",
+		2: "A name is the first word people hear. Should it describe what you do, like General Electric? Or should it mean something bigger, like Nike? Or be entirely new, like Kodak?",
+		3: "Close your eyes. What color is the feeling your brand creates? Red is urgency. Blue is trust. Green is growth. Black is power. What's yours?",
+		4: "Typography is your brand's handwriting. Serif fonts like Times feel established. Sans-serif like Helvetica feel modern. Which feels more like you?",
+		5: "Some brands are recognized by a word. Others by a symbol. Apple doesn't need to write 'Apple' — the icon is enough. Does your brand need that kind of symbol?",
+		6: "If your brand could only say ten words to a stranger, what would they be? That tone — confident, playful, serious, warm — that's your voice.",
+		7: "Look at everything you've chosen. Strategy, name, colors, type, logo, voice. Do they tell one clear story? That's what makes a brand system work.",
 	}
-	if msg, ok := fallbacks[step]; ok {
-		return msg
+	if f, ok := fallbacks[step]; ok {
+		return f
 	}
-	return "Take your time here. The specifics matter more than you'd expect."
+	return "What matters most to you about this choice?"
 }
