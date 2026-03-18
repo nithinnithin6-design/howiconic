@@ -426,36 +426,65 @@ const LogoCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardPr
   </div>
 );
 
-const VoiceCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
-  <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
-    {selected && <SelectedCheck />}
-    <HeartIcon filled={wishlisted} onClick={onWishlist} />
-    <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#f17022', marginBottom: 8, paddingRight: 24 }}>
-      {option.voice_name}
-    </p>
-    <div style={{ marginBottom: 16 }}>
-      <span style={{ fontSize: 11, color: 'var(--text-muted)', marginRight: 12 }}>Tone: {option.tone}</span>
-      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Personality: {option.personality}</span>
-    </div>
-    {option.sample_tagline && (
-      <p style={{ fontSize: 16, fontFamily: 'Georgia, serif', fontStyle: 'italic', color: 'var(--text)', marginBottom: 16, lineHeight: 1.5 }}>
-        "{option.sample_tagline}"
+const VoiceCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => {
+  // Support both old field names (tone/personality) and new ones (tone_description/tone_attributes)
+  const toneText = option.tone_description || option.tone || '';
+  const toneAttrs: string[] = option.tone_attributes || (option.personality ? [option.personality] : []);
+  const sampleCopy = option.sample_copy || {};
+  const tagline = sampleCopy.tagline || option.sample_tagline || '';
+  const socialPost = sampleCopy.social_post || option.sample_social || '';
+  const emailSubject = sampleCopy.email_subject || option.sample_email || '';
+  const headline = sampleCopy.headline || '';
+
+  return (
+    <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
+      {selected && <SelectedCheck />}
+      <HeartIcon filled={wishlisted} onClick={onWishlist} />
+      <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#f17022', marginBottom: 8, paddingRight: 24 }}>
+        {option.voice_name}
       </p>
-    )}
-    {option.sample_social && (
-      <div style={{ background: 'var(--card-bg)', borderRadius: 10, padding: '12px 14px', marginBottom: 12 }}>
-        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Social post</p>
-        <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{option.sample_social}</p>
-      </div>
-    )}
-    {option.sample_email && (
-      <div style={{ background: 'var(--card-bg)', borderRadius: 10, padding: '12px 14px' }}>
-        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Email excerpt</p>
-        <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{option.sample_email}</p>
-      </div>
-    )}
-  </div>
-);
+      {toneText && (
+        <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 12 }}>
+          {toneText}
+        </p>
+      )}
+      {toneAttrs.length > 0 && (
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+          {toneAttrs.map((attr: string, i: number) => (
+            <span key={i} style={{
+              fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+              color: 'var(--text-muted)', padding: '3px 8px', borderRadius: 100,
+              border: '1px solid var(--border)',
+            }}>{attr}</span>
+          ))}
+        </div>
+      )}
+      {tagline && (
+        <p style={{ fontSize: 16, fontFamily: 'Georgia, serif', fontStyle: 'italic', color: 'var(--text)', marginBottom: 16, lineHeight: 1.5 }}>
+          "{tagline}"
+        </p>
+      )}
+      {headline && (
+        <div style={{ background: 'var(--card-bg)', borderRadius: 10, padding: '12px 14px', marginBottom: 12 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Headline</p>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, fontStyle: 'italic' }}>{headline}</p>
+        </div>
+      )}
+      {socialPost && (
+        <div style={{ background: 'var(--card-bg)', borderRadius: 10, padding: '12px 14px', marginBottom: 12 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Social post</p>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{socialPost}</p>
+        </div>
+      )}
+      {emailSubject && (
+        <div style={{ background: 'var(--card-bg)', borderRadius: 10, padding: '12px 14px' }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Email subject</p>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{emailSubject}</p>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // ─── ASSEMBLY VIEW ────────────────────────────────────────────────────────────
 
@@ -759,6 +788,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
   const [error, setError] = useState('');
   const [fullState, setFullState] = useState<any>(null);
   const [selections, setSelections] = useState<Record<number, any>>({});
+  const [buildSuccess, setBuildSuccess] = useState(false);
 
   // Start the guided flow
   useEffect(() => {
@@ -829,9 +859,13 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
       setError('');
 
       if (currentStep === 7) {
-        // Final step — complete
-        await api.guidedStep(brandId, currentStep, selectedIndex, wishlisted);
-        onComplete(brandId);
+        // Final step — brand was already finalized in background when step 6 completed.
+        // Show success state, then redirect.
+        setBuildSuccess(true);
+        setLoading(false);
+        setTimeout(() => {
+          if (brandId !== null) onComplete(brandId);
+        }, 2500);
         return;
       }
 
@@ -907,6 +941,50 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
       setLoading(false);
     }
   }, [brandId, currentStep, onBack]);
+
+  // Success overlay — shown after "Build my brand" for 2.5s
+  if (buildSuccess) {
+    return (
+      <main style={{
+        flex: 1, display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        minHeight: '100vh', background: 'var(--bg)',
+        padding: '0 16px',
+      }}>
+        <div style={{ textAlign: 'center', animation: 'fadeInScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}>
+          <div style={{
+            width: 80, height: 80, borderRadius: '50%',
+            background: 'linear-gradient(135deg, #f17022, #ff8c42)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 24px',
+            boxShadow: '0 0 60px rgba(241,112,34,0.5)',
+          }}>
+            <span style={{ fontSize: 36 }}>✓</span>
+          </div>
+          <h2 style={{
+            fontFamily: 'Playfair Display, serif', fontWeight: 900,
+            fontSize: 'clamp(2rem, 6vw, 3.5rem)',
+            color: 'var(--text)', marginBottom: 16,
+            textTransform: 'uppercase', fontStyle: 'italic',
+          }}>
+            Your brand is ready.
+          </h2>
+          <p style={{
+            fontFamily: 'Georgia, serif', fontStyle: 'italic',
+            fontSize: 16, color: 'var(--text-muted)', lineHeight: 1.7,
+          }}>
+            Taking you to your Brand Manual…
+          </p>
+        </div>
+        <style>{`
+          @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+          }
+        `}</style>
+      </main>
+    );
+  }
 
   return (
     <main className="page-enter" style={{

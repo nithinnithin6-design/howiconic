@@ -178,7 +178,11 @@ const VaultView: React.FC<VaultViewProps> = ({
   const [showTree, setShowTree] = useState(false);
 
   const filtered = useMemo(() => {
-    let result = [...brands];
+    // Filter out incomplete/ghost brands (no name or placeholder name)
+    let result = brands.filter(b => {
+      const n = b.name?.trim() || '';
+      return n !== '' && n !== 'Untitled Brand';
+    });
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(b => b.name?.toLowerCase().includes(q) || b.voice?.tagline?.toLowerCase().includes(q));
@@ -198,7 +202,7 @@ const VaultView: React.FC<VaultViewProps> = ({
 
       {/* Kee */}
       <KeeAlive animate={false}>
-        {brands.length === 0 ? "Nothing here yet. Go to the engine — four questions and we start building." : "Pick one to keep building. Every brand here is a living system — it grows with you."}
+        {filtered.length === 0 && !search.trim() ? "Nothing here yet. Go to the engine — four questions and we start building." : "Pick one to keep building. Every brand here is a living system — it grows with you."}
       </KeeAlive>
 
       {/* Header */}
@@ -213,7 +217,7 @@ const VaultView: React.FC<VaultViewProps> = ({
         </h2>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          {brands.length >= 2 && (
+          {filtered.length >= 2 && (
             <>
               {compareMode && compareIds.length === 2 && (
                 <button
@@ -281,7 +285,7 @@ const VaultView: React.FC<VaultViewProps> = ({
       )}
 
       {/* Controls */}
-      {brands.length > 0 && (
+      {filtered.length > 0 && (
         <div style={{
           display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 32,
         }}>
@@ -401,7 +405,7 @@ const VaultView: React.FC<VaultViewProps> = ({
       </AnimatePresence>
 
       {/* Empty state */}
-      {brands.length === 0 ? (
+      {filtered.length === 0 && !search.trim() ? (
         <AnimReveal direction="fade">
         <div style={{ textAlign: 'center', padding: '80px 16px' }}>
           <VaultEmptyIllustration />

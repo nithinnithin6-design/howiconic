@@ -22,11 +22,11 @@ const MasterSealSmall = () => (
 );
 
 const NAV_ITEMS = [
-  { key: 'engine' as AppView, icon: '⚡', label: 'Engine', desc: 'Create brand' },
-  { key: 'vault' as AppView, icon: '◈', label: 'Vault', desc: 'Brand dashboard' },
-  { key: 'architecture' as AppView, icon: '⊹', label: 'Architecture', desc: 'Brand tree' },
-  { key: 'studio' as AppView, icon: '◉', label: 'Studio', desc: 'Design production' },
-  { key: 'about' as AppView, icon: '◇', label: 'Our Story', desc: 'The Parijata story' },
+  { key: 'engine' as AppView, icon: '⚡', label: 'Engine', desc: 'Create brand', tooltip: 'Engine' },
+  { key: 'vault' as AppView, icon: '◈', label: 'Vault', desc: 'Brand dashboard', tooltip: 'Vault' },
+  { key: 'architecture' as AppView, icon: '⊹', label: 'Architecture', desc: 'Brand tree', tooltip: 'Studio' },
+  { key: 'studio' as AppView, icon: '◉', label: 'Studio', desc: 'Design production', tooltip: 'Architecture' },
+  { key: 'about' as AppView, icon: '◇', label: 'Our Story', desc: 'The Parijata story', tooltip: 'Brand Manual' },
 ];
 
 const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandCount = 0 }) => {
@@ -74,14 +74,14 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
 
         {/* Nav items */}
         <nav style={{ flex: 1, padding: '12px 0', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {NAV_ITEMS.map(({ key, icon, label, disabled }: any) => {
+          {NAV_ITEMS.map(({ key, icon, label, tooltip, disabled }: any) => {
             const isActive = currentView === key;
             return (
               <button
                 key={key}
                 onClick={() => !disabled && onNavigate(key)}
                 disabled={disabled}
-                title={label}
+                title={tooltip || label}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '12px 18px',
@@ -134,7 +134,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
           {brandCount >= 2 && (
             <button
               onClick={() => onNavigate('vault')}
-              title="Compare"
+              title="Compare brands side by side"
               style={{
                 display: 'flex', alignItems: 'center', gap: 14,
                 padding: '12px 18px',

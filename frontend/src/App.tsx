@@ -1013,12 +1013,23 @@ const App: React.FC = () => {
               <GuidedWizard
                 initialInputs={guidedInputs}
                 onComplete={async (brandId) => {
-                  // Fetch the completed brand and show it
+                  // Fetch the completed brand and show it in Brand Manual
                   try {
-                    const brands = await api.getHistory();
-                    const brand = brands.find((b: any) => b.id === brandId || b.uid === String(brandId));
-                    if (brand) {
-                      setBrand(brand);
+                    const brands = await api.listBrands();
+                    const rawBrand = brands.find((b: any) => b.id === brandId || b.uid === String(brandId));
+                    if (rawBrand) {
+                      const brandData = {
+                        ...JSON.parse(typeof rawBrand.brand_data === 'string' ? rawBrand.brand_data : JSON.stringify(rawBrand.brand_data)),
+                        id: rawBrand.id,
+                        uid: rawBrand.uid,
+                      };
+                      setBrand(brandData);
+                      // Also update the vault list
+                      setHistory((prev: any[]) => {
+                        const exists = prev.find((b: any) => b.id === rawBrand.id);
+                        if (exists) return prev.map((b: any) => b.id === rawBrand.id ? brandData : b);
+                        return [brandData, ...prev];
+                      });
                       setView('manual');
                     } else {
                       setView('vault');

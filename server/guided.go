@@ -840,7 +840,7 @@ func (s *Server) generateGuidedVoice(inputs GuidedStartRequest, context map[stri
 	colorsJSON, _ := json.Marshal(context["colors"])
 
 	system := `You are a brand voice strategist. Return ONLY valid JSON. No markdown.`
-	user := fmt.Sprintf(`Generate voice & tone guidelines for this brand.
+	user := fmt.Sprintf(`Generate THREE distinct voice & tone options for this brand.
 
 Brand context:
 - Idea: %s
@@ -851,10 +851,10 @@ Brand context:
 - Name chosen: %s
 - Colors: %s
 
-Return EXACTLY this JSON (single object — this is the voice system, not options):
+Return EXACTLY this JSON (array of 3 voice options — each is a different voice personality):
 [
   {
-    "voice_name": "name for this voice archetype (e.g., 'The Direct Visionary', 'The Warm Expert')",
+    "voice_name": "name for this voice archetype (e.g., 'The Direct Visionary')",
     "tone_description": "2-3 sentences: describe how the brand sounds — not what it says, but HOW it says it",
     "tone_attributes": ["attribute 1 (e.g., Direct)", "attribute 2", "attribute 3", "attribute 4"],
     "sample_copy": {
@@ -866,11 +866,39 @@ Return EXACTLY this JSON (single object — this is the voice system, not option
     },
     "dos": ["Do: specific action tied to this brand's voice", "Do: specific action", "Do: specific action"],
     "donts": ["Never: specific behavior that contradicts this voice", "Never: specific behavior", "Never: specific behavior"]
+  },
+  {
+    "voice_name": "a different voice archetype (e.g., 'The Warm Expert')",
+    "tone_description": "2-3 sentences: clearly different tone from option 1",
+    "tone_attributes": ["different attribute 1", "attribute 2", "attribute 3", "attribute 4"],
+    "sample_copy": {
+      "headline": "headline in this distinctly different voice",
+      "product_description": "2-3 sentences in this voice",
+      "social_post": "social caption in this voice (under 150 chars)",
+      "email_subject": "email subject in this voice",
+      "tagline": "4-8 word tagline in this voice"
+    },
+    "dos": ["Do: specific action", "Do: specific action", "Do: specific action"],
+    "donts": ["Never: specific behavior", "Never: specific behavior", "Never: specific behavior"]
+  },
+  {
+    "voice_name": "a third voice archetype (e.g., 'The Irreverent Challenger')",
+    "tone_description": "2-3 sentences: clearly different from options 1 and 2",
+    "tone_attributes": ["distinct attribute 1", "attribute 2", "attribute 3", "attribute 4"],
+    "sample_copy": {
+      "headline": "headline in this third distinct voice",
+      "product_description": "2-3 sentences in this voice",
+      "social_post": "social caption in this voice (under 150 chars)",
+      "email_subject": "email subject in this voice",
+      "tagline": "4-8 word tagline in this voice"
+    },
+    "dos": ["Do: specific action", "Do: specific action", "Do: specific action"],
+    "donts": ["Never: specific behavior", "Never: specific behavior", "Never: specific behavior"]
   }
 ]
 
-Note: Return as array with 1 item. The user reviews/edits this — not a choice between options.
 Rules:
+- The 3 options must feel genuinely different — different personality, different energy
 - Sample copy must be written AS the brand speaking — not describing the brand
 - Dos/donts must be brand-specific, not generic writing rules
 - Tone attributes: short words that nail the personality (e.g., Direct, Warm, Precise, Irreverent)`,
