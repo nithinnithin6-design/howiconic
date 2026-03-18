@@ -1020,28 +1020,37 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
       {/* Content */}
       <div style={{ flex: 1, maxWidth: 900, margin: '0 auto', width: '100%', paddingBottom: 100 }}>
         {loading ? (
-          <ParijataSpinner />
+          <div style={{ textAlign: 'center', padding: 60 }}>
+            <div className="kee-breathe" style={{ width: 48, height: 48, margin: '0 auto 16px', borderRadius: '50%', background: 'var(--accent, #f17022)', opacity: 0.6 }} />
+            <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>Generating your options...</p>
+          </div>
         ) : error ? (
-          <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <p style={{ color: '#ef4444', fontSize: 14, marginBottom: 16 }}>{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              style={{
-                background: 'none', border: '1px solid var(--border)',
-                color: 'var(--text)', padding: '10px 24px', borderRadius: 100,
-                cursor: 'pointer', fontSize: 12, fontWeight: 700,
-              }}
-            >
+          <div style={{ textAlign: 'center', padding: 60 }}>
+            <p style={{ color: 'var(--text)', fontSize: 16, marginBottom: 12 }}>Something went wrong</p>
+            <button className="btn-interactive" onClick={() => window.location.reload()} style={{ background: 'var(--accent, #f17022)', color: '#fff', padding: '10px 24px', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
               Try again
             </button>
           </div>
         ) : currentStep === 7 ? (
           <AssemblyView state={fullState} brandId={brandId} />
         ) : (
-          <div style={{
+          <div className="wizard-options-grid" style={{
             display: 'flex', gap: 16, flexWrap: 'wrap',
             justifyContent: 'center', padding: '16px 0',
           }}>
+            <style>{`
+              @media (max-width: 640px) {
+                .wizard-options-grid {
+                  flex-direction: column !important;
+                  align-items: stretch !important;
+                }
+                .wizard-options-grid > * {
+                  flex: unset !important;
+                  min-width: unset !important;
+                  width: 100% !important;
+                }
+              }
+            `}</style>
             {options.map((opt, i) =>
               renderCard(currentStep, opt, i, selectedIndex === i, wishlisted.includes(i),
                 () => handleSelect(i), (e) => handleWishlist(i, e))
@@ -1052,7 +1061,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
 
       {/* Navigation */}
       {!loading && !error && (
-        <div style={{
+        <div className="wizard-bottom-nav" style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
           background: 'var(--overlay)',
           backdropFilter: 'blur(12px)',
@@ -1062,8 +1071,23 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           zIndex: 10,
         }}>
+        <style>{`
+          @media (max-width: 640px) {
+            .wizard-bottom-nav {
+              padding: 12px 16px !important;
+              gap: 12px;
+            }
+            .wizard-bottom-nav .wizard-step-label {
+              display: none !important;
+            }
+            .wizard-continue-btn {
+              flex: 1;
+              justify-content: center;
+            }
+          }
+        `}</style>
           {/* Step counter — center */}
-          <p style={{
+          <p className="wizard-step-label" style={{
             position: 'absolute', left: '50%', transform: 'translateX(-50%)',
             fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
             color: 'var(--text-subtle)', margin: 0,
@@ -1087,7 +1111,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
           <button
             onClick={handleContinue}
             disabled={currentStep !== 7 && selectedIndex === null}
-            className="btn-interactive"
+            className="btn-interactive wizard-continue-btn"
             style={{
               background: (currentStep !== 7 && selectedIndex === null) ? 'rgba(241,112,34,0.3)' : '#f17022',
               border: 'none', cursor: (currentStep !== 7 && selectedIndex === null) ? 'not-allowed' : 'pointer',

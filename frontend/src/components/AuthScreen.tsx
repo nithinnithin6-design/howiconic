@@ -36,7 +36,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-[300] overflow-hidden" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="auth-wrapper fixed inset-0 flex items-center justify-center z-[300] overflow-hidden" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       <style>{`
         [data-theme="light"] .auth-input {
           background: rgba(26,26,26,0.04) !important;
@@ -50,6 +50,24 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
         [data-theme="light"] .auth-back { color: rgba(26,26,26,0.35) !important; }
         [data-theme="light"] .auth-back:hover { color: #1a1a1a !important; }
         [data-theme="light"] .auth-footer-text { color: rgba(26,26,26,0.2) !important; }
+
+        /* Mobile auth fixes */
+        @media (max-width: 640px) {
+          /* Prevent iOS zoom on input focus */
+          .auth-input { font-size: 16px !important; }
+          /* Centered, full-width form */
+          .auth-inner-wrapper {
+            padding: 0 16px !important;
+            max-width: 100% !important;
+          }
+          /* Auth title scales down */
+          .auth-title { font-size: 2.8rem !important; }
+          /* Form card padding */
+          .auth-form-card { padding: 28px 20px !important; }
+          /* Submit button full width already via w-full */
+          /* No horizontal overflow */
+          .auth-wrapper { overflow-x: hidden; }
+        }
       `}</style>
       <div className="absolute inset-0 blueprint-grid opacity-[0.04]" />
 
@@ -69,7 +87,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
       )}
 
       <AnimReveal direction="scale" duration={700} style={{ width: '100%', maxWidth: '32rem', padding: '0 1.5rem' }}>
-      <div className="relative z-10 w-full max-w-lg px-6 md:px-8">
+      <div className="auth-inner-wrapper relative z-10 w-full max-w-lg px-6 md:px-8">
         {/* Header */}
         <div className="text-center mb-16 space-y-6">
           <div className="flex items-center justify-center gap-4 mb-8">
@@ -94,7 +112,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="p-10 backdrop-blur-xl rounded-[2rem] space-y-6" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
+          <div className="auth-form-card p-10 backdrop-blur-xl rounded-[2rem] space-y-6" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
             <div className="flex gap-2 mb-8">
               <button
                 type="button"

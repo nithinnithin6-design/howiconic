@@ -426,3 +426,148 @@ button, a, [role="button"], input[type="range"], select, summary { cursor: point
 
 /* CompareView column */
 [data-theme="light"] .compare-column { background-color: rgba(26,26,26,0.01) !important; }
+
+/* Kee breathing animation — used in loading states (global) */
+@keyframes keeBreathePulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+.kee-breathe {
+  animation: keeBreathePulse 2s ease-in-out infinite;
+}
+
+/* ─── MOBILE RESPONSIVE: 390px (iPhone Safari) ────────────────────────────── */
+
+@media (max-width: 640px) {
+
+  /* ── LandingPage ── */
+  /* Nav: show login button, hide desktop links */
+  .hi-nav-links { display: none !important; }
+  .hi-mobile-btn { display: inline-flex !important; }
+
+  /* Hero section padding */
+  section { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* CTA buttons full-width on mobile */
+  .hi-btn-primary,
+  .hi-btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* CTA row stack vertically */
+  .hi-animate > div,
+  div[style*="display: flex"][style*="justifyContent: center"] {
+    flex-direction: column;
+  }
+
+  /* Feature cards and pricing cards stack vertically */
+  .hi-flex-wrap {
+    flex-direction: column !important;
+  }
+  .hi-pricing-card {
+    min-width: unset !important;
+    width: 100%;
+  }
+
+  /* Step connector line hidden on mobile */
+  .step-connector { display: none !important; }
+
+  /* Diff split stacks on mobile */
+  .diff-split { grid-template-columns: 1fr !important; }
+  .diff-col-left { border-right: none !important; border-bottom: 1px solid var(--border) !important; }
+
+  /* Output grid single column */
+  .output-grid { grid-template-columns: 1fr !important; }
+  .output-card-hero { grid-column: span 1 !important; }
+
+  /* Hero shapes */
+  .hero-shapes-left { display: none !important; }
+
+  /* Brand Construction SVG — smaller on mobile */
+  div[style*="position: absolute"][style*="right: 4%"] {
+    width: 120px !important;
+    height: 120px !important;
+    top: 64px !important;
+  }
+
+  /* ── GuidedWizard ── */
+  /* Option cards MUST stack vertically */
+  div[style*="display: flex"][style*="flexWrap: wrap"][style*="justifyContent: center"] {
+    flex-direction: column !important;
+  }
+
+  /* Card min-width override on mobile */
+  [style*="minWidth: 260"] {
+    min-width: unset !important;
+    width: 100% !important;
+  }
+
+  /* Wizard bottom nav: continue button full-width */
+  .wizard-bottom-nav-continue {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Kee message area max height 40% */
+  div[style*="borderLeft: '3px solid #f17022'"][style*="margin: '20px auto'"] {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+
+  /* ── AppSidebar: hide desktop sidebar, show bottom nav ── */
+  aside[style*="position: fixed"][style*="left: 0"][style*="bottom: 0"] {
+    display: none !important;
+  }
+
+  /* Content area: no sidebar padding on mobile */
+  div[style*="paddingLeft: 64"] {
+    padding-left: 0 !important;
+  }
+
+  /* ── KeeAlive ── */
+  /* Chat input full width, no overflow */
+  div[style*="display: flex"][style*="gap: 6"][style*="alignItems: center"] {
+    flex-wrap: nowrap;
+  }
+  div[style*="display: flex"][style*="gap: 6"][style*="alignItems: center"] input {
+    min-width: 0;
+    flex: 1;
+  }
+
+  /* ── AuthScreen ── */
+  /* Form centered with padding */
+  .auth-form-wrapper {
+    padding: 16px !important;
+  }
+
+  /* ── General overflow prevention ── */
+  img, svg, video { max-width: 100%; }
+  pre, code { overflow-x: auto; }
+
+  /* Prevent horizontal overflow on all sections */
+  body { overflow-x: hidden; }
+
+  /* Footer stacks */
+  footer div[style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+}
+
+/* Sidebar hidden on mobile via CSS class */
+@media (max-width: 768px) {
+  .desktop-sidebar { display: none !important; }
+  .mobile-bottom-nav { display: flex !important; }
+
+  /* Content area full width on mobile (no sidebar) */
+  .main-content-with-sidebar {
+    padding-left: 0 !important;
+    padding-bottom: 60px; /* space for bottom nav */
+  }
+
+  /* Top nav spans full width on mobile */
+  nav[style*="left: 64"] {
+    left: 0 !important;
+  }
+}

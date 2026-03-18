@@ -501,6 +501,22 @@ const App: React.FC = () => {
     setMobileMenuOpen(false);
   };
 
+  // Dynamic page titles based on current view
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      engine: 'HowIconic — Brand Engine',
+      vault: 'HowIconic — Brand Vault',
+      studio: 'HowIconic — Studio',
+      architecture: 'HowIconic — Architecture',
+      manual: 'HowIconic — Brand Manual',
+      compare: 'HowIconic — Compare',
+      guided: 'HowIconic — Brand Engine',
+      audit: 'HowIconic — Audit Lab',
+      about: 'HowIconic — Our Story',
+    };
+    document.title = titles[view] || 'HowIconic — AI Brand Identity Engine';
+  }, [view]);
+
   // Maps the raw API result (either from SSE complete event or direct call) into BrandSystem
   const mapBrandResult = (raw: any, sense: string): BrandSystem => {
     const r = raw;
@@ -892,7 +908,7 @@ const App: React.FC = () => {
       )}
 
       {/* Views — offset for sidebar (desktop: 64px left, top: 64px) */}
-      <div className="min-h-screen flex flex-col" style={{ paddingLeft: 64, paddingTop: 64 }}>
+      <div className="min-h-screen flex flex-col main-content-with-sidebar" style={{ paddingLeft: 64, paddingTop: 64 }}>
         <AnimatePresence mode="wait">
           {view === 'engine' && (
             <motion.div key="engine" variants={pageVariants} initial="initial" animate="animate" exit="exit">

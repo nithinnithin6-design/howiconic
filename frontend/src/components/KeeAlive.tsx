@@ -395,7 +395,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
       transition: 'box-shadow 0.5s ease',
     }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+      <div className="kee-header-row" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <KeeAvatar speaking={isTyping || isSpeaking} />
         <p style={{
           fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
@@ -404,9 +404,10 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         {speakable && (
           <button
             onClick={toggleVoice}
+            className="kee-voice-btn"
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: 14, padding: '2px 4px',
+              fontSize: 14, padding: '4px 6px',
               color: voiceEnabled ? '#f17022' : 'var(--text-subtle)',
               transition: 'color 0.2s ease',
             }}
@@ -527,7 +528,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
             </button>
           )}
           {showTextInput && (
-            <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
+            <div className="kee-chat-input-row" style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
               <input
                 type="text"
                 value={chatInput}
@@ -566,6 +567,24 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
         @keyframes keeGlow { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 20px rgba(241,112,34,0.08); } }
         @keyframes keeCursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes keeMicPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(241,112,34,0.4); } 50% { box-shadow: 0 0 0 8px rgba(241,112,34,0); } }
+
+        /* Mobile: chat input doesn't overflow, voice accessible */
+        @media (max-width: 640px) {
+          .kee-chat-input-row {
+            gap: 4px !important;
+          }
+          .kee-chat-input-row input {
+            font-size: 16px !important; /* Prevent iOS zoom */
+            min-width: 0;
+          }
+          .kee-header-row {
+            flex-wrap: wrap;
+          }
+          .kee-voice-btn {
+            min-width: 32px;
+            min-height: 32px;
+          }
+        }
       `}</style>
     </div>
   );

@@ -592,6 +592,42 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
         @media (min-width: 769px) {
           .hi-mobile-btn { display: none !important; }
         }
+
+        /* Mobile-specific landing page overrides */
+        @media (max-width: 640px) {
+          /* Hero: reduce padding, fix text overflow */
+          section[style*="minHeight: '100vh'"] {
+            padding: 120px 20px 80px !important;
+          }
+
+          /* CTA buttons: full width, stacked */
+          .hi-cta-group {
+            flex-direction: column !important;
+            width: 100%;
+          }
+          .hi-cta-group .hi-btn-primary,
+          .hi-cta-group .hi-btn-ghost {
+            width: 100% !important;
+          }
+
+          /* Nav padding */
+          nav { padding: 14px 20px !important; }
+
+          /* Pricing section */
+          #pricing { padding: 80px 20px !important; }
+          #how { padding: 80px 20px !important; }
+
+          /* Footer stacks */
+          footer { padding: 48px 20px 32px !important; }
+          .hi-footer-top { flex-direction: column !important; gap: 32px !important; }
+          .hi-footer-bottom { flex-direction: column !important; gap: 12px !important; }
+
+          /* Section headings scale down */
+          h2[style*="clamp"] { font-size: clamp(1.8rem, 7vw, 2.6rem) !important; }
+
+          /* Most Popular badge offset fix */
+          .hi-pricing-card.featured { margin-top: 16px; }
+        }
       `}</style>
 
       {/* ─── 1. NAV ─────────────────────────────────────────────────────────── */}
@@ -632,10 +668,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             Start building →
           </button>
         </div>
-        <button className="hi-mobile-btn hi-btn-ghost" onClick={onLogin}
-          style={{ padding: '8px 18px', fontSize: 10 }}>
-          Log in
-        </button>
+        <div className="hi-mobile-btn" style={{ display: 'none', gap: 8 }}>
+          <button className="hi-btn-ghost" onClick={onLogin}
+            style={{ padding: '8px 14px', fontSize: 10 }}>
+            Log in
+          </button>
+          <button className="hi-btn-primary btn-interactive" onClick={onStartBuilding}
+            style={{ padding: '8px 14px', fontSize: 10 }}>
+            Start →
+          </button>
+        </div>
       </nav>
 
       {/* ─── 2. HERO ─────────────────────────────────────────────────────────── */}
@@ -739,7 +781,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           </KeeAlive>
 
           {/* CTAs */}
-          <div className="hi-animate" style={{
+          <div className="hi-animate hi-cta-group" style={{
             display: 'flex', gap: 14, justifyContent: 'center',
             flexWrap: 'wrap', animationDelay: '0.98s',
           }}>
