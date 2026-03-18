@@ -308,7 +308,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onExplore, onBack, onOpenR
   const v3i = brand.v3Integration as V3Integration | undefined;
   const v3v = brand.v3Visual as V3Visual | undefined;
   const primaryHex = brand.colors?.primary?.hex || '#f17022';
-  const canvasColor = brand.colors?.canvasColor || '#0a0a0a';
+  const canvasColor = brand.colors?.canvasColor || 'var(--bg-secondary)';
   const [selectedDalleIdx, setSelectedDalleIdx] = useState<number>(0);
 
   const story = v3i?.story || [];
@@ -1234,7 +1234,7 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
                 <div key={i} className="space-y-3">
                   <div
                     className="flex items-center justify-center p-8 border border-white/[0.07] rounded-2xl"
-                    style={{ backgroundColor: '#111', minHeight: '140px' }}
+                    style={{ backgroundColor: 'var(--bg-secondary)', minHeight: '140px' }}
                   >
                     <LogoRenderer
                       svg={variant.svg!}

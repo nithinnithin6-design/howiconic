@@ -54,7 +54,7 @@ const BrandColumn: React.FC<{ brand: BrandSystem; side: 'left' | 'right' }> = ({
       {/* Logo */}
       <div
         className="w-full aspect-square max-w-[160px] mx-auto flex items-center justify-center rounded-2xl p-6"
-        style={{ backgroundColor: brand.colors?.canvasColor || '#0a0a0a' }}
+        style={{ backgroundColor: brand.colors?.canvasColor || 'var(--bg-secondary)' }}
       >
         {brand.logoSystem?.dalleLogos && brand.logoSystem.dalleLogos.length > 0 ? (
           <img

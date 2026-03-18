@@ -220,7 +220,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                   onClick={onStartCompare}
                   style={{
                     padding: '10px 20px',
-                    background: '#fff', color: '#000',
+                    background: 'var(--bg)', color: 'var(--text)',
                     border: 'none', cursor: 'pointer',
                     fontSize: 10, fontWeight: 900, letterSpacing: '0.3em',
                     textTransform: 'uppercase', borderRadius: 100,
@@ -552,7 +552,7 @@ const VaultView: React.FC<VaultViewProps> = ({
 
                 {/* Logo preview */}
                 <div style={{
-                  background: brand.colors?.canvasColor || '#0a0a0a',
+                  background: brand.colors?.canvasColor || 'var(--bg-secondary)',
                   padding: '32px 24px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   minHeight: 120,
@@ -648,13 +648,13 @@ const VaultView: React.FC<VaultViewProps> = ({
                           flex: 1, padding: '10px 0',
                           background: 'var(--input-bg)',
                           border: '1px solid var(--border)',
-                          color: '#fff', cursor: 'pointer',
+                          color: 'var(--text)', cursor: 'pointer',
                           fontSize: 10, fontWeight: 900, letterSpacing: '0.3em',
                           textTransform: 'uppercase', borderRadius: 100,
                           transition: 'all 0.2s ease',
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#000'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--input-bg)'; e.currentTarget.style.color = '#fff'; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--text)'; e.currentTarget.style.color = 'var(--bg)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--input-bg)'; e.currentTarget.style.color = 'var(--text)'; }}
                       >
                         Open →
                       </button>
