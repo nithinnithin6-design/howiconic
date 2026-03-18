@@ -33,7 +33,21 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#0a0a0a] flex items-center justify-center z-[300] overflow-hidden">
+    <div className="fixed inset-0 flex items-center justify-center z-[300] overflow-hidden" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
+      <style>{`
+        [data-theme="light"] .auth-input {
+          background: rgba(26,26,26,0.04) !important;
+          border-color: rgba(26,26,26,0.12) !important;
+          color: #1a1a1a !important;
+        }
+        [data-theme="light"] .auth-input::placeholder { color: rgba(26,26,26,0.25) !important; }
+        [data-theme="light"] .auth-label { color: rgba(26,26,26,0.45) !important; }
+        [data-theme="light"] .auth-title { color: #1a1a1a !important; }
+        [data-theme="light"] .auth-sub { color: rgba(26,26,26,0.45) !important; }
+        [data-theme="light"] .auth-back { color: rgba(26,26,26,0.35) !important; }
+        [data-theme="light"] .auth-back:hover { color: #1a1a1a !important; }
+        [data-theme="light"] .auth-footer-text { color: rgba(26,26,26,0.2) !important; }
+      `}</style>
       <div className="absolute inset-0 blueprint-grid opacity-[0.04]" />
 
       {/* Bloom */}
@@ -62,10 +76,10 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
               <circle cx="50" cy="50" r="3" fill="white" opacity="0.8" />
             </svg>
           </div>
-          <h1 className="font-serif-display text-5xl md:text-7xl uppercase italic font-black tracking-tighter text-white">
+          <h1 className="auth-title font-serif-display text-5xl md:text-7xl uppercase italic font-black tracking-tighter text-white">
             HOWICONIC
           </h1>
-          <p className="text-[11px] uppercase tracking-[1.2em] text-white/50 font-black">
+          <p className="auth-sub text-[11px] uppercase tracking-[1.2em] text-white/50 font-black">
             Brand Identity Engine
           </p>
           <KeeAlive animate={true}>
@@ -75,7 +89,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="p-10 bg-black/70 backdrop-blur-xl border border-white/10 rounded-[2rem] space-y-6">
+          <div className="p-10 backdrop-blur-xl rounded-[2rem] space-y-6" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
             <div className="flex gap-2 mb-8">
               <button
                 type="button"
@@ -99,38 +113,38 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
 
             {mode === 'register' && (
               <div className="space-y-2">
-                <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Name</label>
+                <label className="auth-label text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder="Your name"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                  className="auth-input w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
                   required
                 />
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Email</label>
+              <label className="auth-label text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="email@domain.com"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                className="auth-input w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Password</label>
+              <label className="auth-label text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                className="auth-input w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
                 required
                 minLength={6}
               />
@@ -154,7 +168,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
           </button>
         </form>
 
-        <p className="text-center mt-12 text-[9px] uppercase tracking-[0.5em] text-white/20 font-black">
+        <p className="auth-footer-text text-center mt-12 text-[9px] uppercase tracking-[0.5em] text-white/20 font-black">
           Build what lasts.
         </p>
       </div>

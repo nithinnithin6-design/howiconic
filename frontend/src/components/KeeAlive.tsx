@@ -386,7 +386,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
 
   return (
     <div style={{
-      background: 'rgba(241,112,34,0.04)',
+      background: 'var(--kee-bg)',
       borderLeft: '3px solid #f17022',
       borderRadius: '0 12px 12px 0',
       padding: '14px 18px 16px',
@@ -420,7 +420,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
       {/* Main message */}
       <p style={{
         fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14,
-        lineHeight: 1.7, color: 'rgba(255,255,255,0.55)', margin: 0, minHeight: 24,
+        lineHeight: 1.7, color: 'var(--text-muted)', margin: 0, minHeight: 24,
       }}>
         {displayedText}
         {isTyping && (
@@ -443,11 +443,11 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
             }}>
               <span style={{
                 display: 'inline-block',
-                background: msg.role === 'user' ? 'rgba(255,255,255,0.06)' : 'rgba(241,112,34,0.08)',
+                background: msg.role === 'user' ? 'var(--card-bg)' : 'rgba(241,112,34,0.08)',
                 borderRadius: 10,
                 padding: '6px 12px',
                 fontSize: 12,
-                color: msg.role === 'user' ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.55)',
+                color: 'var(--text-muted)',
                 fontFamily: msg.role === 'kee' ? 'Georgia, serif' : 'Inter, sans-serif',
                 fontStyle: msg.role === 'kee' ? 'italic' : 'normal',
                 maxWidth: '85%',
@@ -536,10 +536,10 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
                 placeholder="Type to Kee..."
                 disabled={chatLoading}
                 style={{
-                  flex: 1, background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  flex: 1, background: 'var(--input-bg)',
+                  border: '1px solid var(--border)',
                   borderRadius: 8, padding: '7px 10px',
-                  fontSize: 11, color: 'rgba(255,255,255,0.5)',
+                  fontSize: 11, color: 'var(--text-muted)',
                   fontFamily: 'Inter, sans-serif',
                   outline: 'none',
                 }}

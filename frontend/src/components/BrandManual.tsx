@@ -608,9 +608,9 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
   ].filter(c => c.hex);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#0a0a0a] text-white">
+    <div ref={containerRef} className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       {/* Nav bar */}
-      <div className="sticky top-0 z-50 px-6 md:px-12 py-4 flex items-center justify-between bg-black/85 backdrop-blur-xl border-b border-white/[0.05]">
+      <div className="sticky top-0 z-50 px-6 md:px-12 py-4 flex items-center justify-between backdrop-blur-xl" style={{ background: 'var(--nav-bg)', borderBottom: '1px solid var(--border)' }}>
         <div className="flex items-center gap-4">
           <button
             onClick={onCard}
@@ -1542,7 +1542,7 @@ const RefinePanel: React.FC<RefinePanelProps> = ({ isOpen, onClose, onSubmit, is
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-0 left-0 right-0 z-[200] bg-[#0d0d0d]/98 backdrop-blur-xl border-t border-white/[0.08] px-6 md:px-12 py-6"
+          className="fixed bottom-0 left-0 right-0 z-[200] backdrop-blur-xl px-6 md:px-12 py-6" style={{ background: 'var(--nav-bg)', borderTop: '1px solid var(--border)' }}
         >
           <div className="max-w-2xl mx-auto">
             <div className="flex items-center justify-between mb-4">

@@ -757,7 +757,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
     <div style={{
       display: 'flex',
       minHeight: 'calc(100vh - 64px)',
-      background: '#0a0a0a',
+      background: 'var(--bg)',
     }}>
 
       {/* ── LEFT SIDEBAR: production types ── */}

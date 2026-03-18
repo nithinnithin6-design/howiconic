@@ -412,7 +412,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
 
   return (
     <div style={{
-      background: '#0a0a0a', color: '#f5f5f5',
+      background: 'var(--bg, #0a0a0a)', color: 'var(--text, #f5f5f5)',
       minHeight: '100vh', fontFamily: 'Inter, sans-serif', overflowX: 'hidden',
     }}>
       <style>{`
@@ -596,14 +596,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 300,
         padding: '16px 48px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        background: 'rgba(10,10,10,0.93)', backdropFilter: 'blur(24px)',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        background: 'var(--nav-bg, rgba(10,10,10,0.93))', backdropFilter: 'blur(24px)',
+        borderBottom: '1px solid var(--border, rgba(255,255,255,0.05))',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <MasterSeal className="w-8 h-8" animate={true} />
           <span style={{
             fontFamily: 'Playfair Display, serif', fontWeight: 900,
-            fontSize: 16, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#fff',
+            fontSize: 16, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--text)',
           }}>HOWICONIC</span>
         </div>
         <div className="hi-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
@@ -694,7 +694,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           <h1 style={{
             fontFamily: 'Playfair Display, serif', fontWeight: 900,
             fontSize: 'clamp(2.8rem, 8vw, 5.5rem)',
-            lineHeight: 1.05, letterSpacing: '-0.02em', color: '#fff',
+            lineHeight: 1.05, letterSpacing: '-0.02em', color: 'var(--text)',
             marginBottom: 36,
           }}>
             <span className="word-up" style={{ animationDelay: '0.22s' }}>Your</span>{' '}
@@ -762,13 +762,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
       <SectionDivider />
 
       {/* ─── 4. HOW IT WORKS ─────────────────────────────────────────────────── */}
-      <section id="how" style={{ padding: '120px 48px', background: 'rgba(255,255,255,0.01)' }}>
+      <section id="how" style={{ padding: '120px 48px', background: 'var(--card-bg)' }}>
         <div style={S}>
           <Reveal style={{ marginBottom: 80, textAlign: 'center' }}>
             <SectionLabel label="How it works" />
             <h2 style={{
               fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
-              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--text)', lineHeight: 1.1,
             }}>
               Three steps to<br />
               <span style={{ color: '#f17022' }}>a complete brand.</span>
@@ -824,7 +824,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                       </div>
                       <h3 style={{
                         fontFamily: 'Playfair Display, serif', fontWeight: 900,
-                        fontSize: 19, color: '#fff', textTransform: 'uppercase',
+                        fontSize: 19, color: 'var(--text)', textTransform: 'uppercase',
                         marginBottom: 14, lineHeight: 1.2,
                       }}>{title}</h3>
                       <p style={{ fontSize: 13, lineHeight: 1.8, color: 'rgba(255,255,255,0.37)' }}>{desc}</p>
@@ -851,7 +851,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             <SectionLabel label="The difference" />
             <h2 style={{
               fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
-              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--text)', lineHeight: 1.1,
             }}>
               What makes HowIconic<br />
               <span style={{ color: '#f17022' }}>different.</span>
@@ -924,7 +924,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                       <OnlyBadge />
                     </div>
                     <p style={{
-                      fontSize: 15, color: '#fff', fontWeight: 600,
+                      fontSize: 15, color: 'var(--text)', fontWeight: 600,
                       lineHeight: 1.5, marginBottom: 6,
                     }}>
                       <span style={{ color: '#f17022', marginRight: 8 }}>✓</span>{text}
@@ -941,13 +941,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
       <SectionDivider />
 
       {/* ─── 7. WHAT YOU GET ─────────────────────────────────────────────────── */}
-      <section style={{ padding: '120px 48px', background: 'rgba(255,255,255,0.01)' }}>
+      <section style={{ padding: '120px 48px', background: 'var(--card-bg)' }}>
         <div style={S}>
           <Reveal style={{ marginBottom: 80, textAlign: 'center' }}>
             <SectionLabel label="What you get" />
             <h2 style={{
               fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
-              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--text)', lineHeight: 1.1,
             }}>
               A complete brand system.<br />
               <span style={{ color: '#f17022' }}>Not a logo. A language.</span>
@@ -999,7 +999,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   </div>
                   <h4 style={{
                     fontFamily: 'Playfair Display, serif', fontWeight: 900,
-                    fontSize: hero ? 18 : 14, color: '#fff', textTransform: 'uppercase',
+                    fontSize: hero ? 18 : 14, color: 'var(--text)', textTransform: 'uppercase',
                     marginBottom: 8, lineHeight: 1.3,
                   }}>{title}</h4>
                   <p style={{ fontSize: hero ? 13 : 11, lineHeight: 1.75, color: 'rgba(255,255,255,0.35)' }}>{desc}</p>
@@ -1024,7 +1024,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             <SectionLabel label="Built with HowIconic" />
             <h2 style={{
               fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
-              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--text)', lineHeight: 1.1,
             }}>
               Real brands.<br />
               <span style={{ color: '#f17022' }}>Built in minutes.</span>
@@ -1038,7 +1038,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             {/* Brand 1: Seravona — Premium Coffee */}
             <Reveal>
               <div style={{
-                background: '#111', borderRadius: 20, overflow: 'hidden',
+                background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}>
                 {/* Color strip */}
@@ -1051,7 +1051,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
                     Sage · Coffee · Warm
                   </p>
-                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 8, lineHeight: 1.1 }}>
+                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: 'var(--text)', marginBottom: 8, lineHeight: 1.1 }}>
                     Seravona
                   </h3>
                   <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
@@ -1072,7 +1072,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             {/* Brand 2: Voltarc — Electric Vehicles */}
             <Reveal>
               <div style={{
-                background: '#111', borderRadius: 20, overflow: 'hidden',
+                background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}>
                 <div style={{ display: 'flex', height: 8 }}>
@@ -1084,7 +1084,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
                     Hero · EV · Bold
                   </p>
-                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 8, lineHeight: 1.1 }}>
+                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: 'var(--text)', marginBottom: 8, lineHeight: 1.1 }}>
                     Voltarc
                   </h3>
                   <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
@@ -1105,7 +1105,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             {/* Brand 3: Nourish & — Organic Skincare */}
             <Reveal>
               <div style={{
-                background: '#111', borderRadius: 20, overflow: 'hidden',
+                background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}>
                 <div style={{ display: 'flex', height: 8 }}>
@@ -1117,7 +1117,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
                     Caregiver · Skincare · Clean
                   </p>
-                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 8, lineHeight: 1.1 }}>
+                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: 'var(--text)', marginBottom: 8, lineHeight: 1.1 }}>
                     Nourish &amp;
                   </h3>
                   <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
@@ -1153,7 +1153,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             <SectionLabel label="Pricing" />
             <h2 style={{
               fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
-              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: '#fff', lineHeight: 1.1,
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--text)', lineHeight: 1.1,
             }}>
               Start free.<br />
               <span style={{ color: '#f17022' }}>Build iconic.</span>
@@ -1167,7 +1167,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
               <div className="hi-pricing-card" style={{ height: '100%' }}>
                 <div>
                   <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>Explorer</p>
-                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: '#fff', lineHeight: 1 }}>Free</p>
+                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: 'var(--text)', lineHeight: 1 }}>Free</p>
                   <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 8 }}>No card needed · Always free</p>
                 </div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -1200,7 +1200,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
 
                 <div style={{ paddingTop: 12 }}>
                   <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: '#f17022', marginBottom: 12 }}>Creator</p>
-                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: '#fff', lineHeight: 1 }}>₹2,999</p>
+                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: 'var(--text)', lineHeight: 1 }}>₹2,999</p>
                   <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 8 }}>One-time · 1 complete brand</p>
                   {/* Agency comparison */}
                   <p style={{
@@ -1245,7 +1245,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
               <div className="hi-pricing-card" style={{ height: '100%' }}>
                 <div>
                   <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>Studio</p>
-                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: '#fff', lineHeight: 1 }}>₹7,499</p>
+                  <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: 'var(--text)', lineHeight: 1 }}>₹7,499</p>
                   <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 8 }}>per month · 10–15 brands</p>
                 </div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -1308,7 +1308,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             </div>
             <h2 style={{
               fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
-              fontSize: 'clamp(2.4rem, 6.5vw, 5rem)', color: '#fff',
+              fontSize: 'clamp(2.4rem, 6.5vw, 5rem)', color: 'var(--text)',
               marginBottom: 24, lineHeight: 1.05,
             }}>
               Ready to build something<br />
@@ -1333,7 +1333,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
       <footer style={{
         padding: '72px 48px 52px',
         borderTop: '1px solid rgba(255,255,255,0.05)',
-        background: '#070707',
+        background: 'var(--bg-secondary, #070707)',
       }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
 
@@ -1344,7 +1344,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                 <MasterSeal className="w-8 h-8" />
                 <span style={{
                   fontFamily: 'Playfair Display, serif', fontWeight: 900,
-                  fontSize: 14, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#fff',
+                  fontSize: 14, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--text)',
                 }}>HOWICONIC</span>
               </div>
               <p style={{

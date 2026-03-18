@@ -17,6 +17,7 @@ import AppSidebar from './components/AppSidebar';
 import ArchitectureView from './components/ArchitectureView';
 import StudioView from './components/StudioView';
 import { useSound } from './hooks/useSound';
+import { ThemeProvider } from './ThemeContext';
 
 const SplitChars: React.FC<{ text: string; className?: string }> = ({ text, className }) => (
   <span className={className}>
@@ -736,12 +737,13 @@ const App: React.FC = () => {
     }
   };
 
-  if (!authChecked) return <LoadingScreen />;
+  if (!authChecked) return <ThemeProvider><LoadingScreen /></ThemeProvider>;
 
   // Not logged in — show landing page or auth screen
   if (!user) {
     if (showAuth) {
       return (
+        <ThemeProvider>
         <AuthScreen
           onAuth={async (u) => {
             setUser(u);
@@ -760,13 +762,16 @@ const App: React.FC = () => {
           }}
           onBack={() => setShowAuth(false)}
         />
+        </ThemeProvider>
       );
     }
     return (
-      <LandingPage
-        onStartBuilding={() => setShowAuth(true)}
-        onLogin={() => setShowAuth(true)}
-      />
+      <ThemeProvider>
+        <LandingPage
+          onStartBuilding={() => setShowAuth(true)}
+          onLogin={() => setShowAuth(true)}
+        />
+      </ThemeProvider>
     );
   }
 
@@ -778,7 +783,8 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div ref={mainRef} className="relative min-h-screen transition-colors duration-1000 overflow-x-hidden bg-[#0a0a0a] text-[#f5f5f5]">
+    <ThemeProvider>
+    <div ref={mainRef} className="relative min-h-screen transition-colors duration-1000 overflow-x-hidden" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       <CustomCursor />
       <div className="noise-overlay" />
       <div className="blueprint-grid-overlay" />
@@ -798,11 +804,11 @@ const App: React.FC = () => {
 
       {/* Top nav bar — positioned to the right of sidebar */}
       <nav
-        className="fixed top-0 right-0 h-16 border-b border-white/[0.06] backdrop-blur-xl z-[150] flex items-center justify-between px-6 no-print bg-black/90"
-        style={{ left: 64, transition: 'left 0.25s' }}
+        className="fixed top-0 right-0 h-16 backdrop-blur-xl z-[150] flex items-center justify-between px-6 no-print"
+        style={{ left: 64, transition: 'left 0.25s', background: 'var(--nav-bg)', borderBottom: '1px solid var(--border)' }}
       >
         <div className="flex items-center gap-4">
-          <span className="text-[9px] uppercase tracking-[0.6em] font-black text-white/20">
+          <span className="text-[9px] uppercase tracking-[0.6em] font-black" style={{ color: 'var(--text-subtle)' }}>
             {view === 'engine' ? 'Brand Engine' : view === 'vault' ? 'Brand Vault' : view === 'audit' ? 'Audit Lab' : view === 'architecture' ? 'Brand Architecture' : view === 'studio' ? 'Design Studio' : 'Our Story'}
           </span>
         </div>
@@ -1095,12 +1101,13 @@ const App: React.FC = () => {
         </AnimatePresence>
 
         {/* Footer */}
-        <footer className="mt-auto border-t border-white/5 px-6 md:px-16 py-6 flex justify-between items-center text-white/20 text-xs">
+        <footer className="mt-auto px-6 md:px-16 py-6 flex justify-between items-center text-xs" style={{ borderTop: '1px solid var(--border)', color: 'var(--text-subtle)' }}>
           <span>© 2026 HowIconic</span>
           <span className="font-serif-elegant italic">Built with intent.</span>
         </footer>
       </div>
     </div>
+    </ThemeProvider>
   );
 };
 

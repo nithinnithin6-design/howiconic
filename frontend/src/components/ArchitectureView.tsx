@@ -252,7 +252,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
       padding: 24,
     }} onClick={onClose}>
       <div style={{
-        background: '#111',
+        background: 'var(--bg-secondary)',
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: 20,
         padding: 32,
@@ -427,7 +427,7 @@ const ArchitectureView: React.FC<ArchitectureViewProps> = ({ brand, onSelectBran
   const totalNodes = tree ? countNodes(tree) : 0;
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', padding: '40px 32px' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', padding: '40px 32px' }}>
       {/* Header */}
       <div style={{ marginBottom: 40 }}>
         <p style={{
@@ -651,7 +651,7 @@ const SelectedNodeDetail: React.FC<{
       padding: 24,
       border: '1px solid rgba(255,255,255,0.08)',
       borderRadius: 16,
-      background: '#111',
+      background: 'var(--bg-secondary)',
       position: 'sticky',
       top: 100,
     }}>

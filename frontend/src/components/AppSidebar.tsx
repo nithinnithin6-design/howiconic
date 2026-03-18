@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '../ThemeContext';
 
 type AppView = 'engine' | 'vault' | 'audit' | 'about' | 'architecture' | 'studio';
 
@@ -30,6 +31,7 @@ const NAV_ITEMS = [
 
 const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandCount = 0 }) => {
   const [expanded, setExpanded] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <>
@@ -39,8 +41,8 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
           position: 'fixed',
           top: 0, left: 0, bottom: 0,
           width: expanded ? 200 : 64,
-          background: '#0a0a0a',
-          borderRight: '1px solid rgba(255,255,255,0.06)',
+          background: 'var(--sidebar-bg)',
+          borderRight: '1px solid var(--border)',
           zIndex: 100,
           display: 'flex',
           flexDirection: 'column',
@@ -54,7 +56,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
         <div style={{
           height: 72, display: 'flex', alignItems: 'center',
           padding: '0 18px', gap: 12,
-          borderBottom: '1px solid rgba(255,255,255,0.04)',
+          borderBottom: '1px solid var(--border)',
           flexShrink: 0,
         }}>
           <MasterSealSmall />
@@ -62,7 +64,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
             <span style={{
               fontFamily: 'Playfair Display, serif', fontWeight: 900,
               fontSize: 14, letterSpacing: '0.15em', textTransform: 'uppercase',
-              color: '#fff', whiteSpace: 'nowrap', opacity: expanded ? 1 : 0,
+              color: 'var(--text)', whiteSpace: 'nowrap', opacity: expanded ? 1 : 0,
               transition: 'opacity 0.2s ease 0.05s',
             }}>
               HOWICONIC
@@ -72,7 +74,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
 
         {/* Nav items */}
         <nav style={{ flex: 1, padding: '12px 0', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {NAV_ITEMS.map(({ key, icon, label, disabled }) => {
+          {NAV_ITEMS.map(({ key, icon, label, disabled }: any) => {
             const isActive = currentView === key;
             return (
               <button
@@ -93,7 +95,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
                 }}
                 onMouseEnter={e => {
                   if (!isActive && !disabled) {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                    e.currentTarget.style.background = 'var(--card-bg)';
                   }
                 }}
                 onMouseLeave={e => {
@@ -102,7 +104,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
               >
                 <span style={{
                   fontSize: 16, flexShrink: 0, width: 24, textAlign: 'center',
-                  color: isActive ? '#f17022' : 'rgba(255,255,255,0.5)',
+                  color: isActive ? '#f17022' : 'var(--text-muted)',
                   transition: 'color 0.15s ease',
                 }}>
                   {icon}
@@ -113,12 +115,12 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
                       margin: 0,
                       fontSize: 11, fontWeight: 900, letterSpacing: '0.2em',
                       textTransform: 'uppercase',
-                      color: isActive ? '#f17022' : 'rgba(255,255,255,0.7)',
+                      color: isActive ? '#f17022' : 'var(--text)',
                     }}>
                       {label}
                     </p>
                     {disabled && (
-                      <p style={{ margin: 0, fontSize: 8, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 700 }}>
+                      <p style={{ margin: 0, fontSize: 8, color: 'var(--text-subtle)', letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 700 }}>
                         Soon
                       </p>
                     )}
@@ -140,16 +142,16 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
                 cursor: 'pointer', width: '100%', textAlign: 'left',
                 opacity: 0.7, transition: 'all 0.15s ease',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.opacity = '1'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--card-bg)'; e.currentTarget.style.opacity = '1'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.opacity = '0.7'; }}
             >
-              <span style={{ fontSize: 16, flexShrink: 0, width: 24, textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
+              <span style={{ fontSize: 16, flexShrink: 0, width: 24, textAlign: 'center', color: 'var(--text-subtle)' }}>
                 ⇆
               </span>
               {expanded && (
                 <span style={{
                   fontSize: 11, fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.5)', whiteSpace: 'nowrap',
+                  color: 'var(--text-muted)', whiteSpace: 'nowrap',
                   opacity: expanded ? 1 : 0, transition: 'opacity 0.15s ease',
                 }}>
                   Compare
@@ -159,10 +161,45 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
           )}
         </nav>
 
+        {/* Theme toggle */}
+        <div style={{
+          padding: '10px 10px',
+          borderTop: '1px solid var(--border)',
+        }}>
+          <button
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              background: 'none',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+              padding: expanded ? '8px 12px' : '8px',
+              cursor: 'pointer',
+              color: 'var(--text-muted)',
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              transition: 'all 0.2s ease',
+              width: '100%',
+              justifyContent: 'center',
+            }}
+          >
+            <span style={{ fontSize: 14, flexShrink: 0 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+            {expanded && (
+              <span style={{ whiteSpace: 'nowrap', opacity: expanded ? 1 : 0, transition: 'opacity 0.15s ease' }}>
+                {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+              </span>
+            )}
+          </button>
+        </div>
+
         {/* Bottom — brand count */}
         <div style={{
           padding: '12px 18px',
-          borderTop: '1px solid rgba(255,255,255,0.04)',
+          borderTop: '1px solid var(--border)',
           display: 'flex', alignItems: 'center', gap: 12,
         }}>
           <span style={{
@@ -176,7 +213,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
           {expanded && (
             <span style={{
               fontSize: 9, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.2)', whiteSpace: 'nowrap',
+              color: 'var(--text-subtle)', whiteSpace: 'nowrap',
               opacity: expanded ? 1 : 0, transition: 'opacity 0.15s ease',
             }}>
               Brands in vault
@@ -190,9 +227,9 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
         display: 'none',
         position: 'fixed', bottom: 0, left: 0, right: 0,
         height: 60,
-        background: 'rgba(10,10,10,0.96)',
+        background: 'var(--mobile-nav-bg)',
         backdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(255,255,255,0.06)',
+        borderTop: '1px solid var(--border)',
         zIndex: 100,
       }}
         className="mobile-bottom-nav"
@@ -207,7 +244,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
           display: 'flex', width: '100%',
           alignItems: 'stretch', justifyContent: 'space-around',
         }}>
-          {NAV_ITEMS.map(({ key, icon, label, disabled }) => {
+          {NAV_ITEMS.map(({ key, icon, label, disabled }: any) => {
             const isActive = currentView === key;
             return (
               <button
@@ -222,18 +259,35 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
                   borderTop: `2px solid ${isActive ? '#f17022' : 'transparent'}`,
                 }}
               >
-                <span style={{ fontSize: 18, color: isActive ? '#f17022' : 'rgba(255,255,255,0.4)' }}>
+                <span style={{ fontSize: 18, color: isActive ? '#f17022' : 'var(--text-subtle)' }}>
                   {icon}
                 </span>
                 <span style={{
                   fontSize: 7, fontWeight: 900, letterSpacing: '0.15em', textTransform: 'uppercase',
-                  color: isActive ? '#f17022' : 'rgba(255,255,255,0.3)',
+                  color: isActive ? '#f17022' : 'var(--text-subtle)',
                 }}>
                   {label}
                 </span>
               </button>
             );
           })}
+          {/* Theme toggle for mobile */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              flex: 1, display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', gap: 4,
+              background: 'none', border: 'none', cursor: 'pointer',
+            }}
+          >
+            <span style={{ fontSize: 18 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+            <span style={{
+              fontSize: 7, fontWeight: 900, letterSpacing: '0.15em', textTransform: 'uppercase',
+              color: 'var(--text-subtle)',
+            }}>
+              {theme === 'dark' ? 'Light' : 'Dark'}
+            </span>
+          </button>
         </div>
       </nav>
     </>

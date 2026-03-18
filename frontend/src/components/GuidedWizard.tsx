@@ -169,7 +169,7 @@ interface CardProps {
 
 const cardStyle = (selected: boolean): React.CSSProperties => ({
   position: 'relative',
-  background: selected ? 'rgba(241,112,34,0.06)' : '#111',
+  background: selected ? 'rgba(241,112,34,0.06)' : 'var(--bg-secondary)',
   border: `${selected ? '2px' : '1px'} solid ${selected ? '#f17022' : 'rgba(255,255,255,0.08)'}`,
   borderRadius: 16,
   padding: '28px 24px',
@@ -506,7 +506,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
   }, [headingFont, bodyFont]);
 
   const sectionStyle: React.CSSProperties = {
-    background: '#111', borderRadius: 16, padding: '28px 24px', marginBottom: 16,
+    background: 'var(--bg-secondary)', borderRadius: 16, padding: '28px 24px', marginBottom: 16,
     border: '1px solid rgba(255,255,255,0.06)',
   };
   const labelStyle: React.CSSProperties = {
@@ -909,7 +909,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
   return (
     <main style={{
       flex: 1, display: 'flex', flexDirection: 'column',
-      minHeight: '100vh', background: '#0a0a0a',
+      minHeight: '100vh', background: 'var(--bg)',
       padding: '0 16px',
       position: 'relative', zIndex: 5,
     }}>
