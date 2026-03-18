@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Reveal as AnimReveal } from '../animations';
 import { BrandSystem } from '../types';
 import LogoRenderer from './LogoRenderer';
 import * as api from '../api';
@@ -401,6 +402,7 @@ const VaultView: React.FC<VaultViewProps> = ({
 
       {/* Empty state */}
       {brands.length === 0 ? (
+        <AnimReveal direction="fade">
         <div style={{ textAlign: 'center', padding: '80px 16px' }}>
           <VaultEmptyIllustration />
           <div style={{ marginTop: 40 }}>
@@ -459,6 +461,7 @@ const VaultView: React.FC<VaultViewProps> = ({
             ))}
           </div>
         </div>
+        </AnimReveal>
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 16px' }}>
           <p style={{
@@ -489,6 +492,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className={!isDisabled && !compareMode ? 'card-hover' : ''}
                 style={{
                   position: 'relative',
                   background: 'rgba(0,0,0,0.5)',

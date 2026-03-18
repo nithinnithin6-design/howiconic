@@ -150,13 +150,13 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
   };
 
   const inputClass =
-    'w-full bg-transparent border-none text-xl md:text-2xl font-serif-elegant italic focus:outline-none placeholder:text-white/20 placeholder:not-italic text-white leading-snug';
+    'w-full bg-transparent border-none text-xl md:text-2xl font-serif-elegant italic focus:outline-none placeholder:text-white/20 placeholder:not-italic text-white leading-snug input-glow';
 
   const cardClass =
     'p-7 md:p-9 bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl hover:border-white/22 focus-within:border-white/30 transition-all duration-300';
 
   return (
-    <main className="flex-1 flex flex-col items-center justify-start px-4 md:px-12 py-8 relative min-h-screen overflow-hidden">
+    <main className="flex-1 flex flex-col items-center justify-start px-4 md:px-12 py-8 relative min-h-screen overflow-hidden page-enter">
       <div className="absolute inset-0 blueprint-grid opacity-[0.04] pointer-events-none" />
       <BlueprintBloom vibe={vibe} isPressing={isManifesting} />
 
@@ -270,7 +270,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
               whileTap={isManifesting ? {} : { scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               style={isManifesting ? {} : undefined}
-              className={`manifest-btn w-full md:w-auto px-16 md:px-24 py-6 md:py-8 bg-[#0a0a0a] border border-[#f17022]/60 text-[#f17022] rounded-full text-[12px] md:text-[14px] uppercase tracking-[0.7em] font-black transition-all duration-300 ${
+              className={`manifest-btn btn-interactive w-full md:w-auto px-16 md:px-24 py-6 md:py-8 bg-[#0a0a0a] border border-[#f17022]/60 text-[#f17022] rounded-full text-[12px] md:text-[14px] uppercase tracking-[0.7em] font-black transition-all duration-300 ${
                 isManifesting
                   ? 'opacity-50 cursor-wait'
                   : 'cursor-pointer hover:bg-[#f17022] hover:text-white hover:border-[#f17022] hover:shadow-[0_12px_40px_rgba(241,112,34,0.25)]'

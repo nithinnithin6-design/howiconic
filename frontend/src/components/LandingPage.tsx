@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import KeeAlive from './KeeAlive';
+import { TextReveal, Reveal as AnimReveal, Stagger } from '../animations';
 
 interface LandingPageProps {
   onStartBuilding: () => void;
@@ -625,7 +626,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             onMouseEnter={e => { e.currentTarget.style.color = '#fff'; }}
             onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.38)'; }}
           >Log in</button>
-          <button className="hi-btn-primary" onClick={onStartBuilding} style={{ padding: '9px 22px', fontSize: 10 }}>
+          <button className="hi-btn-primary btn-interactive" onClick={onStartBuilding} style={{ padding: '9px 22px', fontSize: 10 }}>
             Start building →
           </button>
         </div>
@@ -690,23 +691,33 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             Brand Operating System
           </p>
 
-          {/* Main title — word-by-word stagger */}
-          <h1 style={{
-            fontFamily: 'Playfair Display, serif', fontWeight: 900,
-            fontSize: 'clamp(2.8rem, 8vw, 5.5rem)',
-            lineHeight: 1.05, letterSpacing: '-0.02em', color: 'var(--text)',
-            marginBottom: 36,
-          }}>
-            <span className="word-up" style={{ animationDelay: '0.22s' }}>Your</span>{' '}
-            <span className="word-up" style={{ animationDelay: '0.42s' }}>brand,</span>
-            <br />
-            <span className="word-up" style={{
-              animationDelay: '0.62s',
-              color: '#f17022',
-              fontStyle: 'italic',
-              textShadow: '0 0 60px rgba(241,112,34,0.35), 0 0 120px rgba(241,112,34,0.15)',
-            }}>engineered.</span>
-          </h1>
+          {/* Main title — letter-by-letter TextReveal */}
+          <div style={{ marginBottom: 36 }}>
+            <TextReveal
+              text="Your brand,"
+              tag="h1"
+              staggerMs={28}
+              style={{
+                fontFamily: 'Playfair Display, serif', fontWeight: 900,
+                fontSize: 'clamp(2.8rem, 8vw, 5.5rem)',
+                lineHeight: 1.05, letterSpacing: '-0.02em', color: 'var(--text)',
+                margin: 0,
+              }}
+            />
+            <TextReveal
+              text="engineered."
+              tag="h1"
+              staggerMs={35}
+              style={{
+                fontFamily: 'Playfair Display, serif', fontWeight: 900,
+                fontSize: 'clamp(2.8rem, 8vw, 5.5rem)',
+                lineHeight: 1.05, letterSpacing: '-0.02em',
+                color: '#f17022', fontStyle: 'italic',
+                textShadow: '0 0 60px rgba(241,112,34,0.35), 0 0 120px rgba(241,112,34,0.15)',
+                margin: 0,
+              }}
+            />
+          </div>
 
           {/* Tagline */}
           <p className="hi-animate" style={{
@@ -728,11 +739,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             display: 'flex', gap: 14, justifyContent: 'center',
             flexWrap: 'wrap', animationDelay: '0.98s',
           }}>
-            <button className="hi-btn-primary" onClick={onStartBuilding}
+            <button className="hi-btn-primary btn-interactive" onClick={onStartBuilding}
               style={{ fontSize: 12, padding: '16px 40px' }}>
               Start building →
             </button>
-            <button className="hi-btn-ghost" onClick={onLogin}
+            <button className="hi-btn-ghost btn-interactive" onClick={onLogin}
               style={{ fontSize: 12, padding: '15px 32px' }}>
               Log in
             </button>
@@ -1037,7 +1048,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           }}>
             {/* Brand 1: Seravona — Premium Coffee */}
             <Reveal>
-              <div style={{
+              <div className="card-hover" style={{
                 background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}>
@@ -1070,8 +1081,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             </Reveal>
 
             {/* Brand 2: Voltarc — Electric Vehicles */}
-            <Reveal>
-              <div style={{
+            <Reveal delay={150}>
+              <div className="card-hover" style={{
                 background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}>
@@ -1103,8 +1114,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             </Reveal>
 
             {/* Brand 3: Nourish & — Organic Skincare */}
-            <Reveal>
-              <div style={{
+            <Reveal delay={300}>
+              <div className="card-hover" style={{
                 background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}>
@@ -1321,7 +1332,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             }}>
               4 lines in. A complete brand system out.
             </p>
-            <button className="hi-btn-primary" onClick={onStartBuilding}
+            <button className="hi-btn-primary btn-interactive" onClick={onStartBuilding}
               style={{ fontSize: 13, padding: '18px 52px' }}>
               Start building →
             </button>

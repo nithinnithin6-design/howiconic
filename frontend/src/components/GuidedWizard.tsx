@@ -174,10 +174,12 @@ const cardStyle = (selected: boolean): React.CSSProperties => ({
   borderRadius: 16,
   padding: '28px 24px',
   cursor: 'pointer',
-  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-  boxShadow: selected ? '0 0 30px rgba(241,112,34,0.15), inset 0 0 30px rgba(241,112,34,0.03)' : 'none',
+  transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+  boxShadow: selected
+    ? '0 0 0 0 rgba(241,112,34,0), 0 0 30px rgba(241,112,34,0.15), inset 0 0 30px rgba(241,112,34,0.03)'
+    : 'none',
   flex: 1, minWidth: 260,
-  transform: selected ? 'none' : undefined,
+  animation: selected ? 'selectionRipple 0.6s ease-out forwards' : undefined,
 });
 
 const SelectedCheck = () => (
@@ -194,7 +196,7 @@ const SelectedCheck = () => (
 );
 
 const StrategyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
-  <div style={cardStyle(selected)} onClick={onSelect}>
+  <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
     {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
     <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#f17022', marginBottom: 16 }}>
@@ -224,7 +226,7 @@ const StrategyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: Ca
 );
 
 const NamingCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
-  <div style={cardStyle(selected)} onClick={onSelect}>
+  <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
     {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
     <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 32, color: '#fff', marginBottom: 8, lineHeight: 1.1, paddingRight: 24 }}>
@@ -266,7 +268,7 @@ const ColorCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
   const getName = (c: any) => typeof c === 'string' ? c : c?.creative_name || c?.name || c?.hex || '';
 
   return (
-    <div style={cardStyle(selected)} onClick={onSelect}>
+    <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
       {selected && <SelectedCheck />}
       <HeartIcon filled={wishlisted} onClick={onWishlist} />
       <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 16, paddingRight: 24 }}>
@@ -348,7 +350,7 @@ const TypographyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: 
   const bodyFont = option.body_font || 'sans-serif';
 
   return (
-    <div style={cardStyle(selected)} onClick={onSelect}>
+    <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
       {selected && <SelectedCheck />}
       <HeartIcon filled={wishlisted} onClick={onWishlist} />
       <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 20, paddingRight: 24 }}>
@@ -393,7 +395,7 @@ const TypographyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: 
 };
 
 const LogoCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
-  <div style={cardStyle(selected)} onClick={onSelect}>
+  <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
     {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
 
@@ -425,7 +427,7 @@ const LogoCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardPr
 );
 
 const VoiceCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardProps) => (
-  <div style={cardStyle(selected)} onClick={onSelect}>
+  <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
     {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
     <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#f17022', marginBottom: 8, paddingRight: 24 }}>
@@ -907,7 +909,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
   }, [brandId, currentStep, onBack]);
 
   return (
-    <main style={{
+    <main className="page-enter" style={{
       flex: 1, display: 'flex', flexDirection: 'column',
       minHeight: '100vh', background: 'var(--bg)',
       padding: '0 16px',
@@ -1007,6 +1009,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
           <button
             onClick={handleContinue}
             disabled={currentStep !== 7 && selectedIndex === null}
+            className="btn-interactive"
             style={{
               background: (currentStep !== 7 && selectedIndex === null) ? 'rgba(241,112,34,0.3)' : '#f17022',
               border: 'none', cursor: (currentStep !== 7 && selectedIndex === null) ? 'not-allowed' : 'pointer',

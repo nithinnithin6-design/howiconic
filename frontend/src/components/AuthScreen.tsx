@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { login, register } from '../api';
 import { User } from '../types';
 import KeeAlive from './KeeAlive';
+import { Reveal as AnimReveal } from '../animations';
 
 interface AuthScreenProps {
   onAuth: (user: User) => void;
@@ -64,6 +65,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
         </button>
       )}
 
+      <AnimReveal direction="scale" duration={700} style={{ width: '100%', maxWidth: '32rem', padding: '0 1.5rem' }}>
       <div className="relative z-10 w-full max-w-lg px-6 md:px-8">
         {/* Header */}
         <div className="text-center mb-16 space-y-6">
@@ -119,7 +121,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder="Your name"
-                  className="auth-input w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                  className="auth-input input-glow w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
                   required
                 />
               </div>
@@ -132,7 +134,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="email@domain.com"
-                className="auth-input w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                className="auth-input input-glow w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
                 required
               />
             </div>
@@ -144,7 +146,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="auth-input w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                className="auth-input input-glow w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
                 required
                 minLength={6}
               />
@@ -160,7 +162,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-5 md:py-6 bg-[#f17022] text-white rounded-full text-[12px] md:text-[13px] uppercase font-black tracking-[0.6em] md:tracking-[0.8em] transition-all shadow-[0_12px_40px_rgba(241,112,34,0.25)] ${
+            className={`btn-interactive w-full py-5 md:py-6 bg-[#f17022] text-white rounded-full text-[12px] md:text-[13px] uppercase font-black tracking-[0.6em] md:tracking-[0.8em] transition-all shadow-[0_12px_40px_rgba(241,112,34,0.25)] ${
               loading ? 'opacity-50 cursor-wait' : 'hover:bg-[#d95e15] hover:shadow-[0_16px_50px_rgba(241,112,34,0.35)] active:scale-[0.98] cursor-pointer'
             }`}
           >
@@ -172,6 +174,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
           Build what lasts.
         </p>
       </div>
+      </AnimReveal>
     </div>
   );
 };

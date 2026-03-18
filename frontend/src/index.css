@@ -196,6 +196,105 @@ button, a, [role="button"], input[type="range"], select, summary { cursor: point
   .howiconic-wordmark { animation: none; letter-spacing: 0.2em; }
 }
 
+/* ── Award-level animations ── */
+
+/* Blur-to-focus reveal */
+@keyframes blurReveal {
+  from { opacity: 0; filter: blur(8px); transform: translateY(20px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+/* Float up with spring */
+@keyframes floatUp {
+  0% { opacity: 0; transform: translateY(60px); }
+  60% { transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Scale in with bounce */
+@keyframes scaleIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  60% { transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Shimmer effect for loading/skeleton */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Gentle pulse for attention */
+@keyframes gentlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Slide in from side */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Fade scale for cards */
+@keyframes cardReveal {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Underline grow */
+@keyframes lineGrow {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Magnetic hover lift for cards */
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+}
+
+/* Button micro-interaction */
+.btn-interactive {
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.btn-interactive:hover {
+  transform: scale(1.02);
+}
+.btn-interactive:active {
+  transform: scale(0.97);
+}
+
+/* Input focus glow */
+.input-glow:focus {
+  box-shadow: 0 0 0 3px rgba(241, 112, 34, 0.15);
+  border-color: rgba(241, 112, 34, 0.4) !important;
+}
+
+/* Selection ripple */
+@keyframes selectionRipple {
+  0% { box-shadow: 0 0 0 0 rgba(241, 112, 34, 0.3); }
+  100% { box-shadow: 0 0 0 12px rgba(241, 112, 34, 0); }
+}
+
+/* Page enter */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* Print — premium brand manual (#8) */
 @media print {
   body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; cursor: auto; background: white !important; color: black !important; }
