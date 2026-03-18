@@ -407,7 +407,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
               fontSize: 14, padding: '2px 4px',
-              color: voiceEnabled ? '#f17022' : 'rgba(255,255,255,0.2)',
+              color: voiceEnabled ? '#f17022' : 'var(--text-subtle)',
               transition: 'color 0.2s ease',
             }}
             title={voiceEnabled ? 'Mute Kee' : 'Let Kee speak'}
@@ -435,7 +435,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
 
       {/* Chat history */}
       {chatHistory.length > 0 && (
-        <div style={{ marginTop: 12, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 10 }}>
+        <div style={{ marginTop: 12, borderTop: '1px solid var(--border)', paddingTop: 10 }}>
           {chatHistory.slice(-4).map((msg, i) => (
             <div key={i} style={{
               marginBottom: 8,
@@ -483,7 +483,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
             )}
             <span style={{
               fontSize: 10,
-              color: isListening ? 'rgba(241,112,34,0.6)' : chatLoading ? 'rgba(255,255,255,0.3)' : micActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.15)',
+              color: isListening ? 'rgba(241,112,34,0.6)' : chatLoading ? 'var(--text-subtle)' : micActive ? 'var(--text-subtle)' : 'var(--text-subtle)',
               letterSpacing: '0.15em', fontWeight: 600,
               transition: 'color 0.3s ease',
             }}>
@@ -494,7 +494,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
                 onClick={stopMic}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: 10, color: 'rgba(255,255,255,0.15)',
+                  fontSize: 10, color: 'var(--text-subtle)',
                 }}
               >
                 pause
@@ -519,7 +519,7 @@ const KeeAlive: React.FC<KeeAliveProps> = ({
               onClick={() => setShowTextInput(true)}
               style={{
                 display: 'block', margin: '2px auto 0', background: 'none', border: 'none',
-                color: 'rgba(255,255,255,0.12)', fontSize: 9, cursor: 'pointer',
+                color: 'var(--text-subtle)', fontSize: 9, cursor: 'pointer',
                 letterSpacing: '0.1em',
               }}
             >

@@ -189,7 +189,7 @@ const BusinessCardBack: React.FC<{ brand: BrandSystem | null }> = ({ brand }) =>
       </p>
       {tagline && (
         <p style={{
-          margin: 0, fontSize: 9, color: 'rgba(255,255,255,0.7)',
+          margin: 0, fontSize: 9, color: 'var(--text)',
           letterSpacing: '0.2em', textTransform: 'uppercase', textAlign: 'center',
           fontFamily: fonts.body + ', sans-serif',
         }}>
@@ -246,7 +246,7 @@ const SocialPostPreview: React.FC<{ data: SocialPostData; brand: BrandSystem | n
           fontFamily: fonts.headline + ', serif',
           fontSize: data.copy.length > 80 ? 14 : data.copy.length > 40 ? 18 : 22,
           fontWeight: 900,
-          color: '#fff',
+          color: 'var(--text)',
           lineHeight: 1.35,
         }}>
           {data.copy || 'Your message here — make it count.'}
@@ -261,7 +261,7 @@ const SocialPostPreview: React.FC<{ data: SocialPostData; brand: BrandSystem | n
               dangerouslySetInnerHTML={{ __html: logo }} />
           ) : (
             <div style={{
-              width: 20, height: 20, background: 'rgba(255,255,255,0.25)',
+              width: 20, height: 20, background: colors.primary,
               borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: '#fff', fontSize: 8, fontWeight: 900,
             }}>
@@ -455,7 +455,7 @@ const LetterheadPreview: React.FC<{ data: LetterheadData; brand: BrandSystem | n
           )}
           <span style={{
             fontFamily: fonts.headline + ', serif',
-            fontSize: 14, fontWeight: 900, color: '#fff',
+            fontSize: 14, fontWeight: 900, color: 'var(--text)',
             letterSpacing: '0.15em', textTransform: 'uppercase',
           }}>
             {brandName}
@@ -650,7 +650,7 @@ const Field: React.FC<{
   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
     <label style={{
       fontSize: 9, fontWeight: 900, letterSpacing: '0.25em',
-      textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)',
+      textTransform: 'uppercase', color: 'var(--text-muted)',
     }}>
       {label}
     </label>
@@ -661,11 +661,11 @@ const Field: React.FC<{
         placeholder={placeholder}
         rows={3}
         style={{
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: 'var(--input-bg)',
+          border: '1px solid var(--border)',
           borderRadius: 6,
           padding: '10px 12px',
-          color: '#fff',
+          color: 'var(--text)',
           fontSize: 13,
           fontFamily: 'Inter, sans-serif',
           outline: 'none',
@@ -674,7 +674,7 @@ const Field: React.FC<{
           transition: 'border-color 0.15s',
         }}
         onFocus={e => e.target.style.borderColor = '#f17022'}
-        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+        onBlur={e => e.target.style.borderColor = 'var(--border)'}
       />
     ) : (
       <input
@@ -683,18 +683,18 @@ const Field: React.FC<{
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         style={{
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: 'var(--input-bg)',
+          border: '1px solid var(--border)',
           borderRadius: 6,
           padding: '10px 12px',
-          color: '#fff',
+          color: 'var(--text)',
           fontSize: 13,
           fontFamily: 'Inter, sans-serif',
           outline: 'none',
           transition: 'border-color 0.15s',
         }}
         onFocus={e => e.target.style.borderColor = '#f17022'}
-        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+        onBlur={e => e.target.style.borderColor = 'var(--border)'}
       />
     )}
   </div>
@@ -764,7 +764,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
       <aside style={{
         width: 200,
         flexShrink: 0,
-        borderRight: '1px solid rgba(255,255,255,0.06)',
+        borderRight: '1px solid var(--border)',
         padding: '24px 0',
         display: 'flex',
         flexDirection: 'column',
@@ -775,7 +775,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
           padding: '0 16px',
           fontSize: 8, fontWeight: 900,
           letterSpacing: '0.5em', textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.2)',
+          color: 'var(--text-subtle)',
         }}>
           Collateral
         </p>
@@ -794,7 +794,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
               transition: 'all 0.15s ease',
             }}
             onMouseEnter={e => {
-              if (activeType !== p.id) e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+              if (activeType !== p.id) e.currentTarget.style.background = 'var(--card-bg)';
             }}
             onMouseLeave={e => {
               if (activeType !== p.id) e.currentTarget.style.background = 'transparent';
@@ -802,7 +802,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
           >
             <span style={{
               fontSize: 14, width: 20, textAlign: 'center', flexShrink: 0,
-              color: activeType === p.id ? '#f17022' : 'rgba(255,255,255,0.4)',
+              color: activeType === p.id ? '#f17022' : 'var(--text-muted)',
             }}>
               {p.icon}
             </span>
@@ -810,12 +810,12 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
               <p style={{
                 margin: 0, fontSize: 10, fontWeight: 900,
                 letterSpacing: '0.1em', textTransform: 'uppercase',
-                color: activeType === p.id ? '#f17022' : 'rgba(255,255,255,0.7)',
+                color: activeType === p.id ? '#f17022' : 'var(--text)',
               }}>
                 {p.label}
               </p>
               <p style={{
-                margin: 0, fontSize: 7.5, color: 'rgba(255,255,255,0.25)',
+                margin: 0, fontSize: 7.5, color: 'var(--text-subtle)',
                 letterSpacing: '0.06em',
               }}>
                 {p.desc}
@@ -871,15 +871,15 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
             width: 300,
             flexShrink: 0,
             padding: '28px 24px',
-            borderRight: '1px solid rgba(255,255,255,0.05)',
+            borderRight: '1px solid var(--border)',
             display: 'flex', flexDirection: 'column', gap: 16,
           }}>
             {/* Section header */}
             <div style={{ marginBottom: 4 }}>
-              <p style={{ margin: 0, fontSize: 8, letterSpacing: '0.5em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', fontWeight: 700 }}>
+              <p style={{ margin: 0, fontSize: 8, letterSpacing: '0.5em', textTransform: 'uppercase', color: 'var(--text-subtle)', fontWeight: 700 }}>
                 {PRODUCTION_TYPES.find(p => p.id === activeType)?.label}
               </p>
-              <p style={{ margin: '4px 0 0', fontSize: 11, color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>
+              <p style={{ margin: '4px 0 0', fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5 }}>
                 {PRODUCTION_TYPES.find(p => p.id === activeType)?.desc}
               </p>
             </div>
@@ -899,7 +899,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
             {activeType === 'social-post' && (
               <>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <label style={{ fontSize: 9, fontWeight: 900, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)' }}>
+                  <label style={{ fontSize: 9, fontWeight: 900, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
                     Platform
                   </label>
                   <div style={{ display: 'flex', gap: 6 }}>
@@ -909,12 +909,12 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
                         onClick={() => setSocialData(prev => ({ ...prev, platform: p }))}
                         style={{
                           flex: 1, padding: '7px 4px',
-                          background: socialData.platform === p ? 'rgba(241,112,34,0.15)' : 'rgba(255,255,255,0.04)',
-                          border: `1px solid ${socialData.platform === p ? '#f17022' : 'rgba(255,255,255,0.08)'}`,
+                          background: socialData.platform === p ? 'rgba(241,112,34,0.15)' : 'var(--input-bg)',
+                          border: `1px solid ${socialData.platform === p ? '#f17022' : 'var(--border)'}`,
                           borderRadius: 6, cursor: 'pointer',
                           fontSize: 8.5, fontWeight: 900,
                           letterSpacing: '0.1em', textTransform: 'uppercase',
-                          color: socialData.platform === p ? '#f17022' : 'rgba(255,255,255,0.4)',
+                          color: socialData.platform === p ? '#f17022' : 'var(--text-muted)',
                           transition: 'all 0.15s',
                         }}
                       >
@@ -976,7 +976,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <p style={{
                 margin: 0, fontSize: 8, letterSpacing: '0.5em', textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.2)', fontWeight: 700,
+                color: 'var(--text-subtle)', fontWeight: 700,
               }}>
                 Live Preview
               </p>
@@ -986,11 +986,11 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
                     onClick={copyEmailSignatureHTML}
                     style={{
                       padding: '7px 14px',
-                      background: copyMsg ? 'rgba(255,255,255,0.08)' : 'rgba(241,112,34,0.12)',
-                      border: `1px solid ${copyMsg ? 'rgba(255,255,255,0.15)' : 'rgba(241,112,34,0.3)'}`,
+                      background: copyMsg ? 'var(--card-bg)' : 'rgba(241,112,34,0.12)',
+                      border: `1px solid ${copyMsg ? 'var(--border)' : 'rgba(241,112,34,0.3)'}`,
                       borderRadius: 6, cursor: 'pointer',
                       fontSize: 9, fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase',
-                      color: copyMsg ? 'rgba(255,255,255,0.5)' : '#f17022',
+                      color: copyMsg ? 'var(--text-muted)' : '#f17022',
                       transition: 'all 0.2s',
                     }}
                   >
@@ -999,7 +999,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
                 )}
                 <span style={{
                   fontSize: 8, letterSpacing: '0.25em', textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.15)', fontWeight: 700,
+                  color: 'var(--text-subtle)', fontWeight: 700,
                 }}>
                   Screenshot to save
                 </span>
@@ -1019,11 +1019,11 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
               {activeType === 'business-card' && (
                 <>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <p style={{ margin: 0, fontSize: 7, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>Front</p>
+                    <p style={{ margin: 0, fontSize: 7, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>Front</p>
                     <BusinessCardPreview data={cardData} brand={brand} />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <p style={{ margin: 0, fontSize: 7, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>Back</p>
+                    <p style={{ margin: 0, fontSize: 7, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>Back</p>
                     <BusinessCardBack brand={brand} />
                   </div>
                 </>
@@ -1050,11 +1050,11 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
             <div style={{
               marginTop: 8,
               padding: '12px 16px',
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.04)',
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border)',
               borderRadius: 8,
             }}>
-              <p style={{ margin: 0, fontSize: 9, color: 'rgba(255,255,255,0.2)', lineHeight: 1.6 }}>
+              <p style={{ margin: 0, fontSize: 9, color: 'var(--text-subtle)', lineHeight: 1.6 }}>
                 {activeType === 'email-signature'
                   ? '→ Click "Copy HTML" then paste into Gmail/Outlook Settings → Signature.'
                   : '→ Take a screenshot of the preview above to save your design. Use browser zoom to adjust scale.'}
@@ -1070,7 +1070,7 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
                 borderRadius: 8,
                 display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center',
               }}>
-                <span style={{ fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', fontWeight: 700 }}>
+                <span style={{ fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)', fontWeight: 700 }}>
                   Brand:
                 </span>
                 <span style={{ fontSize: 11, fontWeight: 900, color: '#f17022', letterSpacing: '0.1em' }}>
@@ -1080,11 +1080,11 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
                   {[brand.colors?.primary?.hex, brand.colors?.secondary?.hex, brand.colors?.accent?.hex].filter(Boolean).map((hex, i) => (
                     <div key={i} style={{
                       width: 14, height: 14, borderRadius: 3,
-                      background: hex, border: '1px solid rgba(255,255,255,0.1)',
+                      background: hex, border: '1px solid var(--border)',
                     }} title={hex} />
                   ))}
                 </div>
-                <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>
+                <span style={{ fontSize: 9, color: 'var(--text-subtle)' }}>
                   {brand.typography?.hierarchy?.headline?.fontFamily || 'Playfair Display'}
                 </span>
               </div>

@@ -92,17 +92,17 @@ const EditableField: React.FC<EditableFieldProps> = ({
             maxLength={7}
             style={{
               width: 90,
-              background: 'rgba(255,255,255,0.08)',
+              background: 'var(--card-bg)',
               border: '1px solid rgba(241,112,34,0.5)',
               borderRadius: 6,
               padding: '4px 8px',
-              color: '#fff',
+              color: 'var(--text)',
               fontSize: 13,
               fontFamily: 'monospace',
               outline: 'none',
             }}
           />
-          {saving && <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>…</span>}
+          {saving && <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>…</span>}
         </span>
       );
     }
@@ -119,11 +119,11 @@ const EditableField: React.FC<EditableFieldProps> = ({
             rows={4}
             style={{
               width: '100%',
-              background: 'rgba(255,255,255,0.04)',
+              background: 'var(--input-bg)',
               border: '1px solid rgba(241,112,34,0.4)',
               borderRadius: 10,
               padding: '12px 14px',
-              color: '#fff',
+              color: 'var(--text)',
               fontSize: 14,
               lineHeight: 1.7,
               fontFamily: 'Georgia, serif',
@@ -137,7 +137,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
             <span style={{
               position: 'absolute', right: 10, bottom: 10,
               fontSize: 9, fontWeight: 900, letterSpacing: '0.3em',
-              textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)',
+              textTransform: 'uppercase', color: 'var(--text-subtle)',
             }}>
               Saving…
             </span>
@@ -157,11 +157,11 @@ const EditableField: React.FC<EditableFieldProps> = ({
           onBlur={commitSave}
           placeholder={placeholder}
           style={{
-            background: 'rgba(255,255,255,0.06)',
+            background: 'var(--card-bg)',
             border: '1px solid rgba(241,112,34,0.5)',
             borderRadius: 6,
             padding: '4px 10px',
-            color: '#fff',
+            color: 'var(--text)',
             fontSize: 'inherit',
             fontFamily: 'inherit',
             fontWeight: 'inherit',
@@ -172,7 +172,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
             width: Math.max(draft.length * 12, 80) + 'px',
           }}
         />
-        {saving && <span style={{ marginLeft: 8, fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>…</span>}
+        {saving && <span style={{ marginLeft: 8, fontSize: 10, color: 'var(--text-subtle)' }}>…</span>}
       </span>
     );
   }
@@ -196,7 +196,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
       onClick={() => { setDraft(value); setEditing(true); }}
       title="Click to edit"
     >
-      {renderValue ? renderValue(value) : value || <span style={{ color: 'rgba(255,255,255,0.2)' }}>{placeholder}</span>}
+      {renderValue ? renderValue(value) : value || <span style={{ color: 'var(--text-subtle)' }}>{placeholder}</span>}
       {hovered && !saving && !saved && (
         <span style={{
           position: 'absolute',
@@ -246,7 +246,7 @@ const EducationCallout: React.FC<EducationCalloutProps> = ({ children }) => (
     padding: '16px 20px',
     margin: '24px 0',
     fontSize: 12,
-    color: 'rgba(255,255,255,0.5)',
+    color: 'var(--text-muted)',
     fontStyle: 'italic',
     lineHeight: 1.7,
     fontFamily: 'Georgia, serif',
@@ -878,7 +878,7 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
                         <div className="flex items-center gap-3 mb-2">
                           <p
                             className="font-serif-display uppercase font-black text-xl"
-                            style={{ color: candidate.name === v3n.winner ? primaryHex : 'rgba(255,255,255,0.55)' }}
+                            style={{ color: candidate.name === v3n.winner ? primaryHex : 'var(--text-muted)' }}
                           >
                             {candidate.name}
                           </p>
@@ -1183,7 +1183,7 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
                           className="w-full aspect-square flex items-center justify-center p-6 rounded-2xl border-2 transition-all duration-300 hover:border-white/20 focus:outline-none"
                           style={{
                             backgroundColor: '#141414',
-                            borderColor: isSelected ? primaryHex : 'rgba(255,255,255,0.07)',
+                            borderColor: isSelected ? primaryHex : 'var(--border)',
                             boxShadow: isSelected ? `0 0 0 1px ${primaryHex}40` : 'none',
                           }}
                         >
@@ -1201,11 +1201,11 @@ const FullSystem: React.FC<FullSystemProps> = ({ brand, onBack, onCard, onOpenRe
                           <button
                             onClick={() => setSelectedDalleIdx(i)}
                             className="flex items-center gap-1.5 text-[8px] uppercase tracking-[0.3em] font-black transition-colors"
-                            style={{ color: isSelected ? primaryHex : 'rgba(255,255,255,0.2)' }}
+                            style={{ color: isSelected ? primaryHex : 'var(--text-subtle)' }}
                           >
                             <span
                               className="w-3 h-3 rounded-full border-2 flex items-center justify-center"
-                              style={{ borderColor: isSelected ? primaryHex : 'rgba(255,255,255,0.2)' }}
+                              style={{ borderColor: isSelected ? primaryHex : 'var(--text-subtle)' }}
                             >
                               {isSelected && (
                                 <span

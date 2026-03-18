@@ -81,7 +81,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, depth, isLast, onSelect, onCr
             top: 0,
             bottom: isLast ? '50%' : 0,
             width: 1,
-            background: 'rgba(255,255,255,0.08)',
+            background: 'var(--border)',
           }} />
           {/* Horizontal branch */}
           <div style={{
@@ -90,7 +90,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, depth, isLast, onSelect, onCr
             top: '50%',
             width: 20,
             height: 1,
-            background: 'rgba(255,255,255,0.08)',
+            background: 'var(--border)',
             transform: 'translateY(-50%)',
           }} />
         </>
@@ -104,8 +104,8 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, depth, isLast, onSelect, onCr
           gap: 10,
           padding: '10px 14px',
           borderRadius: 10,
-          border: `1px solid ${isSelected ? primaryColor + '60' : 'rgba(255,255,255,0.07)'}`,
-          background: isSelected ? primaryColor + '0a' : hovered ? 'rgba(255,255,255,0.03)' : 'rgba(17,17,17,0.8)',
+          border: `1px solid ${isSelected ? primaryColor + '60' : 'var(--border)'}`,
+          background: isSelected ? primaryColor + '0a' : hovered ? 'var(--card-bg)' : 'var(--bg-secondary)',
           cursor: 'pointer',
           transition: 'all 0.15s ease',
           position: 'relative',
@@ -122,7 +122,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, depth, isLast, onSelect, onCr
           borderRadius: 6,
           background: primaryColor,
           flexShrink: 0,
-          border: '1px solid rgba(255,255,255,0.1)',
+          border: '1px solid var(--border)',
         }} />
 
         {/* Name + type */}
@@ -131,7 +131,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, depth, isLast, onSelect, onCr
             margin: 0,
             fontSize: 13,
             fontWeight: 900,
-            color: isSelected ? '#fff' : 'rgba(255,255,255,0.85)',
+            color: isSelected ? 'var(--text)' : 'var(--text)',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
             whiteSpace: 'nowrap',
@@ -146,7 +146,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, depth, isLast, onSelect, onCr
               fontWeight: 700,
               letterSpacing: '0.3em',
               textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.3)',
+              color: 'var(--text-subtle)',
             }}>
               {node.brand_type || 'brand'}
             </span>
@@ -186,7 +186,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, depth, isLast, onSelect, onCr
           marginLeft: 36,
           marginTop: 4,
           paddingLeft: 12,
-          borderLeft: '1px solid rgba(255,255,255,0.06)',
+          borderLeft: '1px solid var(--border)',
           display: 'flex',
           flexDirection: 'column',
           gap: 4,
@@ -253,7 +253,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
     }} onClick={onClose}>
       <div style={{
         background: 'var(--bg-secondary)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        border: '1px solid var(--border)',
         borderRadius: 20,
         padding: 32,
         width: '100%',
@@ -271,7 +271,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
         </p>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div>
-            <label style={{ fontSize: 9, fontWeight: 900, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', display: 'block', marginBottom: 8 }}>
+            <label style={{ fontSize: 9, fontWeight: 900, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--text-subtle)', display: 'block', marginBottom: 8 }}>
               Brand Name
             </label>
             <input
@@ -282,11 +282,11 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
               autoFocus
               style={{
                 width: '100%',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: 'var(--input-bg)',
+                border: '1px solid var(--border)',
                 borderRadius: 10,
                 padding: '12px 16px',
-                color: '#fff',
+                color: 'var(--text)',
                 fontSize: 14,
                 fontWeight: 700,
                 outline: 'none',
@@ -295,7 +295,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
             />
           </div>
           <div>
-            <label style={{ fontSize: 9, fontWeight: 900, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', display: 'block', marginBottom: 8 }}>
+            <label style={{ fontSize: 9, fontWeight: 900, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--text-subtle)', display: 'block', marginBottom: 8 }}>
               Relationship Type
             </label>
             <select
@@ -303,11 +303,11 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
               onChange={e => setForm(f => ({ ...f, relationship_type: e.target.value }))}
               style={{
                 width: '100%',
-                background: '#1a1a1a',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: 'var(--input-bg)',
+                border: '1px solid var(--border)',
                 borderRadius: 10,
                 padding: '12px 16px',
-                color: '#fff',
+                color: 'var(--text)',
                 fontSize: 13,
                 fontWeight: 700,
                 outline: 'none',
@@ -316,7 +316,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
               }}
             >
               {RELATIONSHIP_TYPES.map(r => (
-                <option key={r} value={r} style={{ background: '#1a1a1a' }}>{r}</option>
+                <option key={r} value={r} style={{ background: 'var(--input-bg)' }}>{r}</option>
               ))}
             </select>
           </div>
@@ -330,10 +330,10 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
               style={{
                 flex: 1,
                 padding: '12px',
-                border: '1px solid rgba(255,255,255,0.1)',
+                border: '1px solid var(--border)',
                 borderRadius: 10,
                 background: 'transparent',
-                color: 'rgba(255,255,255,0.4)',
+                color: 'var(--text-muted)',
                 fontSize: 11,
                 fontWeight: 900,
                 letterSpacing: '0.3em',
@@ -352,7 +352,7 @@ const CreateDialog: React.FC<CreateDialogProps> = ({ parent, onClose, onCreate }
                 border: 'none',
                 borderRadius: 10,
                 background: saving ? 'rgba(241,112,34,0.4)' : '#f17022',
-                color: '#fff',
+                color: 'var(--text)',
                 fontSize: 11,
                 fontWeight: 900,
                 letterSpacing: '0.3em',
@@ -458,7 +458,7 @@ const ArchitectureView: React.FC<ArchitectureViewProps> = ({ brand, onSelectBran
             fontWeight: 700,
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.25)',
+            color: 'var(--text-subtle)',
           }}>
             {totalNodes} brand{totalNodes !== 1 ? 's' : ''} in ecosystem
           </p>
@@ -473,7 +473,7 @@ const ArchitectureView: React.FC<ArchitectureViewProps> = ({ brand, onSelectBran
       </div>
 
       {loading && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(255,255,255,0.3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--text-subtle)' }}>
           <div style={{
             width: 20,
             height: 20,
@@ -533,11 +533,11 @@ const ArchitectureView: React.FC<ArchitectureViewProps> = ({ brand, onSelectBran
             <div style={{
               marginTop: 32,
               padding: '16px 20px',
-              border: '1px solid rgba(255,255,255,0.05)',
+              border: '1px solid var(--border)',
               borderRadius: 10,
-              background: 'rgba(255,255,255,0.01)',
+              background: 'var(--bg-secondary)',
             }}>
-              <p style={{ fontSize: 8, fontWeight: 900, letterSpacing: '0.5em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: 12 }}>
+              <p style={{ fontSize: 8, fontWeight: 900, letterSpacing: '0.5em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 12 }}>
                 Relationship Types
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -564,7 +564,7 @@ const ArchitectureView: React.FC<ArchitectureViewProps> = ({ brand, onSelectBran
         <div style={{ marginTop: 40, maxWidth: 400 }}>
           <div style={{
             padding: '32px',
-            border: '1px dashed rgba(255,255,255,0.08)',
+            border: '1px dashed var(--border)',
             borderRadius: 16,
             textAlign: 'center',
           }}>
@@ -574,12 +574,12 @@ const ArchitectureView: React.FC<ArchitectureViewProps> = ({ brand, onSelectBran
               fontWeight: 900,
               letterSpacing: '0.3em',
               textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.3)',
+              color: 'var(--text-subtle)',
               marginBottom: 8,
             }}>
               No sub-brands yet
             </p>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.2)', marginBottom: 20 }}>
+            <p style={{ fontSize: 13, color: 'var(--text-subtle)', marginBottom: 20 }}>
               Grow your brand ecosystem by adding sub-brands, product lines, or extensions.
             </p>
             <button
@@ -649,7 +649,7 @@ const SelectedNodeDetail: React.FC<{
   return (
     <div style={{
       padding: 24,
-      border: '1px solid rgba(255,255,255,0.08)',
+      border: '1px solid var(--border)',
       borderRadius: 16,
       background: 'var(--bg-secondary)',
       position: 'sticky',
@@ -684,7 +684,7 @@ const SelectedNodeDetail: React.FC<{
         <p style={{
           fontSize: 13,
           fontStyle: 'italic',
-          color: 'rgba(255,255,255,0.4)',
+          color: 'var(--text-muted)',
           marginBottom: 16,
           fontFamily: 'Georgia, serif',
         }}>
@@ -695,8 +695,8 @@ const SelectedNodeDetail: React.FC<{
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
         <span style={{
           fontSize: 8, fontWeight: 900, letterSpacing: '0.35em', textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.3)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          color: 'var(--text-subtle)',
+          border: '1px solid var(--border)',
           padding: '3px 10px', borderRadius: 4,
         }}>
           {node.brand_type || 'brand'}
@@ -716,7 +716,7 @@ const SelectedNodeDetail: React.FC<{
 
       {node.children.length > 0 && (
         <div style={{ marginBottom: 16 }}>
-          <p style={{ fontSize: 8, fontWeight: 900, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: 8 }}>
+          <p style={{ fontSize: 8, fontWeight: 900, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 8 }}>
             {node.children.length} sub-brand{node.children.length !== 1 ? 's' : ''}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>

@@ -49,7 +49,7 @@ const BrandColumn: React.FC<{ brand: BrandSystem; side: 'left' | 'right' }> = ({
       initial={{ opacity: 0, x: side === 'left' ? -30 : 30 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="flex-1 min-w-0 space-y-8 p-6 md:p-8 border border-white/[0.07] rounded-2xl bg-white/[0.01]"
+      className="flex-1 min-w-0 space-y-8 p-6 md:p-8 border border-white/[0.07] rounded-2xl bg-white/[0.01] compare-column"
     >
       {/* Logo */}
       <div
@@ -175,7 +175,7 @@ const CompareView: React.FC<CompareViewProps> = ({ brandA, brandB, onBack }) => 
   const primaryB = brandB.colors?.primary?.hex || '#f17022';
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen text-white" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       {/* Nav */}
       <div className="sticky top-0 z-50 px-6 md:px-12 py-4 flex items-center justify-between bg-black/85 backdrop-blur-xl border-b border-white/[0.05]">
         <button

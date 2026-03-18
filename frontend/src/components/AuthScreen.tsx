@@ -3,6 +3,7 @@ import { login, register } from '../api';
 import { User } from '../types';
 import KeeAlive from './KeeAlive';
 import { Reveal as AnimReveal } from '../animations';
+import { useTheme } from '../ThemeContext';
 
 interface AuthScreenProps {
   onAuth: (user: User) => void;
@@ -16,6 +17,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { theme } = useTheme();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +60,8 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
       {onBack && (
         <button
           onClick={onBack}
-          className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] font-black text-white/30 hover:text-white transition-all cursor-pointer group"
+          className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] font-black transition-all cursor-pointer group auth-back"
+          style={{ color: 'var(--text-subtle)' }}
         >
           <span className="group-hover:-translate-x-1 transition-transform inline-block">←</span>
           Back
@@ -78,10 +81,10 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
               <circle cx="50" cy="50" r="3" fill="white" opacity="0.8" />
             </svg>
           </div>
-          <h1 className="auth-title font-serif-display text-5xl md:text-7xl uppercase italic font-black tracking-tighter text-white">
+          <h1 className="auth-title font-serif-display text-5xl md:text-7xl uppercase italic font-black tracking-tighter" style={{ color: 'var(--text)' }}>
             HOWICONIC
           </h1>
-          <p className="auth-sub text-[11px] uppercase tracking-[1.2em] text-white/50 font-black">
+          <p className="auth-sub text-[11px] uppercase tracking-[1.2em] font-black" style={{ color: 'var(--text-muted)' }}>
             Brand Identity Engine
           </p>
           <KeeAlive animate={true}>
@@ -96,18 +99,22 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
               <button
                 type="button"
                 onClick={() => setMode('login')}
-                className={`flex-1 py-3 rounded-full text-[10px] uppercase font-black tracking-[0.5em] transition-all ${
-                  mode === 'login' ? 'bg-white text-black' : 'text-white/40 hover:text-white/70'
-                }`}
+                className="flex-1 py-3 rounded-full text-[10px] uppercase font-black tracking-[0.5em] transition-all"
+                style={{
+                  background: mode === 'login' ? 'var(--text)' : 'transparent',
+                  color: mode === 'login' ? 'var(--bg)' : 'var(--text-muted)',
+                }}
               >
                 Log in
               </button>
               <button
                 type="button"
                 onClick={() => setMode('register')}
-                className={`flex-1 py-3 rounded-full text-[10px] uppercase font-black tracking-[0.5em] transition-all ${
-                  mode === 'register' ? 'bg-white text-black' : 'text-white/40 hover:text-white/70'
-                }`}
+                className="flex-1 py-3 rounded-full text-[10px] uppercase font-black tracking-[0.5em] transition-all"
+                style={{
+                  background: mode === 'register' ? 'var(--text)' : 'transparent',
+                  color: mode === 'register' ? 'var(--bg)' : 'var(--text-muted)',
+                }}
               >
                 Sign up
               </button>
@@ -115,38 +122,41 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
 
             {mode === 'register' && (
               <div className="space-y-2">
-                <label className="auth-label text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Name</label>
+                <label className="auth-label text-[9px] uppercase tracking-[0.5em] font-black" style={{ color: 'var(--text-subtle)' }}>Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder="Your name"
-                  className="auth-input input-glow w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                  className="auth-input input-glow w-full rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all"
+                  style={{ background: 'var(--input-bg)', border: '1px solid var(--border)', color: 'var(--text)' }}
                   required
                 />
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="auth-label text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Email</label>
+              <label className="auth-label text-[9px] uppercase tracking-[0.5em] font-black" style={{ color: 'var(--text-subtle)' }}>Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="email@domain.com"
-                className="auth-input input-glow w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                className="auth-input input-glow w-full rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all"
+                style={{ background: 'var(--input-bg)', border: '1px solid var(--border)', color: 'var(--text)' }}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <label className="auth-label text-[9px] uppercase tracking-[0.5em] text-white/30 font-black">Password</label>
+              <label className="auth-label text-[9px] uppercase tracking-[0.5em] font-black" style={{ color: 'var(--text-subtle)' }}>Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="auth-input input-glow w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all text-white placeholder:text-white/10"
+                className="auth-input input-glow w-full rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all"
+                style={{ background: 'var(--input-bg)', border: '1px solid var(--border)', color: 'var(--text)' }}
                 required
                 minLength={6}
               />
@@ -170,7 +180,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
           </button>
         </form>
 
-        <p className="auth-footer-text text-center mt-12 text-[9px] uppercase tracking-[0.5em] text-white/20 font-black">
+        <p className="auth-footer-text text-center mt-12 text-[9px] uppercase tracking-[0.5em] font-black" style={{ color: 'var(--text-subtle)' }}>
           Build what lasts.
         </p>
       </div>

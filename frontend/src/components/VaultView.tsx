@@ -57,7 +57,7 @@ const StatusDot: React.FC<{ status: BrandStatus }> = ({ status }) => {
         flexShrink: 0,
         display: 'inline-block',
       }} />
-      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)' }}>
+      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>
         {labels[status]}
       </span>
     </span>
@@ -127,7 +127,7 @@ const TreeNode: React.FC<{
       }} />
       <span style={{
         fontFamily: 'Playfair Display, serif', fontWeight: 700,
-        fontSize: 14, color: '#fff',
+        fontSize: 14, color: 'var(--text)',
         textTransform: 'uppercase',
       }}>
         {node.brand.name}
@@ -135,8 +135,8 @@ const TreeNode: React.FC<{
       {depth > 0 && (
         <span style={{
           fontSize: 9, fontWeight: 700, letterSpacing: '0.15em',
-          textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          textTransform: 'uppercase', color: 'var(--text-subtle)',
+          border: '1px solid var(--border)',
           padding: '1px 6px', borderRadius: 2,
         }}>Sub-brand</span>
       )}
@@ -206,7 +206,7 @@ const VaultView: React.FC<VaultViewProps> = ({
         <h2 style={{
           fontFamily: 'Playfair Display, serif', fontWeight: 900,
           fontSize: 'clamp(3rem, 8vw, 6rem)',
-          color: '#fff', textTransform: 'uppercase', fontStyle: 'italic',
+          color: 'var(--text)', textTransform: 'uppercase', fontStyle: 'italic',
           lineHeight: 0.95, margin: 0,
         }}>
           Brand Vault
@@ -234,8 +234,8 @@ const VaultView: React.FC<VaultViewProps> = ({
                 style={{
                   padding: '10px 20px',
                   background: compareMode ? 'rgba(241,112,34,0.08)' : 'transparent',
-                  color: compareMode ? '#f17022' : 'rgba(255,255,255,0.4)',
-                  border: `1px solid ${compareMode ? 'rgba(241,112,34,0.4)' : 'rgba(255,255,255,0.15)'}`,
+                  color: compareMode ? '#f17022' : 'var(--text-muted)',
+                  border: `1px solid ${compareMode ? 'rgba(241,112,34,0.4)' : 'var(--border)'}`,
                   cursor: 'pointer',
                   fontSize: 10, fontWeight: 900, letterSpacing: '0.3em',
                   textTransform: 'uppercase', borderRadius: 100,
@@ -273,7 +273,7 @@ const VaultView: React.FC<VaultViewProps> = ({
           animate={{ opacity: 1, y: 0 }}
           style={{
             fontSize: 9, letterSpacing: '0.5em', textTransform: 'uppercase',
-            fontWeight: 700, color: 'rgba(255,255,255,0.25)', marginBottom: 24,
+            fontWeight: 700, color: 'var(--text-subtle)', marginBottom: 24,
           }}
         >
           Select 2 brands to compare side by side
@@ -289,7 +289,7 @@ const VaultView: React.FC<VaultViewProps> = ({
           <div style={{ position: 'relative', flex: '1', minWidth: 200, maxWidth: 360 }}>
             <span style={{
               position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
-              color: 'rgba(255,255,255,0.2)', fontSize: 14,
+              color: 'var(--text-subtle)', fontSize: 14,
             }}>🔍</span>
             <input
               type="text"
@@ -298,15 +298,15 @@ const VaultView: React.FC<VaultViewProps> = ({
               onChange={e => setSearch(e.target.value)}
               style={{
                 width: '100%', boxSizing: 'border-box',
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--input-bg)',
+                border: '1px solid var(--border)',
                 borderRadius: 2, padding: '10px 14px 10px 36px',
-                color: '#fff', fontSize: 13,
+                color: 'var(--text)', fontSize: 13,
                 fontFamily: 'Inter, sans-serif',
                 outline: 'none', transition: 'border-color 0.2s ease',
               }}
               onFocus={e => { e.target.style.borderColor = 'rgba(241,112,34,0.4)'; }}
-              onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+              onBlur={e => { e.target.style.borderColor = 'var(--border)'; }}
             />
           </div>
 
@@ -318,9 +318,9 @@ const VaultView: React.FC<VaultViewProps> = ({
                 onClick={() => setSortMode(m)}
                 style={{
                   padding: '8px 14px', cursor: 'pointer',
-                  background: sortMode === m ? 'rgba(255,255,255,0.08)' : 'transparent',
-                  color: sortMode === m ? '#fff' : 'rgba(255,255,255,0.3)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: sortMode === m ? 'var(--card-bg)' : 'transparent',
+                  color: sortMode === m ? 'var(--text)' : 'var(--text-subtle)',
+                  border: '1px solid var(--border)',
                   fontSize: 9, fontWeight: 700, letterSpacing: '0.3em',
                   textTransform: 'uppercase',
                   borderRadius: m === 'newest' ? '2px 0 0 2px' : '0 2px 2px 0',
@@ -340,9 +340,9 @@ const VaultView: React.FC<VaultViewProps> = ({
                 onClick={() => setViewMode(m)}
                 style={{
                   padding: '8px 12px', cursor: 'pointer',
-                  background: viewMode === m ? 'rgba(255,255,255,0.08)' : 'transparent',
-                  color: viewMode === m ? '#fff' : 'rgba(255,255,255,0.3)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: viewMode === m ? 'var(--card-bg)' : 'transparent',
+                  color: viewMode === m ? 'var(--text)' : 'var(--text-subtle)',
+                  border: '1px solid var(--border)',
                   fontSize: 14,
                   borderRadius: m === 'grid' ? '2px 0 0 2px' : '0 2px 2px 0',
                   transition: 'all 0.2s ease',
@@ -361,8 +361,8 @@ const VaultView: React.FC<VaultViewProps> = ({
               style={{
                 padding: '8px 14px', cursor: 'pointer',
                 background: showTree ? 'rgba(241,112,34,0.08)' : 'transparent',
-                color: showTree ? '#f17022' : 'rgba(255,255,255,0.3)',
-                border: `1px solid ${showTree ? 'rgba(241,112,34,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                color: showTree ? '#f17022' : 'var(--text-subtle)',
+                border: `1px solid ${showTree ? 'rgba(241,112,34,0.3)' : 'var(--border)'}`,
                 fontSize: 9, fontWeight: 700, letterSpacing: '0.3em',
                 textTransform: 'uppercase', borderRadius: 2,
                 transition: 'all 0.2s ease',
@@ -382,14 +382,14 @@ const VaultView: React.FC<VaultViewProps> = ({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             style={{
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.06)',
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border)',
               borderRadius: 2, padding: 24, marginBottom: 32, overflow: 'hidden',
             }}
           >
             <p style={{
               fontSize: 9, letterSpacing: '0.6em', textTransform: 'uppercase',
-              fontWeight: 700, color: 'rgba(255,255,255,0.25)', marginBottom: 16,
+              fontWeight: 700, color: 'var(--text-subtle)', marginBottom: 16,
             }}>
               Brand Architecture
             </p>
@@ -408,13 +408,13 @@ const VaultView: React.FC<VaultViewProps> = ({
           <div style={{ marginTop: 40 }}>
             <h3 style={{
               fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 28,
-              color: 'rgba(255,255,255,0.8)', marginBottom: 16, textTransform: 'uppercase',
+              color: 'var(--text)', marginBottom: 16, textTransform: 'uppercase',
             }}>
               Your garden is waiting
             </h3>
             <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px auto 40px', maxWidth: 400, textAlign: 'left' }}>
               <p style={{
-                fontStyle: 'italic', color: 'rgba(255,255,255,0.4)',
+                fontStyle: 'italic', color: 'var(--text-muted)',
                 fontSize: 13, lineHeight: 1.7, fontFamily: 'Georgia, serif', margin: 0,
               }}>
                 Every brand you build lives here. Start with one — you can always grow more.
@@ -447,14 +447,14 @@ const VaultView: React.FC<VaultViewProps> = ({
               <div key={i} style={{
                 flex: '1', minWidth: 200, maxWidth: 240,
                 padding: '20px 16px',
-                background: 'rgba(241,112,34,0.03)',
+                background: 'var(--card-bg)',
                 borderLeft: '2px solid rgba(241,112,34,0.2)',
                 textAlign: 'left',
               }}>
                 <span style={{ fontSize: 20, display: 'block', marginBottom: 10 }}>{tip.icon}</span>
                 <p style={{
                   fontSize: 12, fontStyle: 'italic',
-                  color: 'rgba(255,255,255,0.4)', lineHeight: 1.6,
+                  color: 'var(--text-muted)', lineHeight: 1.6,
                   fontFamily: 'Georgia, serif',
                 }}>{tip.text}</p>
               </div>
@@ -465,7 +465,7 @@ const VaultView: React.FC<VaultViewProps> = ({
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 16px' }}>
           <p style={{
-            fontSize: 14, fontStyle: 'italic', color: 'rgba(255,255,255,0.3)',
+            fontSize: 14, fontStyle: 'italic', color: 'var(--text-subtle)',
             fontFamily: 'Georgia, serif',
           }}>
             No brands match "{search}"
@@ -495,8 +495,8 @@ const VaultView: React.FC<VaultViewProps> = ({
                 className={!isDisabled && !compareMode ? 'card-hover' : ''}
                 style={{
                   position: 'relative',
-                  background: 'rgba(0,0,0,0.5)',
-                  border: `1px solid ${isSelected ? 'rgba(241,112,34,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                  background: 'var(--card-bg)',
+                  border: `1px solid ${isSelected ? 'rgba(241,112,34,0.5)' : 'var(--border)'}`,
                   borderRadius: 4,
                   overflow: 'hidden',
                   opacity: isDisabled ? 0.35 : 1,
@@ -513,7 +513,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                     (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
                     (e.currentTarget as HTMLElement).style.borderColor = isSelected
                       ? 'rgba(241,112,34,0.7)'
-                      : 'rgba(255,255,255,0.2)';
+                      : 'rgba(130,100,80,0.4)';
                     (e.currentTarget as HTMLElement).style.boxShadow = isSelected
                       ? '0 0 0 2px rgba(241,112,34,0.3), 0 12px 40px rgba(0,0,0,0.4)'
                       : '0 12px 40px rgba(0,0,0,0.4)';
@@ -523,7 +523,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                   (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
                   (e.currentTarget as HTMLElement).style.borderColor = isSelected
                     ? 'rgba(241,112,34,0.5)'
-                    : 'rgba(255,255,255,0.08)';
+                    : 'var(--border)';
                   (e.currentTarget as HTMLElement).style.boxShadow = isSelected
                     ? '0 0 0 2px rgba(241,112,34,0.25)'
                     : 'none';
@@ -535,7 +535,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                     position: 'absolute', top: 12, right: 12, zIndex: 10,
                     width: 22, height: 22, borderRadius: '50%',
                     background: isSelected ? '#f17022' : 'transparent',
-                    border: `2px solid ${isSelected ? '#f17022' : 'rgba(255,255,255,0.3)'}`,
+                    border: `2px solid ${isSelected ? '#f17022' : 'var(--border)'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'all 0.2s ease',
                   }}>
@@ -575,7 +575,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 6 }}>
                     <h3 style={{
                       fontFamily: 'Playfair Display, serif', fontWeight: 900,
-                      fontSize: 22, color: '#fff', textTransform: 'uppercase',
+                      fontSize: 22, color: 'var(--text)', textTransform: 'uppercase',
                       margin: 0, lineHeight: 1.1,
                     }}>
                       {brand.name}
@@ -586,7 +586,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                   {/* Tagline */}
                   {brand.voice?.tagline ? (
                     <p style={{
-                      fontStyle: 'italic', color: 'rgba(255,255,255,0.35)',
+                      fontStyle: 'italic', color: 'var(--text-subtle)',
                       fontSize: 12, marginBottom: 14, lineHeight: 1.5,
                       fontFamily: 'Georgia, serif',
                       overflow: 'hidden', display: '-webkit-box',
@@ -609,8 +609,8 @@ const VaultView: React.FC<VaultViewProps> = ({
                     <span style={{
                       fontSize: 8, fontWeight: 700, letterSpacing: '0.2em',
                       textTransform: 'uppercase',
-                      color: parentBrandId ? 'rgba(241,112,34,0.7)' : 'rgba(255,255,255,0.2)',
-                      border: `1px solid ${parentBrandId ? 'rgba(241,112,34,0.2)' : 'rgba(255,255,255,0.08)'}`,
+                      color: parentBrandId ? 'rgba(241,112,34,0.7)' : 'var(--text-subtle)',
+                      border: `1px solid ${parentBrandId ? 'rgba(241,112,34,0.2)' : 'var(--border)'}`,
                       padding: '2px 8px', borderRadius: 2,
                     }}>
                       {parentBrandId ? '↳ Sub-brand' : 'Standalone'}
@@ -632,7 +632,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                         style={{
                           width: 20, height: 20, borderRadius: '50%',
                           background: hex,
-                          border: '1px solid rgba(255,255,255,0.1)',
+                          border: '1px solid var(--border)',
                           flexShrink: 0,
                         }}
                       />
@@ -646,15 +646,15 @@ const VaultView: React.FC<VaultViewProps> = ({
                         onClick={() => onOpen(brand)}
                         style={{
                           flex: 1, padding: '10px 0',
-                          background: 'rgba(255,255,255,0.05)',
-                          border: '1px solid rgba(255,255,255,0.1)',
+                          background: 'var(--input-bg)',
+                          border: '1px solid var(--border)',
                           color: '#fff', cursor: 'pointer',
                           fontSize: 10, fontWeight: 900, letterSpacing: '0.3em',
                           textTransform: 'uppercase', borderRadius: 100,
                           transition: 'all 0.2s ease',
                         }}
                         onMouseEnter={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#000'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#fff'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--input-bg)'; e.currentTarget.style.color = '#fff'; }}
                       >
                         Open →
                       </button>
@@ -669,14 +669,14 @@ const VaultView: React.FC<VaultViewProps> = ({
                             width: 36, height: 36,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             background: 'transparent',
-                            border: '1px solid rgba(255,255,255,0.08)',
-                            color: 'rgba(255,255,255,0.25)', cursor: 'pointer',
+                            border: '1px solid var(--border)',
+                            color: 'var(--text-subtle)', cursor: 'pointer',
                             fontSize: 14, borderRadius: '50%',
                             transition: 'all 0.2s ease',
                             flexShrink: 0,
                           }}
                           onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.25)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-subtle)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
                           title="Archive"
                         >
                           ✕
@@ -697,12 +697,12 @@ const VaultView: React.FC<VaultViewProps> = ({
             display: 'grid',
             gridTemplateColumns: '1fr 160px 100px 80px',
             gap: 16, padding: '8px 16px',
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            borderBottom: '1px solid var(--border)',
           }}>
             {['Brand', 'Colors', 'Type', 'Status'].map(h => (
               <span key={h} style={{
                 fontSize: 9, fontWeight: 700, letterSpacing: '0.4em',
-                textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)',
+                textTransform: 'uppercase', color: 'var(--text-subtle)',
               }}>{h}</span>
             ))}
           </div>
@@ -725,7 +725,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                   display: 'grid',
                   gridTemplateColumns: '1fr 160px 100px 80px',
                   gap: 16, padding: '14px 16px',
-                  border: `1px solid ${isSelected ? 'rgba(241,112,34,0.3)' : 'rgba(255,255,255,0.06)'}`,
+                  border: `1px solid ${isSelected ? 'rgba(241,112,34,0.3)' : 'var(--border)'}`,
                   borderRadius: 2,
                   alignItems: 'center',
                   opacity: isDisabled ? 0.4 : 1,
@@ -733,10 +733,10 @@ const VaultView: React.FC<VaultViewProps> = ({
                   transition: 'all 0.15s ease',
                   background: isSelected ? 'rgba(241,112,34,0.03)' : 'transparent',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.15)'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLElement).style.borderColor = isSelected
-                    ? 'rgba(241,112,34,0.3)' : 'rgba(255,255,255,0.06)';
+                    ? 'rgba(241,112,34,0.3)' : 'var(--border)';
                 }}
                 onClick={() => {
                   if (compareMode) {
@@ -755,14 +755,14 @@ const VaultView: React.FC<VaultViewProps> = ({
                   <div style={{ overflow: 'hidden' }}>
                     <p style={{
                       fontFamily: 'Playfair Display, serif', fontWeight: 900,
-                      fontSize: 16, color: '#fff', textTransform: 'uppercase',
+                      fontSize: 16, color: 'var(--text)', textTransform: 'uppercase',
                       margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                     }}>
                       {brand.name}
                     </p>
                     {brand.voice?.tagline && (
                       <p style={{
-                        fontSize: 11, fontStyle: 'italic', color: 'rgba(255,255,255,0.3)',
+                        fontSize: 11, fontStyle: 'italic', color: 'var(--text-subtle)',
                         margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         fontFamily: 'Georgia, serif',
                       }}>
@@ -778,7 +778,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                     .filter(Boolean).map((hex, ci) => (
                       <div key={ci} style={{
                         width: 18, height: 18, borderRadius: '50%',
-                        background: hex, border: '1px solid rgba(255,255,255,0.1)',
+                        background: hex, border: '1px solid var(--border)',
                       }} />
                     ))}
                 </div>
@@ -787,7 +787,7 @@ const VaultView: React.FC<VaultViewProps> = ({
                 <span style={{
                   fontSize: 9, fontWeight: 700, letterSpacing: '0.15em',
                   textTransform: 'uppercase',
-                  color: parentBrandId ? 'rgba(241,112,34,0.6)' : 'rgba(255,255,255,0.25)',
+                  color: parentBrandId ? 'rgba(241,112,34,0.6)' : 'var(--text-subtle)',
                 }}>
                   {parentBrandId ? 'Sub-brand' : 'Standalone'}
                 </span>

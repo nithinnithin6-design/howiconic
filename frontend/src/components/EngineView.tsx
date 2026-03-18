@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { BrandVibe } from '../types';
 import * as api from '../api';
 import KeeAlive from './KeeAlive';
+import { useTheme } from '../ThemeContext';
 
 const VIBES: BrandVibe[] = ['Bold', 'Clean', 'Warm', 'Raw', 'Future'];
 
@@ -42,6 +43,7 @@ interface EducationHintProps {
 const EducationHint: React.FC<EducationHintProps> = ({ field }) => {
   const [hint, setHint] = useState<{ content: string; source: string } | null>(null);
   const [visible, setVisible] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     let cancelled = false;
@@ -61,11 +63,11 @@ const EducationHint: React.FC<EducationHintProps> = ({ field }) => {
   return (
     <p
       style={{
-        opacity: visible ? 0.35 : 0,
+        opacity: visible ? 0.7 : 0,
         transition: 'opacity 0.6s ease',
         fontSize: 11,
         fontStyle: 'italic',
-        color: 'rgba(255,255,255,0.7)',
+        color: 'var(--text-muted)',
         marginTop: 8,
         lineHeight: 1.5,
         display: 'flex',
@@ -118,6 +120,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
   const [vibe, setVibe] = useState<BrandVibe>('Bold');
   const [validationMsg, setValidationMsg] = useState('');
   const ideaRef = useRef<HTMLTextAreaElement>(null);
+  const { theme } = useTheme();
 
   const handleIdeaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBrandIdea(e.target.value);
@@ -150,10 +153,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
   };
 
   const inputClass =
-    'w-full bg-transparent border-none text-xl md:text-2xl font-serif-elegant italic focus:outline-none placeholder:text-white/20 placeholder:not-italic text-white leading-snug input-glow';
-
-  const cardClass =
-    'p-7 md:p-9 bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl hover:border-white/22 focus-within:border-white/30 transition-all duration-300';
+    'w-full bg-transparent border-none text-xl md:text-2xl font-serif-elegant italic focus:outline-none leading-snug input-glow engine-input';
 
   return (
     <main className="flex-1 flex flex-col items-center justify-start px-4 md:px-12 py-8 relative min-h-screen overflow-hidden page-enter">
@@ -184,8 +184,8 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
         <form onSubmit={handleSubmit} className="space-y-4">
 
           {/* Field 1: Brand Idea */}
-          <div className={cardClass}>
-            <label className="text-[8px] uppercase tracking-[1em] text-white/30 font-black block mb-3">
+          <div className="p-7 md:p-9 backdrop-blur-xl rounded-2xl transition-all duration-300 engine-card" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
+            <label className="text-[8px] uppercase tracking-[1em] font-black block mb-3" style={{ color: 'var(--text-subtle)' }}>
               01 · Brand Idea
             </label>
             <textarea
@@ -200,8 +200,8 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
           </div>
 
           {/* Field 2: Product */}
-          <div className={cardClass}>
-            <label className="text-[8px] uppercase tracking-[1em] text-white/30 font-black block mb-3">
+          <div className="p-7 md:p-9 backdrop-blur-xl rounded-2xl transition-all duration-300 engine-card" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
+            <label className="text-[8px] uppercase tracking-[1em] font-black block mb-3" style={{ color: 'var(--text-subtle)' }}>
               02 · What Does It Sell?
             </label>
             <input
@@ -216,8 +216,8 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
           </div>
 
           {/* Field 3: Audience */}
-          <div className={cardClass}>
-            <label className="text-[8px] uppercase tracking-[1em] text-white/30 font-black block mb-3">
+          <div className="p-7 md:p-9 backdrop-blur-xl rounded-2xl transition-all duration-300 engine-card" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
+            <label className="text-[8px] uppercase tracking-[1em] font-black block mb-3" style={{ color: 'var(--text-subtle)' }}>
               03 · Who Is It For?
             </label>
             <input
@@ -232,8 +232,8 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
           </div>
 
           {/* Field 4: Vibe */}
-          <div className={cardClass}>
-            <label className="text-[8px] uppercase tracking-[1em] text-white/30 font-black block mb-5">
+          <div className="p-7 md:p-9 backdrop-blur-xl rounded-2xl transition-all duration-300 engine-card" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
+            <label className="text-[8px] uppercase tracking-[1em] font-black block mb-5" style={{ color: 'var(--text-subtle)' }}>
               04 · Vibe
             </label>
             <div className="flex flex-wrap gap-2.5 mb-3">
@@ -243,18 +243,19 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
                   type="button"
                   onClick={() => setVibe(v)}
                   disabled={isManifesting}
-                  className={`px-5 py-2.5 rounded-xl text-[10px] uppercase font-black tracking-[0.3em] border transition-all duration-200 cursor-pointer ${
-                    vibe === v
-                      ? 'border-white bg-white text-black'
-                      : 'border-white/12 text-white/45 hover:border-white/30 hover:text-white/75'
-                  }`}
+                  className="px-5 py-2.5 rounded-xl text-[10px] uppercase font-black tracking-[0.3em] transition-all duration-200 cursor-pointer"
+                  style={{
+                    background: vibe === v ? 'var(--text)' : 'transparent',
+                    color: vibe === v ? 'var(--bg)' : 'var(--text-muted)',
+                    border: `1px solid ${vibe === v ? 'var(--text)' : 'var(--border)'}`,
+                  }}
                 >
                   {v}
                 </button>
               ))}
             </div>
             {vibe && (
-              <p className="text-[9px] text-white/25 font-black uppercase tracking-widest">
+              <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: 'var(--text-subtle)' }}>
                 {VIBE_DESC[vibe]}
               </p>
             )}
@@ -270,11 +271,12 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
               whileTap={isManifesting ? {} : { scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               style={isManifesting ? {} : undefined}
-              className={`manifest-btn btn-interactive w-full md:w-auto px-16 md:px-24 py-6 md:py-8 bg-[#0a0a0a] border border-[#f17022]/60 text-[#f17022] rounded-full text-[12px] md:text-[14px] uppercase tracking-[0.7em] font-black transition-all duration-300 ${
+              className={`manifest-btn btn-interactive w-full md:w-auto px-16 md:px-24 py-6 md:py-8 border border-[#f17022]/60 text-[#f17022] rounded-full text-[12px] md:text-[14px] uppercase tracking-[0.7em] font-black transition-all duration-300 ${
                 isManifesting
                   ? 'opacity-50 cursor-wait'
                   : 'cursor-pointer hover:bg-[#f17022] hover:text-white hover:border-[#f17022] hover:shadow-[0_12px_40px_rgba(241,112,34,0.25)]'
               }`}
+            style={{ background: 'var(--bg-secondary)' }}
             >
               {isManifesting ? 'Your brand is taking shape...' : 'Start building'}
             </motion.button>
@@ -289,7 +291,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
               </motion.p>
             )}
 
-            <p className="text-[9px] uppercase tracking-[0.5em] text-white/18 font-black">
+            <p className="text-[9px] uppercase tracking-[0.5em] font-black" style={{ color: 'var(--text-subtle)' }}>
               ~3–5 minutes · You choose at every step
             </p>
 
@@ -304,13 +306,13 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
               }}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: 'rgba(255,255,255,0.25)', fontSize: 12,
+                color: 'var(--text-subtle)', fontSize: 12,
                 fontFamily: 'Georgia, serif', fontStyle: 'italic',
                 padding: '8px 0', transition: 'color 0.2s ease',
                 marginTop: 4,
               }}
-              onMouseEnter={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.25)'; }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-subtle)'; }}
             >
               Or build all at once →
             </button>

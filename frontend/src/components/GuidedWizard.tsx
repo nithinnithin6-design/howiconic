@@ -57,11 +57,11 @@ const KeeMessage = ({ children, loading }: { children: React.ReactNode; loading?
       color: '#f17022', margin: '0 0 8px',
     }}>Kee</p>
     {loading ? (
-      <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+      <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, color: 'var(--text-subtle)', margin: 0 }}>
         <span style={{ animation: 'keePulse 1.5s ease-in-out infinite' }}>· · ·</span>
       </p>
     ) : (
-      <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, lineHeight: 1.7, color: 'rgba(255,255,255,0.55)', margin: 0 }}>
+      <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
         {children}
       </p>
     )}
@@ -81,7 +81,7 @@ const ParijataSpinner = () => (
       <circle cx="50" cy="50" r="8" fill="#f17022" style={{ filter: 'drop-shadow(0 0 8px rgba(241,112,34,0.5))' }} />
       <circle cx="50" cy="50" r="3" fill="white" opacity="0.7" />
     </svg>
-    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, color: 'rgba(255,255,255,0.4)' }}>
+    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 15, color: 'var(--text-subtle)' }}>
       Kee is thinking...
     </p>
     <style>{`@keyframes gentleSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
@@ -95,7 +95,7 @@ const HeartIcon = ({ filled, onClick }: { filled: boolean; onClick: (e: React.Mo
       position: 'absolute', top: 12, right: 12,
       background: 'none', border: 'none', cursor: 'pointer',
       fontSize: 18, padding: 4, lineHeight: 1,
-      color: filled ? '#f17022' : 'rgba(255,255,255,0.2)',
+      color: filled ? '#f17022' : 'var(--text-subtle)',
       transition: 'color 0.2s ease, transform 0.2s ease',
     }}
     onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.2)'; }}
@@ -114,7 +114,7 @@ const ProgressBar = ({ currentStep, completedSteps }: { currentStep: number; com
       {/* Connecting line */}
       <div style={{
         position: 'absolute', top: 10, left: 20, right: 20, height: 2,
-        background: 'rgba(255,255,255,0.08)',
+        background: 'var(--border)',
       }}>
         <div style={{
           height: '100%', background: 'linear-gradient(90deg, #fff, #f17022)',
@@ -132,17 +132,17 @@ const ProgressBar = ({ currentStep, completedSteps }: { currentStep: number; com
           <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 1, minWidth: 64 }}>
             <div style={{
               width: 20, height: 20, borderRadius: '50%',
-              border: `2px solid ${isFuture ? 'rgba(255,255,255,0.15)' : isCurrent ? '#f17022' : '#fff'}`,
-              background: isCompleted ? '#fff' : isCurrent ? '#f17022' : 'transparent',
+              border: `2px solid ${isFuture ? 'var(--border)' : isCurrent ? '#f17022' : 'var(--text)'}`,
+              background: isCompleted ? 'var(--text)' : isCurrent ? '#f17022' : 'transparent',
               transition: 'all 0.3s ease',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              {isCompleted && <span style={{ fontSize: 10, color: '#0a0a0a' }}>✓</span>}
+              {isCompleted && <span style={{ fontSize: 10, color: 'var(--bg)' }}>✓</span>}
             </div>
             <span style={{
               marginTop: 8, fontSize: 9, fontWeight: 700,
               letterSpacing: '0.05em', textTransform: 'uppercase',
-              color: isCurrent ? '#f17022' : isFuture ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.5)',
+              color: isCurrent ? '#f17022' : isFuture ? 'var(--text-subtle)' : 'var(--text-muted)',
               textAlign: 'center',
             }} className="step-label">{name}</span>
           </div>
@@ -202,24 +202,24 @@ const StrategyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: Ca
     <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#f17022', marginBottom: 16 }}>
       {option.archetype}
     </p>
-    <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 20, color: '#fff', marginBottom: 12, lineHeight: 1.3, paddingRight: 24 }}>
+    <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 20, color: 'var(--text)', marginBottom: 12, lineHeight: 1.3, paddingRight: 24 }}>
       {option.positioning}
     </h3>
     {option.archetype_why && (
-      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, marginBottom: 12 }}>
+      <p style={{ fontSize: 12, color: 'var(--text-subtle)', lineHeight: 1.6, marginBottom: 12 }}>
         {option.archetype_why}
       </p>
     )}
     {option.brand_tensions && (
       <div style={{ marginBottom: 8 }}>
-        <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 6 }}>Tensions</p>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{option.brand_tensions}</p>
+        <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Tensions</p>
+        <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{option.brand_tensions}</p>
       </div>
     )}
     {option.whitespace && (
       <div>
-        <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 6 }}>Whitespace</p>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{option.whitespace}</p>
+        <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Whitespace</p>
+        <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{option.whitespace}</p>
       </div>
     )}
   </div>
@@ -229,19 +229,19 @@ const NamingCard = ({ option, selected, wishlisted, onSelect, onWishlist }: Card
   <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
     {selected && <SelectedCheck />}
     <HeartIcon filled={wishlisted} onClick={onWishlist} />
-    <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 32, color: '#fff', marginBottom: 8, lineHeight: 1.1, paddingRight: 24 }}>
+    <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 32, color: 'var(--text)', marginBottom: 8, lineHeight: 1.1, paddingRight: 24 }}>
       {option.name}
     </h3>
-    <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 12, fontStyle: 'italic' }}>
+    <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 12, fontStyle: 'italic' }}>
       {option.meaning}
     </p>
     {option.origin && (
-      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginBottom: 12 }}>
+      <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginBottom: 12 }}>
         Origin: {option.origin}
       </p>
     )}
     {option.tagline && (
-      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 12 }}>
+      <p style={{ fontSize: 14, color: 'var(--text-muted)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 12 }}>
         "{option.tagline}"
       </p>
     )}
@@ -271,7 +271,7 @@ const ColorCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
     <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
       {selected && <SelectedCheck />}
       <HeartIcon filled={wishlisted} onClick={onWishlist} />
-      <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 16, paddingRight: 24 }}>
+      <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 16, paddingRight: 24 }}>
         {option.palette_name || option.name || 'Palette'}
       </p>
 
@@ -280,8 +280,8 @@ const ColorCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
         <div style={{ marginBottom: 12 }}>
           <div style={{ width: '100%', height: 80, borderRadius: 12, background: getHex(primary), marginBottom: 6 }} />
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>{getName(primary)}</p>
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>{getHex(primary)}</p>
+            <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>{getName(primary)}</p>
+            <p style={{ fontSize: 10, color: 'var(--text-subtle)', fontFamily: 'monospace' }}>{getHex(primary)}</p>
           </div>
         </div>
       )}
@@ -291,15 +291,15 @@ const ColorCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
         {secondary && (
           <div style={{ flex: 1 }}>
             <div style={{ width: '100%', height: 48, borderRadius: 10, background: getHex(secondary), marginBottom: 4 }} />
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{getName(secondary)}</p>
-            <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace' }}>{getHex(secondary)}</p>
+            <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>{getName(secondary)}</p>
+            <p style={{ fontSize: 9, color: 'var(--text-subtle)', fontFamily: 'monospace' }}>{getHex(secondary)}</p>
           </div>
         )}
         {accent && (
           <div style={{ flex: 1 }}>
             <div style={{ width: '100%', height: 48, borderRadius: 10, background: getHex(accent), marginBottom: 4 }} />
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{getName(accent)}</p>
-            <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace' }}>{getHex(accent)}</p>
+            <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>{getName(accent)}</p>
+            <p style={{ fontSize: 9, color: 'var(--text-subtle)', fontFamily: 'monospace' }}>{getHex(accent)}</p>
           </div>
         )}
       </div>
@@ -322,10 +322,10 @@ const ColorCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
       )}
 
       {option.mood && (
-        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontStyle: 'italic' }}>{option.mood}</p>
+        <p style={{ fontSize: 11, color: 'var(--text-subtle)', fontStyle: 'italic' }}>{option.mood}</p>
       )}
       {option.contrast_note && (
-        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 6 }}>{option.contrast_note}</p>
+        <p style={{ fontSize: 10, color: 'var(--text-subtle)', marginTop: 6 }}>{option.contrast_note}</p>
       )}
     </div>
   );
@@ -353,20 +353,20 @@ const TypographyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: 
     <div className={selected ? '' : 'card-hover'} style={cardStyle(selected)} onClick={onSelect}>
       {selected && <SelectedCheck />}
       <HeartIcon filled={wishlisted} onClick={onWishlist} />
-      <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 20, paddingRight: 24 }}>
+      <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 20, paddingRight: 24 }}>
         {option.pairing_name || option.name || 'Type System'}
       </p>
 
       {/* Heading font — large showcase */}
-      <div style={{ marginBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 16 }}>
+      <div style={{ marginBottom: 20, borderBottom: '1px solid var(--border)', paddingBottom: 16 }}>
         <p style={{
           fontFamily: `'${headingFont}', serif`,
-          fontSize: 36, fontWeight: 900, color: '#fff',
+          fontSize: 36, fontWeight: 900, color: 'var(--text)',
           lineHeight: 1.1, marginBottom: 8,
         }}>
           {option.sample_headline || 'Your Brand'}
         </p>
-        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', fontFamily: 'Inter, sans-serif' }}>
+        <p style={{ fontSize: 10, color: 'var(--text-subtle)', fontFamily: 'Inter, sans-serif' }}>
           {headingFont} · {option.headline_weight || 'Bold'}
         </p>
       </div>
@@ -375,18 +375,18 @@ const TypographyCard = ({ option, selected, wishlisted, onSelect, onWishlist }: 
       <div style={{ marginBottom: 16 }}>
         <p style={{
           fontFamily: `'${bodyFont}', sans-serif`,
-          fontSize: 14, color: 'rgba(255,255,255,0.55)',
+          fontSize: 14, color: 'var(--text-muted)',
           lineHeight: 1.7, marginBottom: 8,
         }}>
           {option.sample_body || 'The quick brown fox jumps over the lazy dog. Typography carries your voice before anyone reads a word.'}
         </p>
-        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', fontFamily: 'Inter, sans-serif' }}>
+        <p style={{ fontSize: 10, color: 'var(--text-subtle)', fontFamily: 'Inter, sans-serif' }}>
           {bodyFont} · {option.body_weight || 'Regular'}
         </p>
       </div>
 
       {option.pairing_why && (
-        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12 }}>
+        <p style={{ fontSize: 11, color: 'var(--text-subtle)', fontStyle: 'italic', borderTop: '1px solid var(--border)', paddingTop: 12 }}>
           {option.pairing_why}
         </p>
       )}
@@ -415,11 +415,11 @@ const LogoCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardPr
     <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#f17022', marginBottom: 8, paddingRight: 24 }}>
       {option.concept_name || option.name}
     </p>
-    <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, marginBottom: 12 }}>
+    <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.7, marginBottom: 12 }}>
       {option.concept_summary || option.concept}
     </p>
     {option.metaphor && (
-      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>
+      <p style={{ fontSize: 11, color: 'var(--text-subtle)', fontStyle: 'italic' }}>
         Metaphor: {option.metaphor}
       </p>
     )}
@@ -434,24 +434,24 @@ const VoiceCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
       {option.voice_name}
     </p>
     <div style={{ marginBottom: 16 }}>
-      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginRight: 12 }}>Tone: {option.tone}</span>
-      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>Personality: {option.personality}</span>
+      <span style={{ fontSize: 11, color: 'var(--text-muted)', marginRight: 12 }}>Tone: {option.tone}</span>
+      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Personality: {option.personality}</span>
     </div>
     {option.sample_tagline && (
-      <p style={{ fontSize: 16, fontFamily: 'Georgia, serif', fontStyle: 'italic', color: 'rgba(255,255,255,0.7)', marginBottom: 16, lineHeight: 1.5 }}>
+      <p style={{ fontSize: 16, fontFamily: 'Georgia, serif', fontStyle: 'italic', color: 'var(--text)', marginBottom: 16, lineHeight: 1.5 }}>
         "{option.sample_tagline}"
       </p>
     )}
     {option.sample_social && (
-      <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: '12px 14px', marginBottom: 12 }}>
-        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: 6 }}>Social post</p>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>{option.sample_social}</p>
+      <div style={{ background: 'var(--card-bg)', borderRadius: 10, padding: '12px 14px', marginBottom: 12 }}>
+        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Social post</p>
+        <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{option.sample_social}</p>
       </div>
     )}
     {option.sample_email && (
-      <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: '12px 14px' }}>
-        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: 6 }}>Email excerpt</p>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>{option.sample_email}</p>
+      <div style={{ background: 'var(--card-bg)', borderRadius: 10, padding: '12px 14px' }}>
+        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 6 }}>Email excerpt</p>
+        <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{option.sample_email}</p>
       </div>
     )}
   </div>
@@ -509,7 +509,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
 
   const sectionStyle: React.CSSProperties = {
     background: 'var(--bg-secondary)', borderRadius: 16, padding: '28px 24px', marginBottom: 16,
-    border: '1px solid rgba(255,255,255,0.06)',
+    border: '1px solid var(--border)',
   };
   const labelStyle: React.CSSProperties = {
     fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase',
@@ -526,7 +526,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
             <h2 style={{
               fontFamily: `'${headingFont}', serif`,
               fontSize: 'clamp(2.5rem, 8vw, 4rem)',
-              fontWeight: 900, color: '#fff',
+              fontWeight: 900, color: 'var(--text)',
               lineHeight: 1.1, margin: '0 0 12px',
             }}>
               {naming.name}
@@ -534,7 +534,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
             {voice?.sample_copy?.tagline && (
               <p style={{
                 fontFamily: `'${bodyFont}', sans-serif`,
-                fontSize: 16, color: 'rgba(255,255,255,0.45)',
+                fontSize: 16, color: 'var(--text-muted)',
                 fontStyle: 'italic',
               }}>
                 "{voice.sample_copy.tagline}"
@@ -556,10 +556,10 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
           <div style={{ display: 'flex', gap: 16 }}>
             {colorsList.map((c: any, i: number) => (
               <div key={i} style={{ flex: i === 0 ? 2 : 1 }}>
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>
                   {typeof c === 'string' ? c : c?.creative_name || c?.name || ''}
                 </p>
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>
+                <p style={{ fontSize: 10, color: 'var(--text-subtle)', fontFamily: 'monospace' }}>
                   {getHex(c)}
                 </p>
               </div>
@@ -574,21 +574,21 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
           <p style={labelStyle}>Typography</p>
           <p style={{
             fontFamily: `'${headingFont}', serif`,
-            fontSize: 28, fontWeight: 900, color: '#fff',
+            fontSize: 28, fontWeight: 900, color: 'var(--text)',
             lineHeight: 1.2, marginBottom: 8,
           }}>
             {naming?.name || 'Brand Name'}
           </p>
           <p style={{
             fontFamily: `'${bodyFont}', sans-serif`,
-            fontSize: 14, color: 'rgba(255,255,255,0.5)',
+            fontSize: 14, color: 'var(--text-muted)',
             lineHeight: 1.7, marginBottom: 12,
           }}>
             {typography.sample_body || 'Your brand speaks with clarity and intention. Every word carries weight.'}
           </p>
-          <div style={{ display: 'flex', gap: 16, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12 }}>
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>Heading: {headingFont}</p>
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>Body: {bodyFont}</p>
+          <div style={{ display: 'flex', gap: 16, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
+            <p style={{ fontSize: 10, color: 'var(--text-subtle)' }}>Heading: {headingFont}</p>
+            <p style={{ fontSize: 10, color: 'var(--text-subtle)' }}>Body: {bodyFont}</p>
           </div>
         </div>
       )}
@@ -603,11 +603,11 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
           }}>
             The {strategy.archetype}
           </p>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.7 }}>
             {strategy.positioning}
           </p>
           {strategy.promise && (
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginTop: 8, fontStyle: 'italic' }}>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 8, fontStyle: 'italic' }}>
               Promise: {strategy.promise}
             </p>
           )}
@@ -628,10 +628,10 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
               dangerouslySetInnerHTML={{ __html: logo.symbol_svg }}
             />
           )}
-          <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 8 }}>
+          <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 18, fontWeight: 900, color: 'var(--text)', marginBottom: 8 }}>
             {logo.concept_name || logo.name}
           </p>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>
             {logo.concept_summary || logo.concept}
           </p>
         </div>
@@ -641,12 +641,12 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
       {voice && (
         <div style={sectionStyle}>
           <p style={labelStyle}>Brand Voice</p>
-          <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 12 }}>
+          <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 18, fontWeight: 900, color: 'var(--text)', marginBottom: 12 }}>
             {voice.voice_name}
           </p>
           {voice.sample_copy?.headline && (
             <div style={{ background: 'rgba(241,112,34,0.04)', borderRadius: 10, padding: '14px 16px', marginBottom: 12 }}>
-              <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 16, fontWeight: 700, color: '#fff', margin: 0 }}>
+              <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 16, fontWeight: 700, color: 'var(--text)', margin: 0 }}>
                 "{voice.sample_copy.headline}"
               </p>
             </div>
@@ -656,8 +656,8 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
               {voice.tone_attributes.map((attr: string, i: number) => (
                 <span key={i} style={{
                   fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.4)', padding: '4px 10px', borderRadius: 100,
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: 'var(--text-muted)', padding: '4px 10px', borderRadius: 100,
+                  border: '1px solid var(--border)',
                 }}>
                   {attr}
                 </span>
@@ -676,21 +676,21 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
               <div style={{ maxWidth: '100%', overflow: 'hidden' }}>
                 <div dangerouslySetInnerHTML={{ __html: assemblyOptions.mockups.business_card }}
                      style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', maxWidth: '100%' }} />
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>Business Card</p>
+                <p style={{ fontSize: 10, color: 'var(--text-subtle)', textAlign: 'center', marginTop: 8 }}>Business Card</p>
               </div>
             )}
             {assemblyOptions.mockups.social_header && (
               <div style={{ maxWidth: '100%', overflow: 'hidden' }}>
                 <div dangerouslySetInnerHTML={{ __html: assemblyOptions.mockups.social_header }}
                      style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', maxWidth: '100%' }} />
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>Social Header</p>
+                <p style={{ fontSize: 10, color: 'var(--text-subtle)', textAlign: 'center', marginTop: 8 }}>Social Header</p>
               </div>
             )}
             {assemblyOptions.mockups.app_icon && (
               <div>
                 <div dangerouslySetInnerHTML={{ __html: assemblyOptions.mockups.app_icon }}
                      style={{ borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }} />
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 8 }}>App Icon</p>
+                <p style={{ fontSize: 10, color: 'var(--text-subtle)', textAlign: 'center', marginTop: 8 }}>App Icon</p>
               </div>
             )}
           </div>
@@ -715,7 +715,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
           >
             ↗ Export Brand Guide
           </a>
-          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 12 }}>
+          <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 12 }}>
             Opens a printable brand guide — use your browser's print to save as PDF
           </p>
         </div>
@@ -920,10 +920,10 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
 
       {/* Step title */}
       <div style={{ textAlign: 'center', marginBottom: 8 }}>
-        <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.5em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
+        <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.5em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>
           Step {currentStep} of 7
         </p>
-        <h2 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', color: '#fff', margin: '8px 0 0', textTransform: 'uppercase', fontStyle: 'italic' }}>
+        <h2 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', color: 'var(--text)', margin: '8px 0 0', textTransform: 'uppercase', fontStyle: 'italic' }}>
           {STEP_NAMES[currentStep - 1]}
         </h2>
       </div>
@@ -949,8 +949,8 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
             <button
               onClick={() => window.location.reload()}
               style={{
-                background: 'none', border: '1px solid rgba(255,255,255,0.2)',
-                color: '#fff', padding: '10px 24px', borderRadius: 100,
+                background: 'none', border: '1px solid var(--border)',
+                color: 'var(--text)', padding: '10px 24px', borderRadius: 100,
                 cursor: 'pointer', fontSize: 12, fontWeight: 700,
               }}
             >
@@ -976,10 +976,10 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
       {!loading && !error && (
         <div style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
-          background: 'rgba(10,10,10,0.85)',
+          background: 'var(--overlay)',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
+          borderTop: '1px solid var(--border)',
           padding: '16px 24px',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           zIndex: 10,
@@ -988,7 +988,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
           <p style={{
             position: 'absolute', left: '50%', transform: 'translateX(-50%)',
             fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
-            color: 'rgba(255,255,255,0.25)', margin: 0,
+            color: 'var(--text-subtle)', margin: 0,
           }}>
             Step {currentStep} of 7 · {STEP_NAMES[currentStep - 1]}
           </p>
@@ -996,12 +996,12 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
             onClick={handleBack}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              color: 'rgba(255,255,255,0.4)', fontSize: 13, fontWeight: 600,
+              color: 'var(--text-muted)', fontSize: 13, fontWeight: 600,
               padding: '12px 20px',
               transition: 'color 0.2s ease',
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.4)'; }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
           >
             ← Back
           </button>

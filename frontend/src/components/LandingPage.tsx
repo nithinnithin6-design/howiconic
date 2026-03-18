@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import KeeAlive from './KeeAlive';
 import { TextReveal, Reveal as AnimReveal, Stagger } from '../animations';
+import { useTheme } from '../ThemeContext';
 
 interface LandingPageProps {
   onStartBuilding: () => void;
@@ -33,7 +34,7 @@ const ParijataMark = ({ className = 'w-10 h-10', animate = false }: { className?
 // The guide: no name, just a presence. Quiet, generous, like the Parijata itself.
 const GuideText = ({ children }: { children: React.ReactNode }) => (
   <div style={{ borderLeft: '2px solid rgba(241,112,34,0.3)', paddingLeft: 16, margin: '24px auto', maxWidth: 600 }}>
-    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 13, lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
       {children}
     </p>
   </div>
@@ -42,7 +43,7 @@ const GuideText = ({ children }: { children: React.ReactNode }) => (
 // ─── KEE PRESENCE ─────────────────────────────────────────────────────────────
 const KeePresence = ({ children }: { children: React.ReactNode }) => (
   <div style={{
-    background: 'rgba(241,112,34,0.04)',
+    background: 'var(--kee-bg)',
     borderLeft: '3px solid #f17022',
     borderRadius: '0 12px 12px 0',
     padding: '14px 18px 16px',
@@ -52,7 +53,7 @@ const KeePresence = ({ children }: { children: React.ReactNode }) => (
       fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase',
       color: '#f17022', margin: '0 0 6px',
     }}>Kee</p>
-    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
       {children}
     </p>
   </div>
@@ -222,13 +223,13 @@ const SectionDivider = () => (
     display: 'flex', alignItems: 'center',
     padding: '0 48px', margin: '0 auto', maxWidth: 1100,
   }}>
-    <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
+    <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
     <div style={{
       width: 7, height: 7, borderRadius: '50%', flexShrink: 0, margin: '0 20px',
-      border: '1px solid rgba(255,255,255,0.14)',
+      border: '1px solid var(--border)',
       background: 'transparent',
     }} />
-    <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
+    <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
   </div>
 );
 
@@ -364,8 +365,8 @@ const EducationStrip: React.FC<{ fact: string }> = ({ fact }) => {
   const { ref, visible } = useScrollReveal();
   return (
     <div ref={ref} style={{
-      borderTop: '1px solid rgba(255,255,255,0.04)',
-      borderBottom: '1px solid rgba(255,255,255,0.04)',
+      borderTop: '1px solid var(--border)',
+      borderBottom: '1px solid var(--border)',
       padding: '20px 32px', textAlign: 'center',
       background: 'rgba(241,112,34,0.015)',
       opacity: visible ? 1 : 0,
@@ -373,7 +374,7 @@ const EducationStrip: React.FC<{ fact: string }> = ({ fact }) => {
     }}>
       <p style={{
         fontSize: 10, letterSpacing: '0.45em', textTransform: 'uppercase',
-        color: 'rgba(255,255,255,0.5)', fontWeight: 700,
+        color: 'var(--text-muted)', fontWeight: 700,
         fontFamily: 'Inter, sans-serif', margin: 0,
       }}>{fact}</p>
     </div>
@@ -395,7 +396,7 @@ const OnlyBadge = () => (
 const SectionLabel: React.FC<{ label: string }> = ({ label }) => (
   <p style={{
     fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.25)', fontWeight: 700, marginBottom: 16,
+    color: 'var(--text-subtle)', fontWeight: 700, marginBottom: 16,
     fontFamily: 'Inter, sans-serif',
   }}>{label}</p>
 );
@@ -403,6 +404,7 @@ const SectionLabel: React.FC<{ label: string }> = ({ label }) => (
 // ─── LANDING PAGE ─────────────────────────────────────────────────────────────
 const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) => {
   const [heroReady, setHeroReady] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const t = setTimeout(() => setHeroReady(true), 80);
@@ -470,22 +472,22 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
         }
         .hi-btn-ghost {
           display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-          background: transparent; color: rgba(255,255,255,0.55);
-          border: 1px solid rgba(255,255,255,0.18);
+          background: transparent; color: var(--text-muted);
+          border: 1px solid var(--border);
           padding: 14px 32px;
           font-family: Inter, sans-serif; font-size: 11px; font-weight: 700;
           letter-spacing: 0.14em; text-transform: uppercase;
           cursor: pointer; border-radius: 3px; text-decoration: none;
           transition: color 0.2s, border-color 0.2s;
         }
-        .hi-btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.45); }
+        .hi-btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
 
         /* Step cards */
         .hi-step-card {
           position: relative; overflow: hidden;
           padding: 36px 28px;
-          border: 1px solid rgba(255,255,255,0.06); border-radius: 3px;
-          background: rgba(255,255,255,0.015);
+          border: 1px solid var(--border); border-radius: 3px;
+          background: var(--card-bg);
           transition: border-color 0.3s, transform 0.3s;
           height: 100%;
         }
@@ -494,8 +496,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
         /* Output cards */
         .hi-output-card {
           padding: 28px 24px;
-          border: 1px solid rgba(255,255,255,0.06); border-radius: 3px;
-          background: rgba(255,255,255,0.015);
+          border: 1px solid var(--border); border-radius: 3px;
+          background: var(--card-bg);
           transition: border-color 0.3s, transform 0.3s;
         }
         .hi-output-card:hover { border-color: rgba(241,112,34,0.22); transform: translateY(-3px); }
@@ -503,7 +505,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
         /* Pricing cards */
         .hi-pricing-card {
           flex: 1; min-width: 240px; padding: 40px 32px;
-          border: 1px solid rgba(255,255,255,0.09); border-radius: 3px;
+          border: 1px solid var(--border); border-radius: 3px;
           display: flex; flex-direction: column; gap: 24px;
           transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
         }
@@ -523,7 +525,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           position: absolute;
           top: 68px; left: 22%; right: 22%;
           height: 0;
-          border-top: 1px dashed rgba(255,255,255,0.08);
+          border-top: 1px dashed var(--border);
           z-index: 0;
           pointer-events: none;
         }
@@ -533,7 +535,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 0;
-          border: 1px solid rgba(255,255,255,0.06);
+          border: 1px solid var(--border);
           border-radius: 3px;
           overflow: hidden;
         }
@@ -541,15 +543,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           padding: 40px 36px;
         }
         .diff-col-left {
-          border-right: 1px solid rgba(255,255,255,0.05);
-          background: rgba(255,255,255,0.01);
+          border-right: 1px solid var(--border);
+          background: var(--card-bg);
         }
         .diff-col-right {
           background: rgba(241,112,34,0.02);
         }
         .diff-row {
           padding: 20px 0;
-          border-bottom: 1px solid rgba(255,255,255,0.04);
+          border-bottom: 1px solid var(--border);
         }
         .diff-row:last-child { border-bottom: none; }
 
@@ -574,7 +576,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           .hi-flex-wrap { flex-direction: column !important; }
           .step-connector { display: none !important; }
           .diff-split { grid-template-columns: 1fr !important; }
-          .diff-col-left { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+          .diff-col-left { border-right: none !important; border-bottom: 1px solid var(--border) !important; }
           .output-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .output-card-hero { grid-column: span 2 !important; }
           section { padding-left: 20px !important; padding-right: 20px !important; }
@@ -610,21 +612,21 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
         <div className="hi-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
           {[['How It Works', '#how'], ['Pricing', '#pricing']].map(([label, href]) => (
             <a key={label} href={href} style={{
-              color: 'rgba(255,255,255,0.38)', fontSize: 10, fontWeight: 700,
+              color: 'var(--text-muted)', fontSize: 10, fontWeight: 700,
               letterSpacing: '0.28em', textTransform: 'uppercase',
               textDecoration: 'none', transition: 'color 0.2s',
             }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.38)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
             >{label}</a>
           ))}
           <button onClick={onLogin} style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            color: 'rgba(255,255,255,0.38)', fontSize: 10, fontWeight: 700,
+            color: 'var(--text-muted)', fontSize: 10, fontWeight: 700,
             letterSpacing: '0.28em', textTransform: 'uppercase', transition: 'color 0.2s',
           }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.38)'; }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
           >Log in</button>
           <button className="hi-btn-primary btn-interactive" onClick={onStartBuilding} style={{ padding: '9px 22px', fontSize: 10 }}>
             Start building →
@@ -647,7 +649,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
         {/* Subtle grid pattern */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px)',
+          backgroundImage: theme === 'dark'
+            ? 'linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px)'
+            : 'linear-gradient(rgba(26,26,26,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(26,26,26,0.04) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
         }} />
 
@@ -721,7 +725,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
 
           {/* Tagline */}
           <p className="hi-animate" style={{
-            fontSize: 17, color: 'rgba(255,255,255,0.38)',
+            fontSize: 17, color: 'var(--text-muted)',
             marginBottom: 56, letterSpacing: '0.12em',
             fontFamily: 'Inter, sans-serif', fontWeight: 500,
             animationDelay: '0.82s',
@@ -752,7 +756,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           {/* Subtext */}
           <p className="hi-animate" style={{
             marginTop: 56, fontSize: 9, letterSpacing: '0.55em',
-            textTransform: 'uppercase', color: 'rgba(255,255,255,0.1)',
+            textTransform: 'uppercase', color: 'var(--text-subtle)',
             fontWeight: 700, animationDelay: '1.14s',
           }}>
             Strategy · Naming · Visual System · Brand Manual
@@ -788,7 +792,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
 
           {/* Steps container with connecting line */}
           <div style={{ position: 'relative' }}>
-            {/* Horizontal connecting line — desktop only */}
+            {/* Horizontal connecting line — desktop only (color handled by CSS var in step-connector) */}
             <div className="step-connector" />
 
             <div className="hi-flex-wrap" style={{ display: 'flex', gap: 20 }}>
@@ -819,7 +823,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                       position: 'absolute', top: -10, left: 16,
                       fontSize: 180, fontWeight: 900,
                       fontFamily: 'Playfair Display, serif',
-                      color: 'rgba(255,255,255,0.03)',
+                      color: theme === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(26,26,26,0.04)',
                       lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
                       zIndex: 0,
                     }}>{num}</span>
@@ -838,7 +842,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                         fontSize: 19, color: 'var(--text)', textTransform: 'uppercase',
                         marginBottom: 14, lineHeight: 1.2,
                       }}>{title}</h3>
-                      <p style={{ fontSize: 13, lineHeight: 1.8, color: 'rgba(255,255,255,0.37)' }}>{desc}</p>
+                      <p style={{ fontSize: 13, lineHeight: 1.8, color: 'var(--text-muted)' }}>{desc}</p>
                     </div>
                   </div>
                 </Reveal>
@@ -875,8 +879,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
               <div className="diff-col diff-col-left">
                 <p style={{
                   fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase',
-                  fontWeight: 800, color: 'rgba(255,255,255,0.2)', marginBottom: 32,
-                  paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  fontWeight: 800, color: 'var(--text-subtle)', marginBottom: 32,
+                  paddingBottom: 20, borderBottom: '1px solid var(--border)',
                 }}>Others</p>
                 {[
                   { title: 'Strategy Engine', text: 'Make a logo.' },
@@ -886,10 +890,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   <div key={title} className="diff-row">
                     <p style={{
                       fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
-                      textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)',
+                      textTransform: 'uppercase', color: 'var(--text-subtle)',
                       marginBottom: 6,
                     }}>{title}</p>
-                    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.22)', lineHeight: 1.6 }}>
+                    <p style={{ fontSize: 14, color: 'var(--text-subtle)', lineHeight: 1.6 }}>
                       <span style={{ marginRight: 8, opacity: 0.4 }}>✗</span>{text}
                     </p>
                   </div>
@@ -898,7 +902,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
 
               {/* Right: HowIconic */}
               <div className="diff-col diff-col-right">
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid var(--border)' }}>
                   <p style={{
                     fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase',
                     fontWeight: 800, color: '#f17022',
@@ -930,7 +934,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
                       <p style={{
                         fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
-                        textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)',
+                        textTransform: 'uppercase', color: 'var(--text-muted)',
                       }}>{title}</p>
                       <OnlyBadge />
                     </div>
@@ -940,7 +944,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     }}>
                       <span style={{ color: '#f17022', marginRight: 8 }}>✓</span>{text}
                     </p>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.32)', lineHeight: 1.7 }}>{desc}</p>
+                    <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.7 }}>{desc}</p>
                   </div>
                 ))}
               </div>
@@ -1013,7 +1017,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     fontSize: hero ? 18 : 14, color: 'var(--text)', textTransform: 'uppercase',
                     marginBottom: 8, lineHeight: 1.3,
                   }}>{title}</h4>
-                  <p style={{ fontSize: hero ? 13 : 11, lineHeight: 1.75, color: 'rgba(255,255,255,0.35)' }}>{desc}</p>
+                  <p style={{ fontSize: hero ? 13 : 11, lineHeight: 1.75, color: 'var(--text-muted)' }}>{desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -1050,7 +1054,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             <Reveal>
               <div className="card-hover" style={{
                 background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
-                border: '1px solid rgba(255,255,255,0.06)',
+                border: '1px solid var(--border)',
               }}>
                 {/* Color strip */}
                 <div style={{ display: 'flex', height: 8 }}>
@@ -1059,13 +1063,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   <div style={{ flex: 1, background: '#8B4513' }} />
                 </div>
                 <div style={{ padding: '32px 28px' }}>
-                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 12 }}>
                     Sage · Coffee · Warm
                   </p>
                   <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: 'var(--text)', marginBottom: 8, lineHeight: 1.1 }}>
                     Seravona
                   </h3>
-                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
                     "Where every cup is a conversation with the earth."
                   </p>
                   <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
@@ -1073,7 +1077,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: '#C4A35A' }} />
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: '#8B4513' }} />
                   </div>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                  <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                     Cormorant · Space Grotesk
                   </p>
                 </div>
@@ -1084,7 +1088,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             <Reveal delay={150}>
               <div className="card-hover" style={{
                 background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
-                border: '1px solid rgba(255,255,255,0.06)',
+                border: '1px solid var(--border)',
               }}>
                 <div style={{ display: 'flex', height: 8 }}>
                   <div style={{ flex: 2, background: '#0066FF' }} />
@@ -1092,13 +1096,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   <div style={{ flex: 1, background: '#1A1A2E' }} />
                 </div>
                 <div style={{ padding: '32px 28px' }}>
-                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 12 }}>
                     Hero · EV · Bold
                   </p>
                   <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: 'var(--text)', marginBottom: 8, lineHeight: 1.1 }}>
                     Voltarc
                   </h3>
-                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
                     "Power moves forward."
                   </p>
                   <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
@@ -1106,7 +1110,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: '#00D4FF' }} />
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: '#1A1A2E' }} />
                   </div>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                  <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                     Bebas Neue · DM Sans
                   </p>
                 </div>
@@ -1117,7 +1121,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             <Reveal delay={300}>
               <div className="card-hover" style={{
                 background: 'var(--bg-secondary)', borderRadius: 20, overflow: 'hidden',
-                border: '1px solid rgba(255,255,255,0.06)',
+                border: '1px solid var(--border)',
               }}>
                 <div style={{ display: 'flex', height: 8 }}>
                   <div style={{ flex: 2, background: '#E8C4A0' }} />
@@ -1125,13 +1129,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   <div style={{ flex: 1, background: '#4A6741' }} />
                 </div>
                 <div style={{ padding: '32px 28px' }}>
-                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 12 }}>
+                  <p style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--text-subtle)', marginBottom: 12 }}>
                     Caregiver · Skincare · Clean
                   </p>
                   <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, color: 'var(--text)', marginBottom: 8, lineHeight: 1.1 }}>
                     Nourish &amp;
                   </h3>
-                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 16, fontStyle: 'italic' }}>
                     "Skin that remembers kindness."
                   </p>
                   <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
@@ -1139,7 +1143,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: '#F5E6D3' }} />
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: '#4A6741' }} />
                   </div>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                  <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                     DM Serif Display · Inter
                   </p>
                 </div>
@@ -1148,7 +1152,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           </div>
 
           <Reveal style={{ textAlign: 'center', marginTop: 48 }}>
-            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, color: 'rgba(255,255,255,0.3)' }}>
+            <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 14, color: 'var(--text-muted)' }}>
               Each brand was built from 4 inputs in under 5 minutes.
             </p>
           </Reveal>
@@ -1177,15 +1181,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             <Reveal delay={0} style={{ flex: 1, minWidth: 240 }}>
               <div className="hi-pricing-card" style={{ height: '100%' }}>
                 <div>
-                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>Explorer</p>
+                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'var(--text-subtle)', marginBottom: 12 }}>Explorer</p>
                   <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: 'var(--text)', lineHeight: 1 }}>Free</p>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 8 }}>No card needed · Always free</p>
+                  <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 8 }}>No card needed · Always free</p>
                 </div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                   {['3 brand previews/month', 'Strategy + Naming output', 'Brand Card export', 'Basic color palette'].map(f => (
-                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid var(--border)' }}>
                       <span style={{ color: '#f17022', fontSize: 11, marginTop: 1 }}>✓</span>
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>{f}</span>
+                      <span style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.4 }}>{f}</span>
                     </div>
                   ))}
                 </div>
@@ -1212,10 +1216,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                 <div style={{ paddingTop: 12 }}>
                   <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: '#f17022', marginBottom: 12 }}>Creator</p>
                   <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: 'var(--text)', lineHeight: 1 }}>₹2,999</p>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 8 }}>One-time · 1 complete brand</p>
+                  <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 8 }}>One-time · 1 complete brand</p>
                   {/* Agency comparison */}
                   <p style={{
-                    fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 6,
+                    fontSize: 10, color: 'var(--text-subtle)', marginTop: 6,
                     fontStyle: 'italic',
                   }}>vs. brand agency: ₹2–10 lakh</p>
                 </div>
@@ -1228,9 +1232,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     '.com domain availability report',
                     'Typography & voice guide',
                   ].map(f => (
-                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid var(--border)' }}>
                       <span style={{ color: '#f17022', fontSize: 11, marginTop: 1 }}>✓</span>
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>{f}</span>
+                      <span style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.4 }}>{f}</span>
                     </div>
                   ))}
                 </div>
@@ -1244,7 +1248,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     Get Creator →
                   </a>
                   <p style={{
-                    textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.22)',
+                    textAlign: 'center', fontSize: 10, color: 'var(--text-subtle)',
                     marginTop: 10, letterSpacing: '0.05em',
                   }}>No subscription. No lock-in.</p>
                 </div>
@@ -1255,9 +1259,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             <Reveal delay={260} style={{ flex: 1, minWidth: 240 }}>
               <div className="hi-pricing-card" style={{ height: '100%' }}>
                 <div>
-                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>Studio</p>
+                  <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', fontWeight: 700, color: 'var(--text-subtle)', marginBottom: 12 }}>Studio</p>
                   <p style={{ fontFamily: 'Playfair Display, serif', fontSize: 42, fontWeight: 900, color: 'var(--text)', lineHeight: 1 }}>₹7,499</p>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 8 }}>per month · 10–15 brands</p>
+                  <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 8 }}>per month · 10–15 brands</p>
                 </div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                   {[
@@ -1268,9 +1272,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                     'Team collaboration',
                     'Yearly: ₹59,999 (save 33%)',
                   ].map(f => (
-                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '11px 0', borderBottom: '1px solid var(--border)' }}>
                       <span style={{ color: '#f17022', fontSize: 11, marginTop: 1 }}>✓</span>
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>{f}</span>
+                      <span style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.4 }}>{f}</span>
                     </div>
                   ))}
                 </div>
@@ -1302,7 +1306,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
       }}>
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px)',
+          backgroundImage: theme === 'dark' ? 'linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px)' : 'linear-gradient(rgba(26,26,26,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(26,26,26,0.04) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
         }} />
         <div style={{
@@ -1326,7 +1330,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
               <span style={{ color: '#f17022' }}>iconic?</span>
             </h2>
             <p style={{
-              fontSize: 16, color: 'rgba(255,255,255,0.35)',
+              fontSize: 16, color: 'var(--text-muted)',
               marginBottom: 52, fontWeight: 400,
               maxWidth: 420, margin: '0 auto 52px',
             }}>
@@ -1343,7 +1347,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
       {/* ─── 11. FOOTER ──────────────────────────────────────────────────────── */}
       <footer style={{
         padding: '72px 48px 52px',
-        borderTop: '1px solid rgba(255,255,255,0.05)',
+        borderTop: '1px solid var(--border)',
         background: 'var(--bg-secondary, #070707)',
       }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
@@ -1359,7 +1363,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                 }}>HOWICONIC</span>
               </div>
               <p style={{
-                fontSize: 13, color: 'rgba(255,255,255,0.3)', lineHeight: 1.85,
+                fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.85,
                 fontFamily: 'Georgia, serif', fontStyle: 'italic', maxWidth: 280,
               }}>
                 Born from a flower on a terrace in Tirupur. HowIconic is a Brand Operating System built in India. Strategy-first. Parijata-inspired. Build what lasts.
@@ -1369,29 +1373,29 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             {/* Nav links */}
             <div style={{ display: 'flex', gap: 48, flexWrap: 'wrap', flex: 1, justifyContent: 'flex-end' }}>
               <div>
-                <p style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', fontWeight: 700, marginBottom: 16 }}>Platform</p>
+                <p style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)', fontWeight: 700, marginBottom: 16 }}>Platform</p>
                 {[['How It Works', '#how'], ['What You Get', '#'], ['Pricing', '#pricing']].map(([label, href]) => (
                   <div key={label} style={{ marginBottom: 10 }}>
                     <a href={href} style={{
-                      fontSize: 12, color: 'rgba(255,255,255,0.3)', textDecoration: 'none',
+                      fontSize: 12, color: 'var(--text-muted)', textDecoration: 'none',
                       transition: 'color 0.2s',
                     }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.7)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.3)'; }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
                     >{label}</a>
                   </div>
                 ))}
               </div>
               <div>
-                <p style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', fontWeight: 700, marginBottom: 16 }}>Company</p>
+                <p style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)', fontWeight: 700, marginBottom: 16 }}>Company</p>
                 {[['About', '#'], ['Privacy Policy', '#'], ['Terms', '#']].map(([label, href]) => (
                   <div key={label} style={{ marginBottom: 10 }}>
                     <a href={href} style={{
-                      fontSize: 12, color: 'rgba(255,255,255,0.3)', textDecoration: 'none',
+                      fontSize: 12, color: 'var(--text-muted)', textDecoration: 'none',
                       transition: 'color 0.2s',
                     }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.7)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.3)'; }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
                     >{label}</a>
                   </div>
                 ))}
@@ -1399,10 +1403,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
             </div>
           </div>
 
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: 32 }}>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 32 }}>
             <div className="hi-flex-wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
 
-              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.14)', letterSpacing: '0.1em' }}>
+              <p style={{ fontSize: 10, color: 'var(--text-subtle)', letterSpacing: '0.1em' }}>
                 © 2026 HowIconic. All rights reserved.
               </p>
 
@@ -1413,21 +1417,21 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
                   target="_blank" rel="noopener noreferrer"
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
-                    fontSize: 10, color: 'rgba(255,255,255,0.22)',
+                    fontSize: 10, color: 'var(--text-subtle)',
                     textDecoration: 'none', letterSpacing: '0.1em',
                     transition: 'color 0.2s',
                   }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f17022'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.22)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-subtle)'; }}
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: 13, height: 13 }}>
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                   </svg>
                   WhatsApp
                 </a>
-                <span style={{ color: 'rgba(255,255,255,0.08)' }}>·</span>
+                <span style={{ color: 'var(--border)' }}>·</span>
                 <p style={{
-                  fontSize: 11, color: 'rgba(255,255,255,0.18)',
+                  fontSize: 11, color: 'var(--text-subtle)',
                   fontStyle: 'italic', fontFamily: 'Georgia, serif',
                 }}>
                   Built with 🔥 in India

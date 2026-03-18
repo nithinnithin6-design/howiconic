@@ -40,7 +40,7 @@ const LoadingScreen: React.FC = () => {
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: '#0a0a0a',
+      position: 'fixed', inset: 0, background: 'var(--bg)',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       zIndex: 250, overflow: 'hidden', userSelect: 'none',
     }}>
@@ -82,7 +82,7 @@ const LoadingScreen: React.FC = () => {
         {/* Phase text */}
         <p style={{
           fontFamily: 'Georgia, serif', fontStyle: 'italic',
-          fontSize: 16, color: 'rgba(255,255,255,0.5)',
+          fontSize: 16, color: 'var(--text-muted)',
           marginBottom: 40, letterSpacing: '0.02em',
           transition: 'opacity 0.5s ease',
         }}>
@@ -91,7 +91,7 @@ const LoadingScreen: React.FC = () => {
 
         {/* Progress bar */}
         <div style={{
-          width: 280, height: 2, background: 'rgba(255,255,255,0.08)',
+          width: 280, height: 2, background: 'var(--border)',
           borderRadius: 1, overflow: 'hidden', margin: '0 auto 16px',
         }}>
           <div style={{
@@ -104,7 +104,7 @@ const LoadingScreen: React.FC = () => {
 
         {/* Percentage */}
         <p style={{
-          fontSize: 11, color: 'rgba(255,255,255,0.2)',
+          fontSize: 11, color: 'var(--text-subtle)',
           fontFamily: 'Inter, sans-serif', fontWeight: 500,
           letterSpacing: '0.1em',
         }}>
@@ -116,7 +116,7 @@ const LoadingScreen: React.FC = () => {
       <p style={{
         position: 'absolute', bottom: 40,
         fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase',
-        color: 'rgba(255,255,255,0.12)', fontWeight: 600,
+        color: 'var(--text-subtle)', fontWeight: 600,
       }}>
         Build what lasts.
       </p>

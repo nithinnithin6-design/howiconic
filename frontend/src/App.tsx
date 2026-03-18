@@ -202,7 +202,7 @@ const RotatingTips: React.FC = () => {
       <p style={{
         fontSize: 13,
         fontStyle: 'italic',
-        color: 'rgba(255,255,255,0.45)',
+        color: 'var(--text-muted)',
         lineHeight: 1.7,
         fontFamily: 'Georgia, serif',
         marginBottom: 8,
