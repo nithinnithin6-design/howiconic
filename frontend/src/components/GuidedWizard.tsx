@@ -106,10 +106,62 @@ const HeartIcon = ({ filled, onClick }: { filled: boolean; onClick: (e: React.Mo
   </button>
 );
 
+// ─── STEP RECAP STRIP ─────────────────────────────────────────────────────────
+
+const StepRecap = ({ selections, currentStep }: { selections: Record<number, any>; currentStep: number }) => {
+  const items: Array<{ label: string; value: string }> = [];
+
+  if (currentStep > 1 && selections[1]) {
+    items.push({ label: 'Strategy', value: selections[1].archetype || selections[1].positioning?.split(' ').slice(0, 4).join(' ') || 'Selected' });
+  }
+  if (currentStep > 2 && selections[2]) {
+    items.push({ label: 'Name', value: selections[2].name || 'Selected' });
+  }
+  if (currentStep > 3 && selections[3]) {
+    const palette = selections[3];
+    const colors = palette.colors || palette.palette || [];
+    const firstHex = colors[0] ? (typeof colors[0] === 'string' ? colors[0] : colors[0]?.hex) : null;
+    items.push({ label: 'Colors', value: palette.palette_name || palette.name || 'Selected', hex: firstHex });
+  }
+  if (currentStep > 4 && selections[4]) {
+    items.push({ label: 'Type', value: selections[4].pairing_name || selections[4].headline_font || 'Selected' });
+  }
+  if (currentStep > 5 && selections[5]) {
+    items.push({ label: 'Logo', value: selections[5].concept_name || 'Selected' });
+  }
+  if (currentStep > 6 && selections[6]) {
+    items.push({ label: 'Voice', value: selections[6].voice_name || 'Selected' });
+  }
+
+  if (items.length === 0) return null;
+
+  return (
+    <div style={{
+      maxWidth: 640, margin: '0 auto 16px',
+      padding: '10px 16px',
+      background: 'rgba(241,112,34,0.04)',
+      border: '1px solid rgba(241,112,34,0.12)',
+      borderRadius: 10,
+      display: 'flex', flexWrap: 'wrap', gap: '8px 20px', alignItems: 'center',
+    }}>
+      <span style={{ fontSize: 8, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#f17022', flexShrink: 0 }}>Building on:</span>
+      {items.map((item, i) => (
+        <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--text-muted)' }}>
+          {(item as any).hex && (
+            <span style={{ width: 10, height: 10, borderRadius: '50%', background: (item as any).hex, display: 'inline-block', flexShrink: 0 }} />
+          )}
+          <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>{item.label}:</span>
+          <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 11, color: 'var(--text-muted)' }}>{item.value}</span>
+        </span>
+      ))}
+    </div>
+  );
+};
+
 // ─── PROGRESS BAR ─────────────────────────────────────────────────────────────
 
 const ProgressBar = ({ currentStep, completedSteps }: { currentStep: number; completedSteps: number }) => (
-  <div style={{ padding: '24px 16px', maxWidth: 640, margin: '0 auto' }}>
+  <div style={{ padding: '24px 16px 16px', maxWidth: 640, margin: '0 auto' }}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', gap: 8 }}>
       {/* Connecting line */}
       <div style={{
@@ -488,7 +540,10 @@ const VoiceCard = ({ option, selected, wishlisted, onSelect, onWishlist }: CardP
 
 // ─── ASSEMBLY VIEW ────────────────────────────────────────────────────────────
 
-const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }) => {
+const AssemblyView = ({ state, brandId, onBuild }: { state: any; brandId: number | null; onBuild?: () => void }) => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setTimeout(() => setMounted(true), 100); }, []);
+
   if (!state?.steps) return null;
 
   // Extract assembly options (step 7) which contains AI-generated summary + mockups
@@ -536,10 +591,13 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
     });
   }, [headingFont, bodyFont]);
 
-  const sectionStyle: React.CSSProperties = {
-    background: 'var(--bg-secondary)', borderRadius: 16, padding: '28px 24px', marginBottom: 16,
+  const sectionStyle = (delay: number = 0): React.CSSProperties => ({
+    background: 'var(--bg-secondary)', borderRadius: 12, padding: '28px 24px', marginBottom: 16,
     border: '1px solid var(--border)',
-  };
+    opacity: mounted ? 1 : 0,
+    transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+    transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+  });
   const labelStyle: React.CSSProperties = {
     fontSize: 9, fontWeight: 800, letterSpacing: '0.4em', textTransform: 'uppercase',
     color: '#f17022', marginBottom: 16,
@@ -575,7 +633,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
 
       {/* Color Palette Strip */}
       {colorsList.length > 0 && (
-        <div style={sectionStyle}>
+        <div style={sectionStyle(0)}>
           <p style={labelStyle}>Color System</p>
           <div style={{ display: 'flex', borderRadius: 12, overflow: 'hidden', height: 80, marginBottom: 16 }}>
             {colorsList.map((c: any, i: number) => (
@@ -599,7 +657,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
 
       {/* Typography Pairing */}
       {typography && (
-        <div style={sectionStyle}>
+        <div style={sectionStyle(100)}>
           <p style={labelStyle}>Typography</p>
           <p style={{
             fontFamily: `'${headingFont}', serif`,
@@ -624,7 +682,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
 
       {/* Strategy */}
       {strategy && (
-        <div style={sectionStyle}>
+        <div style={sectionStyle(200)}>
           <p style={labelStyle}>Strategy</p>
           <p style={{
             fontFamily: `'${headingFont}', serif`, fontSize: 20, fontWeight: 900,
@@ -645,7 +703,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
 
       {/* Logo Concept */}
       {logo && (
-        <div style={sectionStyle}>
+        <div style={sectionStyle(300)}>
           <p style={labelStyle}>Logo Concept</p>
           {logo.combined_svg && (
             <div style={{ textAlign: 'center', marginBottom: 16 }}
@@ -668,7 +726,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
 
       {/* Voice */}
       {voice && (
-        <div style={sectionStyle}>
+        <div style={sectionStyle(400)}>
           <p style={labelStyle}>Brand Voice</p>
           <p style={{ fontFamily: `'${headingFont}', serif`, fontSize: 18, fontWeight: 900, color: 'var(--text)', marginBottom: 12 }}>
             {voice.voice_name}
@@ -698,7 +756,7 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
 
       {/* Mockups Preview */}
       {assemblyOptions?.mockups && (
-        <div style={sectionStyle}>
+        <div style={sectionStyle(500)}>
           <p style={labelStyle}>Brand Applications</p>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
             {assemblyOptions.mockups.business_card && (
@@ -726,29 +784,57 @@ const AssemblyView = ({ state, brandId }: { state: any; brandId: number | null }
         </div>
       )}
 
-      {/* Export Brand Guide */}
-      {brandId && (
-        <div style={{ textAlign: 'center', padding: '24px 0 60px' }}>
-          <a
-            href={`/api/brands/${brandId}/export/guide`}
-            target="_blank"
-            rel="noopener noreferrer"
+      {/* Build + Export */}
+      <div style={{
+        textAlign: 'center', padding: '32px 0 80px',
+        opacity: mounted ? 1 : 0,
+        transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+        transition: 'opacity 0.6s cubic-bezier(0.16,1,0.3,1) 600ms, transform 0.6s cubic-bezier(0.16,1,0.3,1) 600ms',
+      }}>
+        {/* Divider */}
+        <div style={{ width: 60, height: 2, background: 'rgba(241,112,34,0.3)', margin: '0 auto 32px', borderRadius: 2 }} />
+
+        {/* "Build my brand" — primary CTA */}
+        {onBuild && (
+          <button
+            onClick={onBuild}
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
+              display: 'inline-flex', alignItems: 'center', gap: 10,
               background: '#f17022', color: '#fff',
-              padding: '16px 32px', borderRadius: 100,
-              fontSize: 14, fontWeight: 700, letterSpacing: '0.05em',
-              textDecoration: 'none',
-              boxShadow: '0 8px 24px rgba(241,112,34,0.25)',
+              padding: '20px 48px', borderRadius: 100, border: 'none', cursor: 'pointer',
+              fontSize: 14, fontWeight: 900, letterSpacing: '0.15em', textTransform: 'uppercase',
+              boxShadow: '0 12px 40px rgba(241,112,34,0.4)',
+              transition: 'all 0.2s cubic-bezier(0.16,1,0.3,1)',
+              marginBottom: 16,
             }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 16px 50px rgba(241,112,34,0.5)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(241,112,34,0.4)'; }}
           >
-            ↗ Export Brand Guide
-          </a>
-          <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 12 }}>
-            Opens a printable brand guide — use your browser's print to save as PDF
-          </p>
-        </div>
-      )}
+            Build my brand →
+          </button>
+        )}
+
+        {/* Export link */}
+        {brandId && (
+          <div style={{ marginTop: 16 }}>
+            <a
+              href={`/api/brands/${brandId}/export/guide`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                color: 'var(--text-subtle)', fontSize: 11,
+                textDecoration: 'none', fontStyle: 'italic', fontFamily: 'Georgia, serif',
+                transition: 'color 0.2s ease',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-subtle)'; }}
+            >
+              ↗ Preview brand guide
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -1002,9 +1088,14 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
           Step {currentStep} of 7
         </p>
         <h2 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 900, fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', color: 'var(--text)', margin: '8px 0 0', textTransform: 'uppercase', fontStyle: 'italic' }}>
-          {STEP_NAMES[currentStep - 1]}
+          {selections[2]?.name && currentStep > 2 ? (
+            <span>{STEP_NAMES[currentStep - 1]} <span style={{ fontSize: '0.55em', opacity: 0.5, fontStyle: 'normal', letterSpacing: '0.1em' }}>for {selections[2].name}</span></span>
+          ) : STEP_NAMES[currentStep - 1]}
         </h2>
       </div>
+
+      {/* Step recap context */}
+      <StepRecap selections={selections} currentStep={currentStep} />
 
       {/* Kee — the AI soul */}
       <div style={{ maxWidth: 600, margin: '0 auto', width: '100%' }}>
@@ -1032,7 +1123,7 @@ const GuidedWizard: React.FC<GuidedWizardProps> = ({ onComplete, onBack, initial
             </button>
           </div>
         ) : currentStep === 7 ? (
-          <AssemblyView state={fullState} brandId={brandId} />
+          <AssemblyView state={fullState} brandId={brandId} onBuild={handleContinue} />
         ) : (
           <div className="wizard-options-grid" style={{
             display: 'flex', gap: 16, flexWrap: 'wrap',

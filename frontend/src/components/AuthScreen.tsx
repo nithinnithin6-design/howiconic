@@ -8,20 +8,28 @@ import { useTheme } from '../ThemeContext';
 interface AuthScreenProps {
   onAuth: (user: User) => void;
   onBack?: () => void;
+  onGuest?: () => void;
 }
 
-const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
+const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack, onGuest }) => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const { theme } = useTheme();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    const errs: Record<string, string> = {};
+    if (!email.trim()) errs.email = 'Email is required';
+    if (!password.trim()) errs.password = 'Password is required';
+    if (mode === 'register' && !name.trim()) errs.name = 'Name is required';
+    if (Object.keys(errs).length > 0) { setFieldErrors(errs); return; }
+    setFieldErrors({});
     setLoading(true);
     try {
       const user = mode === 'login'
@@ -144,12 +152,12 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
                 <input
                   type="text"
                   value={name}
-                  onChange={e => setName(e.target.value)}
+                  onChange={e => { setName(e.target.value); setFieldErrors(p => ({ ...p, name: '' })); }}
                   placeholder="Your name"
                   className="auth-input input-glow w-full rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all"
-                  style={{ background: 'var(--input-bg)', border: '1px solid var(--border)', color: 'var(--text)' }}
-                  required
+                  style={{ background: 'var(--input-bg)', border: `1px solid ${fieldErrors.name ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                 />
+                {fieldErrors.name && <p style={{ fontSize: 11, color: '#ef4444', marginTop: 4 }}>{fieldErrors.name}</p>}
               </div>
             )}
 
@@ -158,12 +166,12 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
               <input
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={e => { setEmail(e.target.value); setFieldErrors(p => ({ ...p, email: '' })); }}
                 placeholder="email@domain.com"
                 className="auth-input input-glow w-full rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all"
-                style={{ background: 'var(--input-bg)', border: '1px solid var(--border)', color: 'var(--text)' }}
-                required
+                style={{ background: 'var(--input-bg)', border: `1px solid ${fieldErrors.email ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
               />
+              {fieldErrors.email && <p style={{ fontSize: 11, color: '#ef4444', marginTop: 4 }}>{fieldErrors.email}</p>}
             </div>
 
             <div className="space-y-2">
@@ -171,13 +179,13 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
               <input
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={e => { setPassword(e.target.value); setFieldErrors(p => ({ ...p, password: '' })); }}
                 placeholder="••••••••"
                 className="auth-input input-glow w-full rounded-xl px-5 py-4 text-lg font-serif-elegant italic outline-none focus:border-brand-primary transition-all"
-                style={{ background: 'var(--input-bg)', border: '1px solid var(--border)', color: 'var(--text)' }}
-                required
+                style={{ background: 'var(--input-bg)', border: `1px solid ${fieldErrors.password ? '#ef4444' : 'var(--border)'}`, color: 'var(--text)' }}
                 minLength={6}
               />
+              {fieldErrors.password && <p style={{ fontSize: 11, color: '#ef4444', marginTop: 4 }}>{fieldErrors.password}</p>}
             </div>
 
             {error && (
@@ -197,6 +205,33 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, onBack }) => {
             {loading ? 'One moment...' : mode === 'login' ? 'Log in' : 'Create account'}
           </button>
         </form>
+
+        {/* Continue as guest */}
+        {onGuest && (
+          <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '0 auto 16px', maxWidth: 320 }}>
+              <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>or</span>
+              <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+            </div>
+            <button
+              onClick={onGuest}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                fontSize: 11, fontFamily: 'Georgia, serif', fontStyle: 'italic',
+                color: 'var(--text-subtle)', transition: 'color 0.2s ease',
+                padding: '8px 16px',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-subtle)'; }}
+            >
+              Continue as guest →
+            </button>
+            <p style={{ fontSize: 9, color: 'var(--text-subtle)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 6, opacity: 0.6 }}>
+              Explore the landing page without an account
+            </p>
+          </div>
+        )}
 
         <p className="auth-footer-text text-center mt-12 text-[9px] uppercase tracking-[0.5em] font-black" style={{ color: 'var(--text-subtle)' }}>
           Build what lasts.

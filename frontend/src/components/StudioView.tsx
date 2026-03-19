@@ -867,21 +867,27 @@ const StudioView: React.FC<StudioViewProps> = ({ brand }) => {
           </KeeAlive>
         </div>
 
-        {/* No brand warning */}
+        {/* No brand empty state */}
         {noBrand && (
           <div style={{
-            margin: '24px 24px 0',
-            padding: '12px 16px',
-            background: 'rgba(241,112,34,0.06)',
-            border: '1px solid rgba(241,112,34,0.2)',
-            borderRadius: 8,
+            margin: '40px auto 0',
+            maxWidth: 480,
+            padding: '48px 32px',
+            textAlign: 'center',
           }}>
-            <p style={{
-              margin: 0, fontSize: 11,
-              color: 'rgba(241,112,34,0.8)',
-              fontWeight: 700, letterSpacing: '0.05em',
+            <div style={{ fontSize: 48, marginBottom: 24, opacity: 0.15 }}>◉</div>
+            <h3 style={{
+              fontFamily: 'Playfair Display, serif', fontWeight: 900,
+              fontSize: 22, color: 'var(--text)', marginBottom: 12,
+              textTransform: 'uppercase', fontStyle: 'italic',
             }}>
-              Open a brand from the Vault to use its colors, fonts, and logo in your designs.
+              No brand selected
+            </h3>
+            <p style={{
+              fontFamily: 'Georgia, serif', fontStyle: 'italic',
+              fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7, marginBottom: 24,
+            }}>
+              Select a brand from the Vault to see mockups, or build one in the Engine.
             </p>
           </div>
         )}

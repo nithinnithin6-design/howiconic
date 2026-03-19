@@ -7,6 +7,7 @@ interface AppSidebarProps {
   currentView: AppView;
   onNavigate: (view: AppView) => void;
   brandCount?: number;
+  selectedBrandName?: string;
 }
 
 // Parijata Mark — small version for sidebar
@@ -29,7 +30,7 @@ const NAV_ITEMS = [
   { key: 'about' as AppView, icon: '◇', label: 'Our Story', desc: 'The Parijata story', tooltip: 'Brand Manual' },
 ];
 
-const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandCount = 0 }) => {
+const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandCount = 0, selectedBrandName }) => {
   const [expanded, setExpanded] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
@@ -61,14 +62,26 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
         }}>
           <MasterSealSmall />
           {expanded && (
-            <span style={{
-              fontFamily: 'Playfair Display, serif', fontWeight: 900,
-              fontSize: 14, letterSpacing: '0.15em', textTransform: 'uppercase',
-              color: 'var(--text)', whiteSpace: 'nowrap', opacity: expanded ? 1 : 0,
-              transition: 'opacity 0.2s ease 0.05s',
-            }}>
-              HOWICONIC
-            </span>
+            <div style={{ overflow: 'hidden' }}>
+              <span style={{
+                fontFamily: 'Playfair Display, serif', fontWeight: 900,
+                fontSize: 14, letterSpacing: '0.15em', textTransform: 'uppercase',
+                color: 'var(--text)', whiteSpace: 'nowrap', opacity: expanded ? 1 : 0,
+                transition: 'opacity 0.2s ease 0.05s', display: 'block',
+              }}>
+                HOWICONIC
+              </span>
+              {selectedBrandName && (
+                <span style={{
+                  fontSize: 9, fontWeight: 700, letterSpacing: '0.15em',
+                  color: '#f17022', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                  opacity: expanded ? 1 : 0, transition: 'opacity 0.2s ease 0.1s',
+                  display: 'block', maxWidth: 140,
+                }}>
+                  {selectedBrandName}
+                </span>
+              )}
+            </div>
           )}
         </div>
 

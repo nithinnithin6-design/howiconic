@@ -777,6 +777,7 @@ const App: React.FC = () => {
             } catch {}
           }}
           onBack={() => setShowAuth(false)}
+          onGuest={() => setShowAuth(false)}
         />
         </ThemeProvider>
       );
@@ -810,6 +811,7 @@ const App: React.FC = () => {
         currentView={view as any}
         onNavigate={(v) => switchView(v as typeof view)}
         brandCount={history.length}
+        selectedBrandName={brand?.name}
       />
 
       <AnimatePresence>
@@ -921,6 +923,7 @@ const App: React.FC = () => {
                   setView('guided');
                 }}
                 isManifesting={loading}
+                brandCount={history.length}
                 sound={sound}
               />
             </motion.div>
@@ -979,6 +982,37 @@ const App: React.FC = () => {
             </motion.div>
           )}
 
+          {view === 'manual' && !brand && (
+            <motion.div key="manual-empty" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <div style={{ maxWidth: 480, margin: '0 auto', padding: '80px 24px', textAlign: 'center' }}>
+                <div style={{ fontSize: 48, opacity: 0.12, marginBottom: 24 }}>◈</div>
+                <h3 style={{
+                  fontFamily: 'Playfair Display, serif', fontWeight: 900,
+                  fontSize: 22, color: 'var(--text)', marginBottom: 12,
+                  textTransform: 'uppercase', fontStyle: 'italic',
+                }}>No brand selected</h3>
+                <p style={{
+                  fontFamily: 'Georgia, serif', fontStyle: 'italic',
+                  fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7, marginBottom: 24,
+                }}>
+                  Select a brand from the Vault to see its manual.
+                </p>
+                <button
+                  onClick={() => switchView('vault')}
+                  style={{
+                    background: '#f17022', border: 'none', borderRadius: 100,
+                    padding: '12px 28px', cursor: 'pointer',
+                    fontSize: 11, fontWeight: 900, letterSpacing: '0.3em', textTransform: 'uppercase',
+                    color: '#fff', transition: 'all 0.2s ease',
+                    boxShadow: '0 8px 24px rgba(241,112,34,0.25)',
+                  }}
+                >
+                  Go to Vault →
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {view === 'architecture' && (
             <motion.div key="architecture" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               {brand ? (
@@ -991,16 +1025,31 @@ const App: React.FC = () => {
                   }}
                 />
               ) : (
-                <div className="max-w-[600px] mx-auto px-6 py-24 text-center">
-                  <p className="text-[9px] uppercase tracking-[0.8em] font-black text-white/20 mb-6">Brand Architecture</p>
-                  <p className="text-xl font-serif-elegant italic text-white/30 mb-8">
-                    Select a brand first to view its architecture tree.
+                <div style={{ maxWidth: 480, margin: '0 auto', padding: '80px 24px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 48, opacity: 0.12, marginBottom: 24 }}>⊹</div>
+                  <h3 style={{
+                    fontFamily: 'Playfair Display, serif', fontWeight: 900,
+                    fontSize: 22, color: 'var(--text)', marginBottom: 12,
+                    textTransform: 'uppercase', fontStyle: 'italic',
+                  }}>Select a brand</h3>
+                  <p style={{
+                    fontFamily: 'Georgia, serif', fontStyle: 'italic',
+                    fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7, marginBottom: 24,
+                  }}>
+                    Select a brand to explore its architecture and brand family.
                   </p>
                   <button
                     onClick={() => switchView('vault')}
-                    className="text-[10px] uppercase font-black tracking-[0.4em] text-brand-primary/70 hover:text-brand-primary transition-all cursor-pointer bg-transparent border-none"
+                    style={{
+                      background: 'none', border: '1px solid var(--border)', borderRadius: 100,
+                      padding: '10px 24px', cursor: 'pointer',
+                      fontSize: 10, fontWeight: 900, letterSpacing: '0.3em', textTransform: 'uppercase',
+                      color: 'var(--text-muted)', transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--text)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
                   >
-                    ← Go to Vault →
+                    Go to Vault →
                   </button>
                 </div>
               )}

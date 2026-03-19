@@ -646,15 +646,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
           }}>HOWICONIC</span>
         </div>
         <div className="hi-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          {[['How It Works', '#how'], ['Pricing', '#pricing']].map(([label, href]) => (
-            <a key={label} href={href} style={{
+          {[['How It Works', 'how'], ['Pricing', 'pricing']].map(([label, id]) => (
+            <button key={label} onClick={() => {
+              const el = document.getElementById(id as string);
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
               color: 'var(--text-muted)', fontSize: 10, fontWeight: 700,
               letterSpacing: '0.28em', textTransform: 'uppercase',
-              textDecoration: 'none', transition: 'color 0.2s',
+              transition: 'color 0.2s', padding: 0,
             }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
-            >{label}</a>
+            >{label}</button>
           ))}
           <button onClick={onLogin} style={{
             background: 'none', border: 'none', cursor: 'pointer',

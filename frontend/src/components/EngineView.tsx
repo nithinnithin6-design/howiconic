@@ -85,6 +85,7 @@ interface EngineViewProps {
   onManifest: (brandIdea: string, product: string, audience: string, vibe: BrandVibe) => void;
   onGuided?: (brandIdea: string, product: string, audience: string, vibe: BrandVibe) => void;
   isManifesting?: boolean;
+  brandCount?: number;
   sound?: {
     click: () => void;
     whoosh: () => void;
@@ -113,7 +114,7 @@ const KeeWelcome = () => {
   return <KeeAlive animate={true} chatEnabled={true} chatContext={{ step: 0, stepName: 'engine' }}>{message}</KeeAlive>;
 };
 
-const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifesting, sound }) => {
+const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifesting, brandCount = 0, sound }) => {
   const [brandIdea, setBrandIdea] = useState('');
   const [product, setProduct] = useState('');
   const [audience, setAudience] = useState('');
@@ -161,6 +162,23 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
       <BlueprintBloom vibe={vibe} isPressing={isManifesting} />
 
       <div className="relative z-10 w-full max-w-2xl space-y-6 md:space-y-8 pt-4 md:pt-8">
+
+        {/* First-brand welcome banner */}
+        {brandCount === 0 && (
+          <div style={{
+            background: 'rgba(241,112,34,0.06)',
+            border: '1px solid rgba(241,112,34,0.15)',
+            borderRadius: 12,
+            padding: '20px 24px',
+            marginBottom: 8,
+            textAlign: 'center',
+          }}>
+            <p style={{ fontSize: 11, fontWeight: 900, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#f17022', marginBottom: 8 }}>Start your first brand</p>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, fontFamily: 'Georgia, serif', fontStyle: 'italic', margin: 0 }}>
+              Tell Kee about your vision. She'll guide you through strategy, naming, colors, typography, logo, and voice.
+            </p>
+          </div>
+        )}
 
         {/* Header */}
         <header className="text-center space-y-3 pb-4">
@@ -276,7 +294,6 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
                   ? 'opacity-50 cursor-wait'
                   : 'cursor-pointer hover:bg-[#f17022] hover:text-white hover:border-[#f17022] hover:shadow-[0_12px_40px_rgba(241,112,34,0.25)]'
               }`}
-            style={{ background: 'var(--bg-secondary)' }}
             >
               {isManifesting ? 'Your brand is taking shape...' : 'Start building'}
             </motion.button>
