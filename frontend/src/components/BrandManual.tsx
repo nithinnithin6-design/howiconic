@@ -1714,7 +1714,7 @@ const BrandManual: React.FC<BrandManualProps> = ({ brand: initialBrand, onBack, 
         brand_data: updatedBrand,
       });
     } catch (e) {
-      console.warn('[handleFieldSave] patch failed:', e);
+      // patch failed silently
     }
     setCurrentBrand(updatedBrand);
     onBrandUpdate?.(updatedBrand);

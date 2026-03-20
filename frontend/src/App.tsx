@@ -16,6 +16,7 @@ import VaultView from './components/VaultView';
 import AppSidebar from './components/AppSidebar';
 import ArchitectureView from './components/ArchitectureView';
 import StudioView from './components/StudioView';
+import { FloatingKee } from './components/KeeAlive';
 import { useSound } from './hooks/useSound';
 import { ThemeProvider } from './ThemeContext';
 
@@ -673,7 +674,7 @@ const App: React.FC = () => {
         });
       } catch (sseErr: any) {
         // SSE failed — fall back to non-streaming
-        console.warn('[handleManifest] SSE failed, falling back:', sseErr?.message);
+        // SSE failed — fall back silently
         setGenerationSteps(prev => prev.map(s => ({ ...s, status: 'done' })));
         const result = await api.generateBrandV3(input);
         rawBrand = result?.brand ?? null;
@@ -1182,6 +1183,11 @@ const App: React.FC = () => {
           <span className="font-serif-elegant italic">Built with intent.</span>
         </footer>
       </div>
+
+      {/* Floating Kee — visible on all inner views except engine and guided */}
+      {['vault', 'manual', 'studio', 'architecture', 'audit', 'about'].includes(view) && (
+        <FloatingKee chatContext={{ step: 0, stepName: 'general' }} />
+      )}
     </div>
     </ThemeProvider>
   );

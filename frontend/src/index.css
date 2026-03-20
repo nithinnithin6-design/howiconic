@@ -571,3 +571,27 @@ button, a, [role="button"], input[type="range"], select, summary { cursor: point
     left: 0 !important;
   }
 }
+
+/* ─── INPUT FOCUS: orange outline ───────────────────────────────────────────── */
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--brand-primary, #f17022) !important;
+  outline-offset: 0;
+}
+
+/* ─── TRANSITIONS: standardize hover transitions ────────────────────────────── */
+button, a, [role="button"] {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── KEE FLOAT PANEL: responsive ──────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .kee-float-overlay {
+    width: calc(100vw - 32px) !important;
+    right: 8px !important;
+  }
+}
