@@ -108,11 +108,15 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ currentView, onNavigate, brandC
                 }}
                 onMouseEnter={e => {
                   if (!isActive && !disabled) {
-                    e.currentTarget.style.background = 'var(--card-bg)';
+                    e.currentTarget.style.background = 'linear-gradient(90deg, rgba(241,112,34,0.06) 0%, rgba(241,112,34,0.02) 100%)';
+                    e.currentTarget.style.borderLeftColor = 'rgba(241,112,34,0.25)';
                   }
                 }}
                 onMouseLeave={e => {
-                  if (!isActive) e.currentTarget.style.background = 'transparent';
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderLeftColor = 'transparent';
+                  }
                 }}
               >
                 <span style={{

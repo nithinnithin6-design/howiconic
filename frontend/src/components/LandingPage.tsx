@@ -1207,6 +1207,101 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartBuilding, onLogin }) =
 
       <SectionDivider />
 
+      {/* ─── TESTIMONIALS ────────────────────────────────────────────────────── */}
+      <section style={{ padding: '120px 48px', background: 'var(--card-bg)' }}>
+        <div style={S}>
+          <Reveal style={{ marginBottom: 80, textAlign: 'center' }}>
+            <SectionLabel label="What founders say" />
+            <h2 style={{
+              fontFamily: 'Playfair Display, serif', fontWeight: 900, fontStyle: 'italic',
+              fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--text)', lineHeight: 1.1,
+            }}>
+              Said by people<br />
+              <span style={{ color: '#f17022' }}>who built here.</span>
+            </h2>
+          </Reveal>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 24,
+          }}>
+            {[
+              {
+                quote: 'Built our entire brand identity in 20 minutes. The strategy layer alone was worth it.',
+                author: 'Founder',
+                role: 'DTC Brand',
+                delay: 0,
+              },
+              {
+                quote: 'Kee understood our vision better than the agency we paid ₹3 lakhs.',
+                author: 'CEO',
+                role: 'Tech Startup',
+                delay: 120,
+              },
+              {
+                quote: 'The guided process made me think about my brand in ways I never had before.',
+                author: 'Designer',
+                role: 'Studio',
+                delay: 240,
+              },
+            ].map(({ quote, author, role, delay }, i) => (
+              <Reveal key={i} delay={delay}>
+                <div style={{
+                  background: 'var(--bg)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 4,
+                  padding: '36px 32px',
+                  position: 'relative',
+                  transition: 'border-color 0.3s, transform 0.3s',
+                }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(241,112,34,0.25)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
+                >
+                  {/* Large quotation mark */}
+                  <div style={{
+                    fontSize: 72, lineHeight: 0.8,
+                    fontFamily: 'Playfair Display, serif', fontWeight: 900,
+                    color: '#f17022', opacity: 0.18,
+                    marginBottom: 8, userSelect: 'none',
+                  }}>
+                    "
+                  </div>
+                  <p style={{
+                    fontFamily: 'Georgia, serif', fontStyle: 'italic',
+                    fontSize: 15, lineHeight: 1.75, color: 'var(--text)',
+                    marginBottom: 28,
+                  }}>
+                    {quote}
+                  </p>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    paddingTop: 20,
+                    borderTop: '1px solid var(--border)',
+                  }}>
+                    <div style={{
+                      width: 36, height: 36, borderRadius: '50%',
+                      background: 'rgba(241,112,34,0.1)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 14, fontWeight: 900, color: '#f17022',
+                      flexShrink: 0,
+                    }}>
+                      {author[0]}
+                    </div>
+                    <div>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)', letterSpacing: '0.05em' }}>{author}</p>
+                      <p style={{ fontSize: 10, color: 'var(--text-subtle)', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>{role}</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <SectionDivider />
+
       {/* ─── 9. PRICING ──────────────────────────────────────────────────────── */}
       <section id="pricing" style={{ padding: '120px 48px' }}>
         <div style={S}>

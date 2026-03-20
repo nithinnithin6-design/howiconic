@@ -547,6 +547,18 @@ const VaultView: React.FC<VaultViewProps> = ({
                   </div>
                 )}
 
+                {/* Color palette strip at bottom */}
+                <div style={{ display: 'flex', height: 4, position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+                  {[
+                    brand.colors?.primary?.hex,
+                    brand.colors?.secondary?.hex,
+                    brand.colors?.accent?.hex,
+                    brand.colors?.canvasColor,
+                  ].filter(Boolean).map((hex, ci) => (
+                    <div key={ci} style={{ flex: 1, background: hex }} title={hex} />
+                  ))}
+                </div>
+
                 {/* Accent bar left */}
                 <div style={{
                   position: 'absolute', left: 0, top: 0, bottom: 0, width: 3,
@@ -621,27 +633,16 @@ const VaultView: React.FC<VaultViewProps> = ({
                     </span>
                   </div>
 
-                  {/* Color palette — 5 circles */}
-                  <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-                    {[
-                      brand.colors?.primary?.hex,
-                      brand.colors?.secondary?.hex,
-                      brand.colors?.accent?.hex,
-                      brand.colors?.canvasColor,
-                      brand.colors?.primary?.hex, // repeat primary as 5th
-                    ].filter(Boolean).slice(0, 5).map((hex, ci) => (
-                      <div
-                        key={ci}
-                        title={hex}
-                        style={{
-                          width: 20, height: 20, borderRadius: '50%',
-                          background: hex,
-                          border: '1px solid var(--border)',
-                          flexShrink: 0,
-                        }}
-                      />
-                    ))}
-                  </div>
+                  {/* Creation date */}
+                  {(brand as any).created_at && (
+                    <p style={{
+                      fontSize: 9, color: 'var(--text-subtle)',
+                      letterSpacing: '0.1em', marginBottom: 12,
+                      textTransform: 'uppercase', fontWeight: 600,
+                    }}>
+                      {new Date((brand as any).created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  )}
 
                   {/* Actions */}
                   {!compareMode && (

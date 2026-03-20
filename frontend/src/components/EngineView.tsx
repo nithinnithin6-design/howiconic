@@ -114,14 +114,113 @@ const KeeWelcome = () => {
   return <KeeAlive animate={true} chatEnabled={true} chatContext={{ step: 0, stepName: 'engine' }}>{message}</KeeAlive>;
 };
 
+// ─── ONBOARDING OVERLAY ───────────────────────────────────────────────────────
+const OnboardingOverlay: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => {
+  return (
+    <div
+      onClick={onDismiss}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 1000,
+        background: 'rgba(10,10,10,0.88)',
+        backdropFilter: 'blur(12px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '24px',
+        animation: 'onboardFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: 'var(--card-bg)',
+          border: '1px solid var(--border)',
+          borderRadius: 16,
+          padding: '48px 40px',
+          maxWidth: 480,
+          width: '100%',
+          textAlign: 'center',
+          animation: 'onboardSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
+        }}
+      >
+        {/* Parijata mark */}
+        <svg viewBox="0 0 100 100" fill="none" style={{ width: 40, height: 40, margin: '0 auto 24px', display: 'block' }}>
+          {[0, 51.4, 102.8, 154.3, 205.7, 257.1, 308.6].map((angle, i) => (
+            <ellipse key={i} cx="50" cy="25" rx="8" ry="20" fill="white" opacity={0.7} transform={`rotate(${angle} 50 50)`} />
+          ))}
+          <circle cx="50" cy="50" r="8" fill="#f17022" style={{ filter: 'drop-shadow(0 0 8px rgba(241,112,34,0.6))' }} />
+          <circle cx="50" cy="50" r="3" fill="white" opacity="0.8" />
+        </svg>
+
+        <h2 style={{
+          fontFamily: 'Playfair Display, serif', fontWeight: 900,
+          fontSize: 26, color: 'var(--text)', marginBottom: 20,
+          letterSpacing: '-0.01em', lineHeight: 1.2,
+        }}>
+          Welcome to HowIconic.
+        </h2>
+
+        <p style={{
+          fontFamily: 'Georgia, serif', fontStyle: 'italic',
+          fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.75,
+          marginBottom: 16,
+        }}>
+          You're about to build a complete brand identity — strategy, name, colors, typography, logo, and voice.
+        </p>
+
+        <p style={{
+          fontFamily: 'Georgia, serif', fontStyle: 'italic',
+          fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.75,
+          marginBottom: 36,
+        }}>
+          Kee will guide you through every step. Just describe your vision below, and let's begin.
+        </p>
+
+        <button
+          onClick={onDismiss}
+          style={{
+            background: '#f17022', color: '#fff', border: 'none',
+            borderRadius: 100, padding: '14px 40px',
+            fontSize: 11, fontWeight: 900, letterSpacing: '0.25em',
+            textTransform: 'uppercase', cursor: 'pointer',
+            transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+            boxShadow: '0 8px 24px rgba(241,112,34,0.3)',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(241,112,34,0.4)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(241,112,34,0.3)'; }}
+        >
+          Start building →
+        </button>
+      </div>
+      <style>{`
+        @keyframes onboardFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes onboardSlideUp {
+          from { opacity: 0; transform: translateY(32px) scale(0.97); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifesting, brandCount = 0, sound }) => {
   const [brandIdea, setBrandIdea] = useState('');
   const [product, setProduct] = useState('');
   const [audience, setAudience] = useState('');
   const [vibe, setVibe] = useState<BrandVibe>('Bold');
   const [validationMsg, setValidationMsg] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return brandCount === 0 && !localStorage.getItem('howiconic_onboarded');
+  });
   const ideaRef = useRef<HTMLTextAreaElement>(null);
   const { theme } = useTheme();
+
+  const dismissOnboarding = () => {
+    localStorage.setItem('howiconic_onboarded', 'true');
+    setShowOnboarding(false);
+  };
 
   const handleIdeaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBrandIdea(e.target.value);
@@ -158,6 +257,7 @@ const EngineView: React.FC<EngineViewProps> = ({ onManifest, onGuided, isManifes
 
   return (
     <main className="flex-1 flex flex-col items-center justify-start px-4 md:px-12 py-8 relative min-h-screen overflow-hidden page-enter">
+      {showOnboarding && <OnboardingOverlay onDismiss={dismissOnboarding} />}
       <div className="absolute inset-0 blueprint-grid opacity-[0.04] pointer-events-none" />
       <BlueprintBloom vibe={vibe} isPressing={isManifesting} />
 

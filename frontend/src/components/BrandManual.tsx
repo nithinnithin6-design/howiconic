@@ -268,6 +268,39 @@ const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   <p className="text-[9px] md:text-[10px] uppercase tracking-[0.8em] font-black text-white/30 mb-6">{children}</p>
 );
 
+// Playfair-styled section header for full brand manual
+const ManualSectionHeader: React.FC<{ children: React.ReactNode; accent?: string }> = ({ children, accent = '#f17022' }) => (
+  <div style={{ marginBottom: 32 }}>
+    <h3 style={{
+      fontFamily: 'Playfair Display, serif',
+      fontWeight: 900, fontStyle: 'italic',
+      fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+      color: 'var(--text, rgba(255,255,255,0.9))',
+      letterSpacing: '-0.01em',
+      lineHeight: 1.2,
+    }}>
+      {children}
+    </h3>
+  </div>
+);
+
+// Section divider — thin line with accent dot
+const ManualDivider: React.FC<{ accent?: string }> = ({ accent = '#f17022' }) => (
+  <div style={{
+    display: 'flex', alignItems: 'center', margin: '48px 0',
+    opacity: 0.4,
+  }}>
+    <div style={{ flex: 1, height: 1, background: 'var(--border, rgba(255,255,255,0.08))' }} />
+    <div style={{
+      width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+      margin: '0 16px',
+      background: accent,
+      boxShadow: `0 0 8px ${accent}`,
+    }} />
+    <div style={{ flex: 1, height: 1, background: 'var(--border, rgba(255,255,255,0.08))' }} />
+  </div>
+);
+
 // "ONLY ON HOWICONIC" badge
 const OnlyBadge: React.FC = () => (
   <span style={{
@@ -442,19 +475,26 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, onExplore, onBack, onOpenR
           className="w-full mb-12 md:mb-16"
         >
           <SectionLabel>Color System</SectionLabel>
-          <div className="flex gap-3 md:gap-4">
+          <div className="flex gap-3 md:gap-5">
             {displayColors.map((color, i) => (
               <div key={i} className="flex-1 group">
                 <div
-                  className="h-16 md:h-24 rounded-xl md:rounded-2xl mb-2 transition-transform duration-300 group-hover:-translate-y-1"
-                  style={{ backgroundColor: color?.hex }}
+                  className="rounded-xl md:rounded-2xl mb-3 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-lg"
+                  style={{
+                    backgroundColor: color?.hex,
+                    height: 'clamp(72px, 12vw, 110px)',
+                    boxShadow: `0 4px 20px ${color?.hex}44`,
+                  }}
                 />
-                <p className="text-[8px] font-mono text-white/30 font-black uppercase">{color?.hex}</p>
+                <p className="text-[10px] font-mono text-white/50 font-black uppercase tracking-wider">{color?.hex}</p>
                 {color?.name && (
-                  <p className="text-[7px] uppercase tracking-[0.5em] text-white/20 font-black mt-0.5 truncate">
+                  <p className="text-[8px] uppercase tracking-[0.4em] text-white/30 font-black mt-1 truncate">
                     {color.name}
                   </p>
                 )}
+                <p className="text-[8px] text-white/20 mt-0.5 capitalize" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  {i === 0 ? 'Primary' : i === 1 ? 'Secondary' : 'Accent'}
+                </p>
               </div>
             ))}
           </div>
